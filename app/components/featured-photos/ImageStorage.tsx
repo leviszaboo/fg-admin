@@ -5,6 +5,7 @@ import {
   getDownloadURL,
   listAll,
   list,
+  StorageReference,
 } from "firebase/storage";
 
 import selectFeaturedStore from "@/app/hooks/selectFeatured";
@@ -37,7 +38,8 @@ export default function ImageStorage() {
   const { isVerticalSelected } = selectFeaturedStore();
   const auth = useAuth();
   const user = auth.currentUser
-  const imagesListRef = ref(storage, `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/`);
+  const verticalListRef = ref(storage, `${user?.email}/featured/vertical/`);
+  const horizontalListRef = ref(storage, `${user?.email}/featured/horizontal/`);
 
   function handleMouseEnter() {
     setIsHovered(true);
@@ -87,19 +89,26 @@ export default function ImageStorage() {
     setLoading(false);
   }
 
-  useEffect(() => {
-    setHorizontalUrls([]);
-    setVerticalUrls([])
-    listAll(imagesListRef).then((res) => {
-      res.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          console.log(url)
-          isVerticalSelected ? setVerticalUrls((prev) => [...prev, url]) : setHorizontalUrls((prev) => [...prev, url]);
-          console.log(verticalUrls)
-        });
+  async function fetchImageUrls(listRef: StorageReference, setterFunction: (urls: string[]) => void) { 
+    try {
+      const res = await listAll(listRef)
+      
+      const urlPromises = res.items.map(async (item) => {
+        const url = await getDownloadURL(item);
+        return url;
       });
-    });
-  }, [isVerticalSelected]);
+
+      const imageUrls = await Promise.all(urlPromises);
+      setterFunction(imageUrls);
+    } catch (error) {
+      console.error("Error fetching image URLs:", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchImageUrls(verticalListRef, setVerticalUrls);
+    fetchImageUrls(horizontalListRef, setHorizontalUrls)
+  }, [verticalUrls, horizontalUrls])
 
   return (
     <>
@@ -152,14 +161,18 @@ export default function ImageStorage() {
           </Dialog>
           {isVerticalSelected ? (
             verticalUrls.map((url, index) => (
-              <div key={index} className="border-2 border-lightbrown rounded-lg h-80 flex flex-column overflow-hidden items-center content-center justify-center text-center">
-                <img className="h-full w-auto -z-50" src={url}/>
+              <div key={index} className="border-2 border-brown rounded-lg h-80 flex flex-column overflow-hidden items-center content-center justify-center text-center">
+                <div className="h-full w-full flex felx-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
+                  <img className="min-h-full min-w-full -z-50" src={url}/>
+                </div>
               </div>
             ))
           ) : (
             horizontalUrls.map((url, index) => (
-              <div key={index} className="border-2 border-lightbrown rounded-lg h-44 flex flex-column overflow-hidden items-center content-center justify-center text-center">
-                <img className="h-full w-auto -z-50" src={url}/>
+              <div key={index} className="border-2 border-brown rounded-lg h-44 flex flex-column overflow-hidden items-center content-center justify-center text-center">
+                <div className="h-full w-full flex felx-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
+                  <img className="min-h-full min-w-full -z-50" src={url}/>
+                </div>
               </div>
             ))
           )}

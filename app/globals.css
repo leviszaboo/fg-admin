@@ -92,11 +92,15 @@ body,
   transition: border-color 0.15s ease;
 }
 
-.border-lightbrown:hover {
+.border-brown, .border-lightbrown:hover {
   border-color: rgb(214, 190, 150);
   cursor: pointer;
 }
 
 .svg-transition {
   transition: stroke 0.15s ease;
+}
+
+.image-radius-inner {
+  border-radius: 9px;
 }

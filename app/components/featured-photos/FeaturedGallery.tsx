@@ -1,8 +1,6 @@
 "use client";
 
-import { ComboBox } from "./ComboBox";
-import VerticalGallery from "./VerticalGallery";
-import HorizontalGallery from "./HorizontalGallery";
+import ComboBox from "./ComboBox";
 import ImageStorage from "./ImageStorage";
 
 import selectFeaturedStore from "@/app/hooks/selectFeatured";

@@ -31,7 +31,7 @@ const options = [
   },
 ]
  
-export function ComboBox() {
+export default function ComboBox() {
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState("vertical")
   const { setIsVerticalSelected } = selectFeaturedStore()
