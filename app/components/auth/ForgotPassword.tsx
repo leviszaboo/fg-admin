@@ -102,7 +102,7 @@ export default function ForgotPassword() {
           <Label className="sr-only" htmlFor="email">
             Password
           </Label>
-          <Button className="p-4" disabled={loading}>
+          <Button className="p-4 bg-primary hover:bg-primary/90 hover:text-white" disabled={loading}>
             Reset password
           </Button>
           <Link className="text-center" href={"/"}>

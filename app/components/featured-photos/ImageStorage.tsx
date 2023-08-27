@@ -6,6 +6,7 @@ import {
   listAll,
   StorageReference,
 } from "firebase/storage";
+import {v4 as uuidv4} from 'uuid';
 
 import ImageFrame from "./ImageFrame";
 import selectFeaturedStore from "@/app/hooks/selectFeatured";
@@ -25,18 +26,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { Plus, ImagePlus } from "lucide-react";
+import selectImagesStore from "@/app/hooks/selectImages";
 
 export default function ImageStorage() {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>("")
   const [imageUpload, setImageUpload] = useState<FileList | null>(null)
   const [verticalUrls, setVerticalUrls] = useState<string[]>([]);
   const [horizontalUrls, setHorizontalUrls] = useState<string[]>([]);
 
   const { isVerticalSelected } = selectFeaturedStore();
+  const { isSelected } = selectImagesStore();
   const auth = useAuth();
   const user = auth.currentUser
   const verticalListRef = ref(storage, `${user?.email}/featured/vertical/`);
@@ -51,9 +53,9 @@ export default function ImageStorage() {
   };
 
   function handleOpen() {
+    if (isSelected) return;
     setError("");
     setImageUpload(null);
-    setSuccessMessage("");
   }
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -63,7 +65,6 @@ export default function ImageStorage() {
   async function uploadImage() {
     setLoading(true);
     setError("");
-    setSuccessMessage("");
 
     if (!imageUpload) {
       setError("Please select the files to upload.");
@@ -86,6 +87,7 @@ export default function ImageStorage() {
       setError("Something went wrong. Try again.")
       console.log(err);
     }
+
     setLoading(false);
   }
 
@@ -108,7 +110,7 @@ export default function ImageStorage() {
   useEffect(() => {
     fetchImageUrls(verticalListRef, setVerticalUrls);
     fetchImageUrls(horizontalListRef, setHorizontalUrls)
-  }, [verticalUrls, horizontalUrls])
+  }, [])
 
   return (
     <>
@@ -142,7 +144,6 @@ export default function ImageStorage() {
               </DialogHeader>
               <div className="flex flex-col pt-2 pb-2">
                 {error && <div className="text-sm text-red-500 p-1">{error}</div>}
-                {successMessage && <div className="text-sm text-green-500 p-1">{successMessage}</div>}
                 <div className="grid w-full items-center gap-1.5">
                   <Input 
                     className="hover:cursor-pointer" 
@@ -155,7 +156,7 @@ export default function ImageStorage() {
                 </div>
               </div>
               <DialogFooter>
-                <Button onClick={uploadImage} disabled={loading}>Upload</Button>
+                <Button variant={"black"} onClick={uploadImage} disabled={loading}>Upload</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

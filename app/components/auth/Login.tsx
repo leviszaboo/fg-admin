@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { FirebaseError } from "firebase/app";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { setPersistence, browserSessionPersistence } from "firebase/auth";
 
 import { FormData, LoginSchema } from "../../models/LoginSchema";
 import { useAuth } from "../../utils/AuthContext";
@@ -41,9 +42,9 @@ export default function Login() {
     setLoading(true);
     
     try {
-      await auth.login(data.email, data.password)
+      await auth.browserSession();
+      await auth.login(data.email, data.password);
       router.push('/home');
-      router.refresh()
     } catch (err) {
       if (
         err instanceof FirebaseError && 
@@ -106,7 +107,7 @@ export default function Login() {
             error={errors.password}
             errorMessage={errors.password? errors.password.message : undefined}
           />
-          <Button className="p-4" disabled={loading}>
+          <Button className="p-4 bg-primary hover:bg-primary/90 hover:text-white" disabled={loading}>
             Sign In with Email
           </Button>
           <Link className="text-center" href="/forgot-password">

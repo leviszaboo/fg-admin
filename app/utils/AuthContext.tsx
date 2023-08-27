@@ -5,7 +5,9 @@ import {
   sendPasswordResetEmail,
   signOut,
   User as FirebaseUser, 
-  UserCredential
+  UserCredential,
+  setPersistence,
+  browserSessionPersistence
 } from "firebase/auth";
 
 import { auth } from "../firebase/firebase";
@@ -15,6 +17,7 @@ interface AuthContextProps {
   login(email: string, password: string): Promise<UserCredential>,
   logout(): Promise<void>,
   resetPassword(email: string): Promise<void>,
+  browserSession(): Promise<void>,
 }
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
@@ -43,6 +46,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return sendPasswordResetEmail(auth, email);
   }
 
+  function browserSession() {
+    return setPersistence(auth, browserSessionPersistence)
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user: FirebaseUser | null) => {
       console.log(user);
@@ -58,6 +65,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     logout,
     resetPassword,
+    browserSession
   }
 
   return (

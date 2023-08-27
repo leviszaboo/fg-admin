@@ -1,24 +1,21 @@
 import selectImagesStore from "@/app/hooks/selectImages"
-import { storage } from "@/app/firebase/firebase";
 
 import ComboBox from "./ComboBox"
 import { Button } from "@/components/ui/button"
 
-import { ref, deleteObject } from "firebase/storage";
+import DeleteDialog from "./DeleteDialog";
 
 
 export default function FeaturedGalleryHeader() {
-  const { isSelected, setSelected, selectedForDeletion} = selectImagesStore();
+  const { 
+    isSelected,  
+    setSelected, 
+    resetSelected 
+  } = selectImagesStore();
 
-  async function handleDelete() {
-    try {
-      selectedForDeletion.forEach((item) => {
-        const desertRef = ref(storage, item)
-        deleteObject(desertRef);
-      })
-    } catch(err) {
-      console.log(err)
-    }
+  function handleCancel() {
+    setSelected(!isSelected);
+    resetSelected();
   }
 
   return (
@@ -36,10 +33,8 @@ export default function FeaturedGalleryHeader() {
           )}
             {isSelected && (
             <>
-              <Button size={"sm"} variant={"destructive"} onClick={handleDelete} disabled={selectedForDeletion.length <= 0}>
-                Delete
-              </Button>
-              <Button variant={"secondary"} size={"xs"} onClick={() => setSelected(!isSelected)}>
+              <DeleteDialog />
+              <Button variant={"outline"} size={"xs"} onClick={handleCancel}>
                 Cancel
               </Button>
             </>

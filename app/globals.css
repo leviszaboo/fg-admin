@@ -107,3 +107,7 @@ body,
 .blur-xs {
   filter: blur(2px);
 }
+
+.checkbox-bg-unchecked {
+  background-color: #ffedd563;
+}

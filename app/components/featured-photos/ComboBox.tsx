@@ -43,7 +43,7 @@ export default function ComboBox() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-36 justify-between "
+          className="w-36 justify-between border-input"
         >
           {value
             ? options.find((option) => option.value === value)?.label
