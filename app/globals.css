@@ -94,7 +94,6 @@ body,
 
 .border-brown, .border-lightbrown:hover {
   border-color: rgb(214, 190, 150);
-  cursor: pointer;
 }
 
 .svg-transition {
@@ -103,4 +102,8 @@ body,
 
 .image-radius-inner {
   border-radius: 9px;
+}
+
+.blur-xs {
+  filter: blur(2px);
 }

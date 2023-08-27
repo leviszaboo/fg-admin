@@ -4,10 +4,10 @@ import {
   uploadBytes, 
   getDownloadURL,
   listAll,
-  list,
   StorageReference,
 } from "firebase/storage";
 
+import ImageFrame from "./ImageFrame";
 import selectFeaturedStore from "@/app/hooks/selectFeatured";
 import { storage } from "@/app/firebase/firebase";
 import { useAuth } from "@/app/utils/AuthContext";
@@ -27,7 +27,8 @@ import { Input } from "@/components/ui/input";
 import { Plus, ImagePlus } from "lucide-react";
 
 export default function ImageStorage() {
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("")
@@ -80,8 +81,7 @@ export default function ImageStorage() {
           });
         });
       }
-      setImageUpload(null);
-      setSuccessMessage("Upload successful.")
+      setDialogOpen(false);
     } catch(err) {
       setError("Something went wrong. Try again.")
       console.log(err);
@@ -114,9 +114,9 @@ export default function ImageStorage() {
     <>
       <div className="relative h-11/12 overflow-y-scroll rounded-3xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-5">
-          <Dialog>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger>
-              <div className={`border-2 border-lightbrown rounded-lg ${isVerticalSelected ? "h-80" : "h-44"} flex flex-column items-center content-center justify-center text-center`}
+              <div className={`border-2 border-lightbrown rounded-lg ${isVerticalSelected ? "h-80" : "h-44"} cursor-pointer flex flex-column items-center content-center justify-center text-center`}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onClick={handleOpen}
@@ -161,19 +161,11 @@ export default function ImageStorage() {
           </Dialog>
           {isVerticalSelected ? (
             verticalUrls.map((url, index) => (
-              <div key={index} className="border-2 border-brown rounded-lg h-80 flex flex-column overflow-hidden items-center content-center justify-center text-center">
-                <div className="h-full w-full flex felx-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
-                  <img className="min-h-full min-w-full -z-50" src={url}/>
-                </div>
-              </div>
+              <ImageFrame url={url} key={index}/>
             ))
           ) : (
             horizontalUrls.map((url, index) => (
-              <div key={index} className="border-2 border-brown rounded-lg h-44 flex flex-column overflow-hidden items-center content-center justify-center text-center">
-                <div className="h-full w-full flex felx-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
-                  <img className="min-h-full min-w-full -z-50" src={url}/>
-                </div>
-              </div>
+              <ImageFrame url={url} key={index}/>
             ))
           )}
         </div>
