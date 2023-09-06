@@ -8,7 +8,7 @@ import { FirebaseError } from "firebase/app";
 import Link from "next/link";
 
 import { PasswordFormData, ForgotPasswordSchema } from "../../models/ForgotPasswordSchema";
-import { useAuth } from "../../utils/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"

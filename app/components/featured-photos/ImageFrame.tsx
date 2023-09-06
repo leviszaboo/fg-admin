@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
-import selectImagesStore from "@/app/hooks/selectImages"
-import selectFeaturedStore from "@/app/hooks/selectFeatured"
+import useSelectImagesStore from "@/app/hooks/UseSelectImages"
 
 import { Checkbox } from "@/components/ui/checkbox"
 import { CheckedState } from "@radix-ui/react-checkbox";
@@ -11,8 +10,7 @@ interface ImageFrameProps {
 }
 
 export default function ImageFrame({ url }: ImageFrameProps) {
-	const { isVerticalSelected } = selectFeaturedStore();
-	const { isSelected, selectedForDeletion, addToSelected, removeFromSelected } = selectImagesStore();
+	const { isVerticalSelected, isSelected, selectedForDeletion, addToSelected, removeFromSelected } = useSelectImagesStore();
 	const [checked, setChecked] = useState<CheckedState>(false);
 
 	function handleClick() {

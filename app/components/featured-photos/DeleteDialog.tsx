@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { 
   deleteObject,
   ref
@@ -16,23 +16,37 @@ import {
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 
-import selectImagesStore from "@/app/hooks/selectImages";
-import { storage } from "@/app/firebase/firebase";
+import useSelectImagesStore from "@/app/hooks/UseSelectImages";
+import useImageUrlStore from "@/app/hooks/UseImageUrl";
+import { storage } from "@/app/firebase/config";
 
 export default function DeleteDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { selectedForDeletion, removeFromSelected} = selectImagesStore();
+  const { 
+    isVerticalSelected,
+    selectedForDeletion, 
+    removeFromSelected, 
+    setSelected
+  } = useSelectImagesStore();
+
+  const {
+    removeHorizontalUrl,
+    removeVerticalUrl
+  } = useImageUrlStore()
 
   async function handleDelete() {
     try {
       setLoading(true);
       selectedForDeletion.forEach((item) => {
         const desertRef = ref(storage, item);
+        console.log(item)
         deleteObject(desertRef);
         removeFromSelected(item);
+        isVerticalSelected ? removeVerticalUrl(item) : removeHorizontalUrl(item)
       })
+      setSelected(false)
       setDialogOpen(false);
     } catch(err) {
       console.log(err);

@@ -10,7 +10,7 @@ import {
   browserSessionPersistence
 } from "firebase/auth";
 
-import { auth } from "../firebase/firebase";
+import { auth } from "../firebase/config";
 
 interface AuthContextProps {
   currentUser: FirebaseUser | null,

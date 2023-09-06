@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PawPrint } from "lucide-react";
@@ -15,17 +16,28 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
-import { useAuth } from "../../utils/AuthContext";
-import useActiveLink from "@/app/hooks/activeLink";
-import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Header() {
   const [loading, setLoading] = useState<boolean>(false);
+  const [activeLink, setActiveLink] = useState(0);
 
   const auth = useAuth();
-  const { activeLink, setActiveLink } = useActiveLink();
 
   const router = useRouter();
+
+  useEffect(() => {
+    const currentPathname = window.location.pathname;
+
+    if (currentPathname === '/home') {
+      setActiveLink(0);
+    } else if (currentPathname === '/featured-photos') {
+      setActiveLink(1);
+    } else if (currentPathname === '/text-management') {
+      setActiveLink(2);
+    }
+  }, []);
+
 
   async function handleSignOut() {
     setLoading(true);

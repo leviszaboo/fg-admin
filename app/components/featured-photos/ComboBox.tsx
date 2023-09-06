@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
 
-import selectFeaturedStore from "@/app/hooks/selectFeatured"
+import useSelectImagesStore from "@/app/hooks/UseSelectImages"
  
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -34,7 +34,7 @@ const options = [
 export default function ComboBox() {
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState("vertical")
-  const { setIsVerticalSelected } = selectFeaturedStore()
+  const { setIsVerticalSelected } = useSelectImagesStore()
  
   return (
     <Popover open={open} onOpenChange={setOpen}>

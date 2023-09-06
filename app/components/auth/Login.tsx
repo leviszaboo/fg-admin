@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { setPersistence, browserSessionPersistence } from "firebase/auth";
 
 import { FormData, LoginSchema } from "../../models/LoginSchema";
-import { useAuth } from "../../utils/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"

@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "react-query";
 
-import { AuthProvider } from "./utils/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 
 import '@/app/globals.css'
 

@@ -1,4 +1,4 @@
-import selectImagesStore from "@/app/hooks/selectImages"
+import useSelectImagesStore from "@/app/hooks/UseSelectImages"
 
 import ComboBox from "./ComboBox"
 import { Button } from "@/components/ui/button"
@@ -11,7 +11,7 @@ export default function FeaturedGalleryHeader() {
     isSelected,  
     setSelected, 
     resetSelected 
-  } = selectImagesStore();
+  } = useSelectImagesStore();
 
   function handleCancel() {
     setSelected(!isSelected);
@@ -31,7 +31,7 @@ export default function FeaturedGalleryHeader() {
               </Button>
             </>
           )}
-            {isSelected && (
+          {isSelected && (
             <>
               <DeleteDialog />
               <Button variant={"outline"} size={"xs"} onClick={handleCancel}>
