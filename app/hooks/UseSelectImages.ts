@@ -3,7 +3,7 @@ import { create } from "zustand";
 interface SelectImagesProps {
   isVerticalSelected: boolean,
   isSelected: boolean,
-  selectedForDeletion: string[]
+  selectedImages: string[]
   setIsVerticalSelected(value: boolean): void
   setSelected(value: boolean): void,
   addToSelected(url: string): void,
@@ -14,16 +14,16 @@ interface SelectImagesProps {
 const useSelectImagesStore= create<SelectImagesProps>((set) => ({
   isVerticalSelected: true,
   isSelected: false,
-  selectedForDeletion: [],
+  selectedImages: [],
   setIsVerticalSelected: (value) => set({ isVerticalSelected: value }),
   setSelected: (value) => set({ isSelected: value }),
   addToSelected: (url) => set((state) => ({
-    selectedForDeletion: [...state.selectedForDeletion, url],
+    selectedImages: [url, ...state.selectedImages],
   })),
   removeFromSelected: (url) => set((state) => ({
-    selectedForDeletion: state.selectedForDeletion.filter((i) => i !== url)
+    selectedImages: state.selectedImages.filter((i) => i !== url)
   })),
-  resetSelected: () => set({ selectedForDeletion: [] }),
+  resetSelected: () => set({ selectedImages: [] }),
 }))
 
 export default useSelectImagesStore;

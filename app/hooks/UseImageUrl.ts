@@ -18,13 +18,13 @@ const useImageUrlStore = create<ImageUrlProps>((set) => ({
   setVerticalUrls: (urls) => set({ verticalUrls: urls }),
   setHorizontalUrls: (urls) => set({ horizontalUrls: urls }),
   addVerticalUrl: (url) => set((state) => ({ 
-    verticalUrls: [...state.verticalUrls, url] 
+    verticalUrls: [url, ...state.verticalUrls] 
   })),
   removeVerticalUrl: (url) => set((state) => ({ 
     verticalUrls: state.verticalUrls.filter((u) => u !== url) 
   })),
   addHorizontalUrl: (url) => set((state) => ({ 
-    horizontalUrls: [...state.horizontalUrls, url] 
+    horizontalUrls: [url, ...state.horizontalUrls] 
   })),
   removeHorizontalUrl: (url) => set((state) => ({ 
     horizontalUrls: state.horizontalUrls.filter((u) => u !== url) 

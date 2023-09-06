@@ -10,7 +10,7 @@ export default function FeaturedGalleryHeader() {
   const { 
     isSelected,  
     setSelected, 
-    resetSelected 
+    resetSelected
   } = useSelectImagesStore();
 
   function handleCancel() {

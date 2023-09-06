@@ -73,7 +73,7 @@ export default function ForgotPassword() {
             <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-            <div className="font-semibold text-red-500">{error}</div>
+              <div className="font-semibold text-red-500">{error}</div>
             </AlertDescription>
             </Alert>
           )}

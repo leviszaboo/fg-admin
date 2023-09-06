@@ -5,7 +5,9 @@ import {
   uploadBytes, 
   getDownloadURL,
 } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore"; 
 import { Plus, ImagePlus } from "lucide-react";
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   Dialog,
@@ -21,8 +23,9 @@ import { Input } from "@/components/ui/input";
 
 import useImageUrlStore from "@/app/hooks/UseImageUrl";
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
+import useFireStoreDocumentsStore from "@/app/hooks/UseFireStoreDocuments";
 import { useAuth } from "@/app/context/AuthContext";
-import { storage } from "@/app/firebase/config";
+import { storage, db } from "@/app/firebase/config";
 
 export default function UploadDialog() {
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -43,6 +46,10 @@ export default function UploadDialog() {
     addHorizontalUrl,
     addVerticalUrl
   } = useImageUrlStore()
+
+  const {
+    addDocument
+  } = useFireStoreDocumentsStore()
 
   function handleMouseEnter() {
     setIsHovered(true);
@@ -75,13 +82,27 @@ export default function UploadDialog() {
     try {
       for (let i = 0; i < imageUpload.length; i++) {
         const imageRef = ref(storage, `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${imageUpload[i].name}`);
-  
-        await uploadBytes(imageRef, imageUpload[i]).then((snapshot) => {
-          getDownloadURL(snapshot.ref).then((url) => {
-            isVerticalSelected ? addVerticalUrl(url) : addHorizontalUrl(url);
-          });
-        });
+
+        const snapshot = await uploadBytes(imageRef, imageUpload[i]);
+        const url = await getDownloadURL(snapshot.ref);
+    
+        if (isVerticalSelected) {
+          addVerticalUrl(url);
+        } else {
+          addHorizontalUrl(url);
+        }
+
+        const documentId = uuidv4();
+        const document = {
+          id: documentId,
+          name: `${imageUpload[i].name}`,
+          url: url,
+          createdAt: new Date()
+        }
+        await setDoc(doc(db, `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${documentId}`), document);
+        addDocument(document);
       }
+
       setDialogOpen(false);
     } catch(err) {
       setError("Something went wrong. Try again.")

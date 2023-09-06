@@ -1,16 +1,16 @@
 import { useEffect } from "react";
-import { 
-  ref, 
-  getDownloadURL,
-  listAll,
-  StorageReference,
-} from "firebase/storage";
 
-import ImageFrame from "./ImageFrame";
+import { 
+  getDocs,
+  collection,
+  orderBy,
+  query
+} from "firebase/firestore";
+
 import UploadDialog from "./UploadDialog";
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
 import useImageUrlStore from "@/app/hooks/UseImageUrl";
-import { storage } from "@/app/firebase/config";
+import { db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 import ImageFrameGroup from "./ImageFrameGroup";
 
@@ -18,36 +18,31 @@ export default function ImageStorage() {
   const {
     verticalUrls,
     horizontalUrls,
-    setVerticalUrls,
-    setHorizontalUrls
+    addHorizontalUrl,
+    addVerticalUrl
   } = useImageUrlStore()
 
   const { isVerticalSelected } = useSelectImagesStore();
 
   const auth = useAuth();
   const user = auth.currentUser
-  const verticalListRef = ref(storage, `${user?.email}/featured/vertical/`);
-  const horizontalListRef = ref(storage, `${user?.email}/featured/horizontal/`);
+  const verticalRef = `${user?.email}/featured/vertical`;
+  const horizontalRef = `${user?.email}/featured/horizontal`;
 
-  async function fetchImageUrls(listRef: StorageReference, setterFunction: (urls: string[]) => void) { 
+  async function fetchImageUrls(ref: string, destinationSetter: (url: string) => void) { 
     try {
-      const res = await listAll(listRef)
-      
-      const urlPromises = res.items.map(async (item) => {
-        const url = await getDownloadURL(item);
-        return url;
-      });
-
-      const imageUrls = await Promise.all(urlPromises);
-      setterFunction(imageUrls);
+      const querySnapshot = await getDocs(query(collection(db, ref), orderBy("createdAt", "desc")));
+      querySnapshot.forEach((doc) => {
+        destinationSetter(doc.data().url)
+      })
     } catch (error) {
       console.error("Error fetching image URLs:", error);
     }
   }
 
   useEffect(() => {
-    fetchImageUrls(verticalListRef, setVerticalUrls);
-    fetchImageUrls(horizontalListRef, setHorizontalUrls)
+    fetchImageUrls(verticalRef, addVerticalUrl);
+    fetchImageUrls(horizontalRef, addHorizontalUrl)
   }, [])
 
   return (

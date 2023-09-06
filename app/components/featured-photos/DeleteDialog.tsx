@@ -3,6 +3,10 @@ import {
   deleteObject,
   ref
   } from "firebase/storage";
+import { 
+  doc, 
+  deleteDoc 
+} from "firebase/firestore";
 
 import {
   Dialog,
@@ -18,15 +22,20 @@ import { Trash2 } from "lucide-react";
 
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
 import useImageUrlStore from "@/app/hooks/UseImageUrl";
-import { storage } from "@/app/firebase/config";
+import useFireStoreDocumentsStore from "@/app/hooks/UseFireStoreDocuments";
+import { storage, db } from "@/app/firebase/config";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function DeleteDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const auth = useAuth()
+  const user = auth.currentUser
+
   const { 
     isVerticalSelected,
-    selectedForDeletion, 
+    selectedImages, 
     removeFromSelected, 
     setSelected
   } = useSelectImagesStore();
@@ -36,30 +45,45 @@ export default function DeleteDialog() {
     removeVerticalUrl
   } = useImageUrlStore()
 
+  const {
+    documents,
+    removeDocument
+  } = useFireStoreDocumentsStore()
+
   async function handleDelete() {
     try {
       setLoading(true);
-      selectedForDeletion.forEach((item) => {
+      const deletePromises = selectedImages.map(async (item) => {
         const desertRef = ref(storage, item);
-        console.log(item)
-        deleteObject(desertRef);
+        await deleteObject(desertRef);
+  
+        const document = documents.find((doc) => doc.url === item);
+        if (document) {
+          await deleteDoc(doc(db, `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${document.id}`));
+          removeDocument(document);
+        }
+        
         removeFromSelected(item);
-        isVerticalSelected ? removeVerticalUrl(item) : removeHorizontalUrl(item)
-      })
-      setSelected(false)
+        isVerticalSelected ? removeVerticalUrl(item) : removeHorizontalUrl(item);
+      });
+  
+      await Promise.all(deletePromises);
+  
+      setSelected(false);
       setDialogOpen(false);
-    } catch(err) {
+    } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
+  
 
   return (
     <>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger>
-          <Button size={"sm"} variant={"destructive"} disabled={selectedForDeletion.length <= 0}>
+          <Button size={"sm"} variant={"destructive"} disabled={selectedImages.length <= 0}>
             Delete
           </Button>
         </DialogTrigger>

@@ -10,7 +10,14 @@ interface ImageFrameProps {
 }
 
 export default function ImageFrame({ url }: ImageFrameProps) {
-	const { isVerticalSelected, isSelected, selectedForDeletion, addToSelected, removeFromSelected } = useSelectImagesStore();
+	const { 
+    isVerticalSelected, 
+    isSelected, 
+    selectedImages, 
+    addToSelected, 
+    removeFromSelected 
+  } = useSelectImagesStore();
+
 	const [checked, setChecked] = useState<CheckedState>(false);
 
 	function handleClick() {
@@ -29,8 +36,8 @@ export default function ImageFrame({ url }: ImageFrameProps) {
 
   useEffect(() => {
     if (!isSelected) setChecked(false);
-    if (selectedForDeletion.length === 0) setChecked(false);
-  }, [isSelected, selectedForDeletion])
+    if (selectedImages.length === 0) setChecked(false);
+  }, [isSelected, selectedImages])
 
   return (
     <>
