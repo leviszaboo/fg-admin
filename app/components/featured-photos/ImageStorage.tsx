@@ -41,8 +41,12 @@ export default function ImageStorage() {
   }
 
   useEffect(() => {
-    fetchImageUrls(verticalRef, addVerticalUrl);
-    fetchImageUrls(horizontalRef, addHorizontalUrl)
+    if (verticalUrls.length === 0) {
+      fetchImageUrls(verticalRef, addVerticalUrl);
+    }
+    if (horizontalUrls.length === 0) {
+      fetchImageUrls(horizontalRef, addHorizontalUrl)
+    }
   }, [])
 
   return (
