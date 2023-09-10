@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { FirebaseError } from "firebase/app";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { setPersistence, browserSessionPersistence } from "firebase/auth";
 
 import { FormData, LoginSchema } from "../../models/LoginSchema";
 import { useAuth } from "../../context/AuthContext";
@@ -44,7 +43,6 @@ export default function Login() {
     try {
       await auth.browserSession();
       await auth.login(data.email, data.password);
-      router.push('/home');
     } catch (err) {
       if (
         err instanceof FirebaseError && 

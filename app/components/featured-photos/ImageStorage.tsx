@@ -31,7 +31,7 @@ export default function ImageStorage() {
 
   async function fetchImageUrls(ref: string, destinationSetter: (url: string) => void) { 
     try {
-      const querySnapshot = await getDocs(query(collection(db, ref), orderBy("createdAt", "desc")));
+      const querySnapshot = await getDocs(query(collection(db, ref), orderBy("createdAt", "asc")));
       querySnapshot.forEach((doc) => {
         destinationSetter(doc.data().url)
       })

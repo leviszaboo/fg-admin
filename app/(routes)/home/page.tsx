@@ -1,4 +1,3 @@
-
 import PrivateRoute from "../../utils/PrivateRoute"
 
 import Header from "../../components/home/Header"

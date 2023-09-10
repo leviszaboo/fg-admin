@@ -1,12 +1,12 @@
 import ForgotPassword from "../../components/auth/ForgotPassword"
-import AuthHeader from "../../components/auth/AuthHeader"
+import Header from "@/app/components/home/Header"
 import AnonymRoute from "../../utils/AnonymRoute"
 
 export default function ForgotPasswordPage() {
   return (
     <>
       <AnonymRoute>
-        <AuthHeader />
+        <Header />
         <ForgotPassword />
       </AnonymRoute>
     </>
