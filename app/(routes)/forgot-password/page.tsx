@@ -4,11 +4,9 @@ import AnonymRoute from "../../utils/AnonymRoute"
 
 export default function ForgotPasswordPage() {
   return (
-    <>
-      <AnonymRoute>
-        <Header />
-        <ForgotPassword />
-      </AnonymRoute>
-    </>
+    <AnonymRoute>
+      <Header />
+      <ForgotPassword />
+    </AnonymRoute>
   )
 }

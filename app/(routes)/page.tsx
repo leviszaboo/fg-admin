@@ -4,11 +4,9 @@ import AnonymRoute from "../utils/AnonymRoute.tsx"
 
 export default function Auth() {
   return (
-    <>
-      <AnonymRoute>
-        <Header />
-        <Login />
-      </AnonymRoute>
-    </>
+    <AnonymRoute>
+      <Header />
+      <Login />
+    </AnonymRoute>
   )
 }

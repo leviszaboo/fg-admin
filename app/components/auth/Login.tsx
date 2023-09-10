@@ -66,55 +66,55 @@ export default function Login() {
   return (
     <div className={cn("grid gap-6")}>
       <div className="absolute flex flex-col w-full max-w-sm top-2/4 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center">
-      <h1 className="text-xl font-bold">Log in to your account</h1>
-      <form  className="w-9/12" onSubmit={handleSubmit(submitData)}>
-        <div className="grid gap-4 p-6 w-full">
-          {error && (
-            <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-            <div className="font-semibold text-red-500">{error}</div>
-            </AlertDescription>
-            </Alert>
-          )}
-          <Label className="sr-only" htmlFor="email">
-            Email
-          </Label>
-          <Input
-            id="email"
-            placeholder="name@example.com"
-            type="email"
-            autoCapitalize="none"
-            autoComplete="email"
-            autoCorrect="off"
-            {...register("email")}
-            error={errors.email}
-            errorMessage={errors.email? errors.email.message : undefined}
-          />
-          <Label className="sr-only" htmlFor="email">
-            Password
-          </Label>
-          <Input
-            id="email"
-            placeholder="Password"
-            type="password"
-            autoCapitalize="none"
-            autoComplete="password"
-            autoCorrect="off"
-            {...register("password")}
-            error={errors.password}
-            errorMessage={errors.password? errors.password.message : undefined}
-          />
-          <Button className="p-4 bg-primary hover:bg-primary/90 hover:text-white" disabled={loading}>
-            Sign In with Email
-          </Button>
-          <Link className="text-center" href="/forgot-password">
-            <p className="text-sm text-slate-900 underline underline-offset-2">
-              Forgot password?
-            </p>
-          </Link>
-        </div>
-      </form>
+        <h1 className="text-xl font-bold">Log in to your account</h1>
+        <form  className="w-9/12" onSubmit={handleSubmit(submitData)}>
+          <div className="grid gap-4 p-6 w-full">
+            {error && (
+              <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+              <div className="font-semibold text-red-500">{error}</div>
+              </AlertDescription>
+              </Alert>
+            )}
+            <Label className="sr-only" htmlFor="email">
+              Email
+            </Label>
+            <Input
+              id="email"
+              placeholder="name@example.com"
+              type="email"
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect="off"
+              {...register("email")}
+              error={errors.email}
+              errorMessage={errors.email? errors.email.message : undefined}
+            />
+            <Label className="sr-only" htmlFor="email">
+              Password
+            </Label>
+            <Input
+              id="email"
+              placeholder="Password"
+              type="password"
+              autoCapitalize="none"
+              autoComplete="password"
+              autoCorrect="off"
+              {...register("password")}
+              error={errors.password}
+              errorMessage={errors.password? errors.password.message : undefined}
+            />
+            <Button className="p-4 bg-primary hover:bg-primary/90 hover:text-white" disabled={loading}>
+              {!loading ? "Sign In with Email" : "Signing you in..."}
+            </Button>
+            <Link className="text-center" href="/forgot-password">
+              <p className="text-sm text-slate-900 underline underline-offset-2">
+                Forgot password?
+              </p>
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   );

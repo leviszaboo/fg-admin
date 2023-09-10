@@ -66,52 +66,52 @@ export default function ForgotPassword() {
   return (
     <div className={cn("grid gap-6")}>
       <div className="absolute flex flex-col w-full max-w-sm top-2/4 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center">
-      <h1 className="text-xl font-bold">Reset your password</h1>
-      <form  className="w-9/12" onSubmit={handleSubmit(submitData)}>
-        <div className="grid gap-4 p-6 w-full">
-          {error && (
-            <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              <div className="font-semibold text-red-500">{error}</div>
-            </AlertDescription>
-            </Alert>
-          )}
-          {message && (
-            <Alert className="border-green-500">
-            <MailCheck className="h-4 w-4" color="#16a34a"/>
-            <AlertDescription>
-              <div className="font-semibold text-green-600">{message}</div>
-            </AlertDescription>
-            </Alert>
-          )}
-          <Label className="sr-only" htmlFor="email">
-            Email
-          </Label>
-          <Input
-            id="email"
-            placeholder="name@example.com"
-            type="email"
-            autoCapitalize="none"
-            autoComplete="email"
-            autoCorrect="off"
-            {...register("email")}
-            error={errors.email}
-            errorMessage={errors.email? errors.email.message : undefined}
-          />
-          <Label className="sr-only" htmlFor="email">
-            Password
-          </Label>
-          <Button className="p-4 bg-primary hover:bg-primary/90 hover:text-white" disabled={loading}>
-            Reset password
-          </Button>
-          <Link className="text-center" href={"/"}>
-            <p className="text-sm text-slate-900 underline underline-offset-2">
-              Back to login
-            </p>
-          </Link>
-        </div>
-      </form>
+        <h1 className="text-xl font-bold">Reset your password</h1>
+        <form  className="w-9/12" onSubmit={handleSubmit(submitData)}>
+          <div className="grid gap-4 p-6 w-full">
+            {error && (
+              <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                <div className="font-semibold text-red-500">{error}</div>
+              </AlertDescription>
+              </Alert>
+            )}
+            {message && (
+              <Alert className="border-green-500">
+              <MailCheck className="h-4 w-4" color="#16a34a"/>
+              <AlertDescription>
+                <div className="font-semibold text-green-600">{message}</div>
+              </AlertDescription>
+              </Alert>
+            )}
+            <Label className="sr-only" htmlFor="email">
+              Email
+            </Label>
+            <Input
+              id="email"
+              placeholder="name@example.com"
+              type="email"
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect="off"
+              {...register("email")}
+              error={errors.email}
+              errorMessage={errors.email? errors.email.message : undefined}
+            />
+            <Label className="sr-only" htmlFor="email">
+              Password
+            </Label>
+            <Button className="p-4 bg-primary hover:bg-primary/90 hover:text-white" disabled={loading}>
+              Reset password
+            </Button>
+            <Link className="text-center" href={"/"}>
+              <p className="text-sm text-slate-900 underline underline-offset-2">
+                Back to login
+              </p>
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   );

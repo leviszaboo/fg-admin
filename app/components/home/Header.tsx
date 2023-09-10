@@ -50,59 +50,57 @@ export default function Header() {
   }
 
   return (
-    <>
-      <div className="flex items-center p-4 mt-1">
-        <Logo />
-        {user && (
-          <>
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <Link href="/home" onClick={() => setActiveLink(0)}>
+    <div className="flex items-center p-4 mt-1">
+      <Logo />
+      {user && (
+        <>
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Link href="/home" onClick={() => setActiveLink(0)}>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <div className={`text-base ${activeLink === 0 ? "text-amber-900" : null}`}>Manage Gallery</div>
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/featured-photos" onClick={() => setActiveLink(1)}>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <div className={`text-base ${activeLink === 1 ? "text-amber-900" : null}`}>Featured Photos</div>
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/home" onClick={() => setActiveLink(2)}>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    <div className={`text-base ${activeLink === 2 ? "text-amber-900" : null}`}>Text Management</div>
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+          <NavigationMenu className="ml-auto">
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Profile Settings</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid gap-3 grid-rows-2 w-36">
                     <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      <div className={`text-base ${activeLink === 0 ? "text-amber-900" : null}`}>Manage Gallery</div>
+                      Update email
                     </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link href="/featured-photos" onClick={() => setActiveLink(1)}>
                     <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      <div className={`text-base ${activeLink === 1 ? "text-amber-900" : null}`}>Featured Photos</div>
+                      Reset password
                     </NavigationMenuLink>
-                  </Link>
+                  </ul>
+                  </NavigationMenuContent>
                 </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link href="/home" onClick={() => setActiveLink(2)}>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      <div className={`text-base ${activeLink === 2 ? "text-amber-900" : null}`}>Text Management</div>
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-            <NavigationMenu className="ml-auto">
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger>Profile Settings</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid gap-3 grid-rows-2 w-36">
-                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                        Update email
-                      </NavigationMenuLink>
-                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                        Reset password
-                      </NavigationMenuLink>
-                    </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-          <Button onClick={handleSignOut} className="ml-2 bg-amber-900" disabled={loading}>
-            Sign Out
-          </Button>
-        </>
-        )}
-      </div>
-    </>
+            </NavigationMenuList>
+          </NavigationMenu>
+        <Button onClick={handleSignOut} className="ml-2 bg-amber-900" disabled={loading}>
+          Sign Out
+        </Button>
+      </>
+      )}
+    </div>
   )
 }

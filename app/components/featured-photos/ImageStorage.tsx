@@ -50,14 +50,12 @@ export default function ImageStorage() {
   }, [])
 
   return (
-    <>
-      <div className="relative h-11/12 overflow-y-scroll rounded-3xl">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-5">
-          <UploadDialog />
-          {isVerticalSelected && <ImageFrameGroup urls={verticalUrls} />}
-          {!isVerticalSelected && <ImageFrameGroup urls={horizontalUrls} />}
-        </div>
+    <div className="h-11/12 overflow-y-scroll rounded-3xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-5">
+        <UploadDialog />
+        {isVerticalSelected && <ImageFrameGroup urls={verticalUrls} />}
+        {!isVerticalSelected && <ImageFrameGroup urls={horizontalUrls} />}
       </div>
-    </>
+    </div>
   )
 }

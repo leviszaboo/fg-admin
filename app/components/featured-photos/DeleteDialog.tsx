@@ -80,35 +80,33 @@ export default function DeleteDialog() {
   
 
   return (
-    <>
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogTrigger>
-          <Button size={"sm"} variant={"destructive"} disabled={selectedImages.length <= 0}>
-            Delete
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="w-96">
-          <DialogHeader>
-            <DialogTitle>
-              <div className="flex h-6 pb-1 items-end">
-                <div>
-                  <Trash2 className="h-5 w-5 mr-2" />
-                </div>
-                <div className="">
-                  Are you sure you want to delete?
-                </div>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <DialogTrigger>
+        <Button size={"sm"} variant={"destructive"} disabled={selectedImages.length <= 0}>
+          Delete
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="w-96">
+        <DialogHeader>
+          <DialogTitle>
+            <div className="flex h-6 pb-1 items-end">
+              <div>
+                <Trash2 className="h-5 w-5 mr-2" />
               </div>
-            </DialogTitle>
-            <DialogDescription>
-              This action will permanently delete all selected images from your gallery.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant={"destructive"} onClick={handleDelete} disabled={loading}>Delete</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
+              <div className="">
+                Are you sure you want to delete?
+              </div>
+            </div>
+          </DialogTitle>
+          <DialogDescription>
+            This action will permanently delete all selected images from your gallery.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant={"destructive"} onClick={handleDelete} disabled={loading}>Delete</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 

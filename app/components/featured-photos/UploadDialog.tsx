@@ -113,51 +113,49 @@ export default function UploadDialog() {
   }
 
   return (
-    <>
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogTrigger>
-          <div className={`border-2 border-lightbrown rounded-lg ${isVerticalSelected ? "h-80" : "h-44"} cursor-pointer flex flex-column items-center content-center justify-center text-center`}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onClick={handleOpen}
-          >
-            <Plus className="w-6 h-6 svg-transition" color={isHovered ? 'grey' : '#a8a29e'}/>
-          </div>
-        </DialogTrigger>
-        <DialogContent className="w-96">
-          <DialogHeader>
-            <DialogTitle>
-              <div className="flex h-6 pb-1 items-end">
-                <div>
-                  <ImagePlus className="h-5 w-5 mr-2" />
-                </div>
-                <div className="">
-                  Select photos to upload
-                </div>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <DialogTrigger>
+        <div className={`border-2 border-lightbrown rounded-lg ${isVerticalSelected ? "h-80" : "h-44"} cursor-pointer flex flex-column items-center content-center justify-center text-center`}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleOpen}
+        >
+          <Plus className="w-6 h-6 svg-transition" color={isHovered ? 'grey' : '#a8a29e'}/>
+        </div>
+      </DialogTrigger>
+      <DialogContent className="w-96">
+        <DialogHeader>
+          <DialogTitle>
+            <div className="flex h-6 pb-1 items-end">
+              <div>
+                <ImagePlus className="h-5 w-5 mr-2" />
               </div>
-            </DialogTitle>
-            <DialogDescription>
-              {`Select the photos to be featured on the homepage of your website on ${isVerticalSelected ? "small-screen" : "large-screen"} devices.`}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col pt-2 pb-2">
-            {error && <div className="text-sm text-red-500 p-1">{error}</div>}
-            <div className="grid w-full items-center gap-1.5">
-              <Input 
-                className="hover:cursor-pointer" 
-                id="picture" 
-                type="file" 
-                accept="image/*" 
-                multiple
-                onChange={handleFileChange}
-              />
+              <div className="">
+                Select photos to upload
+              </div>
             </div>
+          </DialogTitle>
+          <DialogDescription>
+            {`Select the photos to be featured on the homepage of your website on ${isVerticalSelected ? "small-screen" : "large-screen"} devices.`}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col pt-2 pb-2">
+          {error && <div className="text-sm text-red-500 p-1">{error}</div>}
+          <div className="grid w-full items-center gap-1.5">
+            <Input 
+              className="hover:cursor-pointer" 
+              id="picture" 
+              type="file" 
+              accept="image/*" 
+              multiple
+              onChange={handleFileChange}
+            />
           </div>
-          <DialogFooter>
-            <Button variant={"black"} onClick={uploadImage} disabled={loading}>Upload</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
+        </div>
+        <DialogFooter>
+          <Button variant={"black"} onClick={uploadImage} disabled={loading}>Upload</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
