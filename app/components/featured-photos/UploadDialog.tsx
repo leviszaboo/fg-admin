@@ -153,7 +153,7 @@ export default function UploadDialog() {
           </div>
         </div>
         <DialogFooter>
-          <Button variant={"black"} onClick={uploadImage} disabled={loading}>Upload</Button>
+          <Button variant={"black"} onClick={uploadImage} disabled={loading}>{!loading ? "Upload" : "Uploading..."}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

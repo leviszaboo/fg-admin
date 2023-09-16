@@ -11,7 +11,6 @@ interface ImageUrlProps {
   removeHorizontalUrl(url: string): void; 
 }
 
-
 const useImageUrlStore = create<ImageUrlProps>((set) => ({
   verticalUrls: [],
   horizontalUrls: [],

@@ -55,9 +55,11 @@ export default function DeleteDialog() {
       setLoading(true);
       const deletePromises = selectedImages.map(async (item) => {
         const desertRef = ref(storage, item);
+        const splitPath = desertRef.fullPath.split('/')
+        const name = splitPath[splitPath.length - 1]
         await deleteObject(desertRef);
   
-        const document = documents.find((doc) => doc.url === item);
+        const document = documents.find((doc) => doc.name === name);
         if (document) {
           await deleteDoc(doc(db, `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${document.id}`));
           removeDocument(document);
@@ -103,7 +105,7 @@ export default function DeleteDialog() {
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant={"destructive"} onClick={handleDelete} disabled={loading}>Delete</Button>
+          <Button variant={"destructive"} onClick={handleDelete} disabled={loading}>{!loading ? "Delete" : "Deleting..."}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -1,21 +1,37 @@
 import useSelectImagesStore from "@/app/hooks/UseSelectImages"
 
-import ComboBox from "./ComboBox"
+import ComboBox from "../ComboBox"
 import { Button } from "@/components/ui/button"
 
 import DeleteDialog from "./DeleteDialog";
 
 
 export default function FeaturedGalleryHeader() {
+  const comboBoxOptions = [
+    {
+      value: "vertical",
+      label: "Vertical",
+    },
+    {
+      value: "horizontal",
+      label: "Horizontal",
+    },
+  ]
+
   const { 
     isSelected,  
     setSelected, 
-    resetSelected
+    resetSelected,
+    setIsVerticalSelected 
   } = useSelectImagesStore();
 
   function handleCancel() {
     setSelected(!isSelected);
     resetSelected();
+  }
+
+  function onSelect(currentValue: string) {
+    setIsVerticalSelected(currentValue === "vertical" ? true : false)
   }
 
   return (
@@ -25,7 +41,7 @@ export default function FeaturedGalleryHeader() {
         <div className="self-end grid grid-flow-col gap-4 items-center pr-4 h-full">
           {!isSelected && (
             <>
-              <ComboBox />
+              <ComboBox optionsList={comboBoxOptions} onSelect={onSelect}/>
               <Button size={"xs"} onClick={() => setSelected(!isSelected)}>
                 Select
               </Button>
