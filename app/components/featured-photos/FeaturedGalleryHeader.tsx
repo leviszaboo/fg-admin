@@ -5,19 +5,19 @@ import { Button } from "@/components/ui/button"
 
 import DeleteDialog from "./DeleteDialog";
 
+const comboBoxOptions = [
+  {
+    value: "vertical",
+    label: "Vertical",
+  },
+  {
+    value: "horizontal",
+    label: "Horizontal",
+  },
+]
+
 
 export default function FeaturedGalleryHeader() {
-  const comboBoxOptions = [
-    {
-      value: "vertical",
-      label: "Vertical",
-    },
-    {
-      value: "horizontal",
-      label: "Horizontal",
-    },
-  ]
-
   const { 
     isSelected,  
     setSelected, 

@@ -12,7 +12,7 @@ interface AnonymRouteProps {
 export default function AnonymRoute({ children }: AnonymRouteProps) {
   const auth = useAuth()
   const user = auth.currentUser;
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (user) {

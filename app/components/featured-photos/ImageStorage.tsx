@@ -4,12 +4,13 @@ import {
   getDocs,
   collection,
   orderBy,
-  query
+  query,
 } from "firebase/firestore";
 
 import UploadDialog from "./UploadDialog";
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
 import useImageUrlStore from "@/app/hooks/UseImageUrl";
+import useFireStoreDocumentsStore from "@/app/hooks/UseFireStoreDocuments";
 import { db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 import ImageFrameGroup from "./ImageFrameGroup";
@@ -23,6 +24,7 @@ export default function ImageStorage() {
   } = useImageUrlStore()
 
   const { isVerticalSelected } = useSelectImagesStore();
+  const { addDocument } = useFireStoreDocumentsStore()
 
   const auth = useAuth();
   const user = auth.currentUser
@@ -34,7 +36,14 @@ export default function ImageStorage() {
       const querySnapshot = await getDocs(query(collection(db, ref), orderBy("createdAt", "asc")));
       querySnapshot.forEach((doc) => {
         destinationSetter(doc.data().url)
-      })
+        const document = {
+          id: doc.data().id,
+          name: doc.data().name,
+          url: doc.data().url,
+          createdAt: doc.data().createdAt
+        }
+        addDocument(document)
+      })      
     } catch (error) {
       console.error("Error fetching image URLs:", error);
     }

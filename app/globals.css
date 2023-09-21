@@ -118,5 +118,6 @@ body,
 
 .transparent:hover {
   color: rgba(225, 223, 223, 0.813);
+  fill: rgba(225, 223, 223, 0.813);
   cursor: pointer;
 }

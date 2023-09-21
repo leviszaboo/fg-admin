@@ -13,22 +13,21 @@ export default function Post({ urls }: PostProps) {
     <>
 		  <div className={`border-2 border-brown rounded-lg h-80 flex flex-column overflow-hidden items-center content-center justify-center text-center`}>
 				<div className="h-full w-full flex flex-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
-					<div className="relative h-full w-full">
+					<div className="relative h-full w-full bg-black">
               <div className="absolute bottom-0 left-0 pb-3 pl-4 z-50 text-left">
 								<h3 className="text-shadow text-white text-md font-medium pb-0">The New Originals, Amsterdam</h3>
                 <h3 className="text-shadow text-white text-md font-medium">2023</h3>
 							</div>
               <div className="transparent flex flex-column items-center absolute bottom-0 right-0 pr-3 pb-3 z-50 text-left">
-                {urls.map((_, index) => (
-                  <div className="p-1">
-                    <Circle size={8} fill="white" onClick={() => {
-                      setUrl(urls[index])
-                    }
-                  } className="text-white"/>
+                {urls.map((url) => (
+                  <div className="p-1" key={url} onClick={() => {
+                    setUrl(url)
+                  }}>
+                    <Circle size={8} fill="white" className={`${urls.length > 1 ? "transparent" : null} text-white`}/>
                   </div>
                 ))}
               </div>
-              <div className="absolute top-0 right-0 pt-3 pr-2 z-50">
+              <div className="absolute top-0 right-0 pt-2 pr-2 z-50">
 								<Button variant={"ghost"} size={"xs"}>
                   <MoreHorizontal size={28} className="transparent text-white"/>
                 </Button>

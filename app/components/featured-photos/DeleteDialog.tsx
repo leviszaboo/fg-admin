@@ -58,8 +58,10 @@ export default function DeleteDialog() {
         const splitPath = desertRef.fullPath.split('/')
         const name = splitPath[splitPath.length - 1]
         await deleteObject(desertRef);
+        console.log(name)
   
         const document = documents.find((doc) => doc.name === name);
+        console.log(documents, document)
         if (document) {
           await deleteDoc(doc(db, `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${document.id}`));
           removeDocument(document);

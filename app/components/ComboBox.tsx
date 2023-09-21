@@ -25,7 +25,7 @@ interface ComboBoxOptions {
 
 interface ComboBoxProps {
   optionsList: ComboBoxOptions[],
-  onSelect(value: string): void
+  onSelect?(value: string): void
 }
  
 export default function ComboBox({ optionsList, onSelect }: ComboBoxProps) {
@@ -55,7 +55,7 @@ export default function ComboBox({ optionsList, onSelect }: ComboBoxProps) {
                 key={option.value}
                 onSelect={(currentValue) => {
                   setValue(currentValue === value ? "" : currentValue);
-                  onSelect(currentValue);
+                  if (onSelect) onSelect(currentValue);
                   setOpen(false)
                 }}
               >
