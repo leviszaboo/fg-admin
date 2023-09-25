@@ -43,8 +43,8 @@ const descriptionOptions = [
     label: "Left",
   },
   {
-    value: "left",
-    label: "Left",
+    value: "right",
+    label: "Right",
   },
 ]
 
@@ -52,16 +52,56 @@ export default function AddPostDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [imageUpload, setImageUpload] = useState<FileList | null>(null)
+  const [imageUpload, setImageUpload] = useState<FileList | null>(null);
+  const [descriptionValue, setDescriptionValue] = useState<string>("");
+  const [imageCount, setImageCount] = useState<number>(0);
+
+  function handleOpen() {
+    setError("");
+    setImageUpload(null);
+    setDescriptionValue("");
+    setImageCount(0);
+  }
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     setImageUpload(event.target.files);
   }
 
+  function onSelectDescription(value: string) {
+    setDescriptionValue(value)
+  }
+
+  function onSelectImageCount(value: string) {
+    setImageCount(parseInt(value))
+  }
+
+  async function handleSubmit() {
+    setError("");
+    setLoading(true);
+    try {
+      if (
+        !imageUpload
+        || imageUpload.length === 0 
+        || descriptionValue !== "left" && descriptionValue !== "right"
+        || imageCount !== 1 && imageCount !==2
+        || imageCount !== imageUpload.length
+      ) {
+        setError("Some required elements are missing. Check if you uploaded the correct number of images.")
+        setLoading(false)
+        return
+      }
+      setDialogOpen(false)
+    } catch(err) {
+      console.log(err)
+      setError("Something went wrong. Try again.");
+    }
+    setLoading(false);
+  }
+
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger>
-          <Button size={"sm"}>
+          <Button size={"sm"} onClick={handleOpen}>
             <Plus className="w-5 h-5"/>
             <div className="pl-1">Add Post</div>
           </Button>
@@ -82,16 +122,20 @@ export default function AddPostDialog() {
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col pt-2 pb-2">
-          {error && <div className="text-sm text-red-500 p-1">{error}</div>}
-          <div className="grid grid-cols-2 w-full items-center gap-2">
+          {error && <div className="text-sm text-red-500 pb-3 font-semibold">{error}</div>}
+          <div className="grid grid-cols-2 w-full items-center gap-4">
             <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
               How many pictures to display?
             </Label>
-            <ComboBox optionsList={comboBoxOptions}/>
+            <div className="ml-auto mr-auto">
+              <ComboBox optionsList={comboBoxOptions} onSelect={onSelectImageCount}/>
+            </div>
             <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
               Description on which side?
             </Label>
-            <ComboBox optionsList={descriptionOptions} />
+            <div className="ml-auto mr-auto">
+              <ComboBox optionsList={descriptionOptions} onSelect={onSelectDescription}/>
+            </div>
             <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
               Upload Image(s)
             </Label>
@@ -103,28 +147,27 @@ export default function AddPostDialog() {
               multiple
               onChange={handleFileChange}
             />
-        
           </div>
-          <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null} py-4`}>
+          <Label htmlFor="pictures" className={`text-left py-4`}>
             Add Title
           </Label>
           <Input 
             type="text" 
           />
-          <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null} py-4`}>
+          <Label htmlFor="pictures" className={`text-left py-4`}>
             Add Subtitle
           </Label>
           <Input 
             type="text" 
           />
-          <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null} py-4`}>
+          <Label htmlFor="pictures" className={`text-left py-4`}>
             Add Description
           </Label>
           <Textarea
           />
         </div>
         <DialogFooter>
-          <Button variant={"black"} disabled={loading}>{!loading ? "Upload" : "Uploading..."}</Button>
+          <Button variant={"black"} disabled={loading} onClick={handleSubmit}>{!loading ? "Upload" : "Uploading..."}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

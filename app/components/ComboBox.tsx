@@ -30,7 +30,7 @@ interface ComboBoxProps {
  
 export default function ComboBox({ optionsList, onSelect }: ComboBoxProps) {
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState(optionsList[0].value)
+  const [value, setValue] = useState("")
  
   return (
     <Popover open={open} onOpenChange={setOpen}>
