@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import { 
   ref, 
   uploadBytes, 
@@ -8,6 +7,10 @@ import {
 import { doc, setDoc } from "firebase/firestore"; 
 import { Plus, ImagePlus, GalleryHorizontalEnd } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
+
+import { db, storage } from "@/app/firebase/config";
+import { useAuth } from "@/app/context/AuthContext";
+import useGalleryStore from "@/app/hooks/UseGallery";
 
 import {
   Dialog,
@@ -21,9 +24,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 import ComboBox from "../ComboBox";
-import { Textarea } from "@/components/ui/textarea";
+
 
 const comboBoxOptions = [
   {
@@ -36,7 +40,6 @@ const comboBoxOptions = [
   },
 ]
 
-
 const descriptionOptions = [
   {
     value: "left",
@@ -48,19 +51,48 @@ const descriptionOptions = [
   },
 ]
 
+interface PostDescription {
+  title: string,
+  subTitle: string,
+  description: string
+}
+
 export default function AddPostDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [imageUpload, setImageUpload] = useState<FileList | null>(null);
-  const [descriptionValue, setDescriptionValue] = useState<string>("");
+  const [descriptionLayoutValue, setdescriptionLayoutValue] = useState<string>("");
   const [imageCount, setImageCount] = useState<number>(0);
+  const [urls, setUrls] = useState<string[]>([]);
+  const [postDescription, setPostDescription] = useState<PostDescription>({
+    title: '',
+    subTitle: '',
+    description: '',
+  });
+
+  const { isAnalogSelected } = useGalleryStore()
+
+  const auth = useAuth();
+  const user = auth.currentUser
 
   function handleOpen() {
     setError("");
     setImageUpload(null);
-    setDescriptionValue("");
+    setdescriptionLayoutValue("");
     setImageCount(0);
+    setPostDescription({
+      title: '',
+      subTitle: '',
+      description: '',
+    })
+  }
+
+  function onChange(fieldName: keyof PostDescription, value: string) {
+    setPostDescription((prevState) => ({
+      ...prevState,
+      [fieldName]: value
+    }))
   }
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -68,7 +100,7 @@ export default function AddPostDialog() {
   }
 
   function onSelectDescription(value: string) {
-    setDescriptionValue(value)
+    setdescriptionLayoutValue(value)
   }
 
   function onSelectImageCount(value: string) {
@@ -82,14 +114,47 @@ export default function AddPostDialog() {
       if (
         !imageUpload
         || imageUpload.length === 0 
-        || descriptionValue !== "left" && descriptionValue !== "right"
+        || descriptionLayoutValue !== "left" && descriptionLayoutValue !== "right"
         || imageCount !== 1 && imageCount !==2
         || imageCount !== imageUpload.length
       ) {
         setError("Some required elements are missing. Check if you uploaded the correct number of images.")
         setLoading(false)
+
         return
       }
+
+      const { 
+        title,
+        subTitle,
+        description
+      } = postDescription
+
+      const postId = uuidv4();
+
+      for (let i = 0; i < imageUpload.length; i++) {
+        const imageRef = ref(storage, `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}/${imageUpload[i].name}`);
+        const snapshot = await uploadBytes(imageRef, imageUpload[i]);
+        const url = await getDownloadURL(snapshot.ref);
+        console.log(url)
+        setUrls((prevState) => (
+          [url, ...prevState]
+        ))
+      }
+
+      console.log(urls)
+
+      const document = {
+        id: postId,
+        imageUrls: urls,
+        descriptionLayout: descriptionLayoutValue,
+        title,
+        subTitle,
+        description
+      }
+
+      await setDoc(doc(db, `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}`), document);
+
       setDialogOpen(false)
     } catch(err) {
       console.log(err)
@@ -153,17 +218,23 @@ export default function AddPostDialog() {
           </Label>
           <Input 
             type="text" 
+            value={postDescription.title}
+            onChange={(e) => onChange('title', e.target.value)}
           />
           <Label htmlFor="pictures" className={`text-left py-4`}>
             Add Subtitle
           </Label>
           <Input 
             type="text" 
+            value={postDescription.subTitle}
+            onChange={(e) => onChange('subTitle', e.target.value)}
           />
           <Label htmlFor="pictures" className={`text-left py-4`}>
             Add Description
           </Label>
           <Textarea
+            value={postDescription.description}
+            onChange={(e) => onChange('description', e.target.value)}
           />
         </div>
         <DialogFooter>
