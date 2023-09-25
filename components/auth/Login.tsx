@@ -6,56 +6,56 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FirebaseError } from "firebase/app";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import { PasswordFormData, ForgotPasswordSchema } from "../../models/ForgotPasswordSchema";
-import { useAuth } from "../../context/AuthContext";
+import { FormData, LoginSchema } from "../../app/models/LoginSchema";
+import { useAuth } from "../../app/context/AuthContext";
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { AlertCircle, MailCheck} from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { 
   Alert, 
   AlertDescription
 } from "@/components/ui/alert";
 
 
-export default function ForgotPassword() {
+export default function Login() {
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false); 
 
   const auth = useAuth();
-  
-  const schema = ForgotPasswordSchema();
+  const schema = LoginSchema();
+  const router = useRouter();
 
   const {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm<PasswordFormData>({ resolver: zodResolver(schema) })
+  } = useForm<FormData>({ resolver: zodResolver(schema) })
 
-  async function submitData(data: PasswordFormData) {
+  async function submitData(data: FormData) {
     setError("");
-    setMessage("");
     setLoading(true);
     
     try {
-      await auth.resetPassword(data.email);
-      setMessage("Check your inbox for further instructions");
+      await auth.browserSession();
+      await auth.login(data.email, data.password);
     } catch (err) {
       if (
         err instanceof FirebaseError && 
         (
+          err.code === AuthErrorCodes.INVALID_PASSWORD ||
           err.code === AuthErrorCodes.USER_DELETED ||
           err.code === AuthErrorCodes.INVALID_EMAIL
         )
       ) {
-        setError("The email address is incorrect or is not registered.");
+        setError("The email address or password is incorrect");
         console.log(err)
       } else {
-        setError("Something went wrong. Try Again.");
+        setError("Failed to log in. Try Again.");
         console.log(err)
       }
     }
@@ -66,22 +66,14 @@ export default function ForgotPassword() {
   return (
     <div className={cn("grid gap-6")}>
       <div className="absolute flex flex-col w-full max-w-sm top-2/4 left-1/2 -translate-x-1/2 -translate-y-1/2 items-center">
-        <h1 className="text-xl font-bold">Reset your password</h1>
+        <h1 className="text-xl font-bold">Log in to your account</h1>
         <form  className="w-9/12" onSubmit={handleSubmit(submitData)}>
           <div className="grid gap-4 p-6 w-full">
             {error && (
               <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                <div className="font-semibold text-red-500">{error}</div>
-              </AlertDescription>
-              </Alert>
-            )}
-            {message && (
-              <Alert className="border-green-500">
-              <MailCheck className="h-4 w-4" color="#16a34a"/>
-              <AlertDescription>
-                <div className="font-semibold text-green-600">{message}</div>
+              <div className="font-semibold text-red-500">{error}</div>
               </AlertDescription>
               </Alert>
             )}
@@ -102,12 +94,23 @@ export default function ForgotPassword() {
             <Label className="sr-only" htmlFor="email">
               Password
             </Label>
+            <Input
+              id="email"
+              placeholder="Password"
+              type="password"
+              autoCapitalize="none"
+              autoComplete="password"
+              autoCorrect="off"
+              {...register("password")}
+              error={errors.password}
+              errorMessage={errors.password? errors.password.message : undefined}
+            />
             <Button className="p-4 bg-primary hover:bg-primary/90 hover:text-white" disabled={loading}>
-              Reset password
+              {!loading ? "Sign In with Email" : "Signing you in..."}
             </Button>
-            <Link className="text-center" href={"/"}>
+            <Link className="text-center" href="/forgot-password">
               <p className="text-sm text-slate-900 underline underline-offset-2">
-                Back to login
+                Forgot password?
               </p>
             </Link>
           </div>

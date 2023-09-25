@@ -1,7 +1,7 @@
 import PrivateRoute from "../../utils/PrivateRoute"
 
-import Header from "../../components/Header"
-import Gallery from "../../components/gallery/Gallery"
+import Header from "@/components/Header"
+import Gallery from "@/components/gallery/Gallery"
 
 export default function HomePage() {
   return (

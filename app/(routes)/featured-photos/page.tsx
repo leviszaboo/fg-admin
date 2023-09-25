@@ -1,7 +1,6 @@
 import PrivateRoute from "../../utils/PrivateRoute"
-
-import Header from "../../components/Header"
-import FeaturedGallery from "@/app/components/featured-photos/FeaturedGallery"
+import FeaturedGallery from "@/components/featured-photos/FeaturedGallery"
+import Header from "@/components/Header"
 
 export default function FeaturedPage() {
   return (

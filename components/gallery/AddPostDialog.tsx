@@ -193,13 +193,13 @@ export default function AddPostDialog() {
               How many pictures to display?
             </Label>
             <div className="ml-auto mr-auto">
-              <ComboBox optionsList={comboBoxOptions} onSelect={onSelectImageCount}/>
+              <ComboBox optionsList={comboBoxOptions} onSelect={onSelectImageCount} autoSelect={false}/>
             </div>
             <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
               Description on which side?
             </Label>
             <div className="ml-auto mr-auto">
-              <ComboBox optionsList={descriptionOptions} onSelect={onSelectDescription}/>
+              <ComboBox optionsList={descriptionOptions} onSelect={onSelectDescription} autoSelect={false}/>
             </div>
             <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
               Upload Image(s)

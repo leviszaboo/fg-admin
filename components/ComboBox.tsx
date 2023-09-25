@@ -25,12 +25,13 @@ interface ComboBoxOptions {
 
 interface ComboBoxProps {
   optionsList: ComboBoxOptions[],
-  onSelect?(value: string): void
+  onSelect?(value: string): void,
+  autoSelect: boolean
 }
  
-export default function ComboBox({ optionsList, onSelect }: ComboBoxProps) {
+export default function ComboBox({ optionsList, onSelect, autoSelect = true}: ComboBoxProps) {
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState("")
+  const [value, setValue] = useState(!autoSelect ? "" : optionsList[0].value)
  
   return (
     <Popover open={open} onOpenChange={setOpen}>
