@@ -41,7 +41,7 @@ export default function ImageFrame({ url }: ImageFrameProps) {
 
   return (
     <>
-		  <div onClick={handleClick} className={`border-2 border-brown rounded-lg ${isVerticalSelected ? "h-80" : "h-44"} ${isSelected ? "cursor-pointer" : null} flex flex-column overflow-hidden items-center content-center justify-center text-center`}>
+		  <div onClick={handleClick} className={` flex flex-column border-2 border-brown rounded-lg ${isVerticalSelected ? "h-80" : "h-44"} ${isSelected ? "cursor-pointer" : null} overflow-hidden items-center content-center justify-center text-center`}>
 				<div className="h-full w-full flex flex-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
 					<div className="relative h-full w-full">
 						{isSelected && (

@@ -22,7 +22,7 @@ import { Trash2 } from "lucide-react";
 
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
 import useImageUrlStore from "@/app/hooks/UseImageUrl";
-import useFireStoreDocumentsStore from "@/app/hooks/UseFireStoreDocuments";
+import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
 import { storage, db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 
@@ -46,8 +46,8 @@ export default function DeleteDialog() {
   } = useImageUrlStore()
 
   const {
-    documents,
-    removeDocument
+    featuredDocuments,
+    removeFeaturedDocument
   } = useFireStoreDocumentsStore()
 
   async function handleDelete() {
@@ -60,11 +60,11 @@ export default function DeleteDialog() {
         await deleteObject(desertRef);
         console.log(name)
   
-        const document = documents.find((doc) => doc.name === name);
-        console.log(documents, document)
+        const document = featuredDocuments.find((doc) => doc.name === name);
+
         if (document) {
           await deleteDoc(doc(db, `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${document.id}`));
-          removeDocument(document);
+          removeFeaturedDocument(document);
         }
         
         removeFromSelected(item);

@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { db, storage } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 import useGalleryStore from "@/app/hooks/UseGallery";
+import { useFireStoreDocumentsStore, PostDocument } from "@/app/hooks/UseFireStoreDocuments";
 
 import {
   Dialog,
@@ -64,14 +65,15 @@ export default function AddPostDialog() {
   const [imageUpload, setImageUpload] = useState<FileList | null>(null);
   const [descriptionLayoutValue, setdescriptionLayoutValue] = useState<string>("");
   const [imageCount, setImageCount] = useState<number>(0);
-  const [urls, setUrls] = useState<string[]>([]);
+  //const [urls, setUrls] = useState<string[]>([]);
   const [postDescription, setPostDescription] = useState<PostDescription>({
     title: '',
     subTitle: '',
     description: '',
   });
 
-  const { isAnalogSelected } = useGalleryStore()
+  const { isAnalogSelected } = useGalleryStore();
+  const { addPostDocument } = useFireStoreDocumentsStore();
 
   const auth = useAuth();
   const user = auth.currentUser
@@ -100,11 +102,11 @@ export default function AddPostDialog() {
   }
 
   function onSelectDescription(value: string) {
-    setdescriptionLayoutValue(value)
+    setdescriptionLayoutValue(value);
   }
 
   function onSelectImageCount(value: string) {
-    setImageCount(parseInt(value))
+    setImageCount(parseInt(value));
   }
 
   async function handleSubmit() {
@@ -132,29 +134,29 @@ export default function AddPostDialog() {
 
       const postId = uuidv4();
 
+      const urls = []
+
       for (let i = 0; i < imageUpload.length; i++) {
         const imageRef = ref(storage, `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}/${imageUpload[i].name}`);
         const snapshot = await uploadBytes(imageRef, imageUpload[i]);
         const url = await getDownloadURL(snapshot.ref);
-        console.log(url)
-        setUrls((prevState) => (
-          [url, ...prevState]
-        ))
+        urls.push(url)
       }
 
       console.log(urls)
 
-      const document = {
+      const document: PostDocument = {
         id: postId,
         imageUrls: urls,
         descriptionLayout: descriptionLayoutValue,
         title,
         subTitle,
-        description
+        description,
+        createdAt: new Date()
       }
 
       await setDoc(doc(db, `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}`), document);
-
+      addPostDocument(document)
       setDialogOpen(false)
     } catch(err) {
       console.log(err)

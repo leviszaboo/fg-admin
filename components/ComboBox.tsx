@@ -26,7 +26,7 @@ interface ComboBoxOptions {
 interface ComboBoxProps {
   optionsList: ComboBoxOptions[],
   onSelect?(value: string): void,
-  autoSelect: boolean
+  autoSelect?: boolean
 }
  
 export default function ComboBox({ optionsList, onSelect, autoSelect = true}: ComboBoxProps) {

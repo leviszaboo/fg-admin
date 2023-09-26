@@ -2,25 +2,44 @@ import { create } from "zustand";
 
 interface Document {
   id: string,
-  name: string,
-  url: string,
   createdAt: Date
 }
 
-interface DocumentStoreProps {
-  documents: Document[],
-  addDocument(doc: Document): void,
-  removeDocument(doc: Document): void
+export interface FeaturedDocument extends Document{
+  name: string,
+  url: string,
 }
 
-const useFireStoreDocumentsStore = create<DocumentStoreProps>((set) => ({
-  documents: [],
-  addDocument: (doc) => set((state) => ({
-    documents: [...state.documents, doc]
+export interface PostDocument extends Document{
+  imageUrls: string[],
+  descriptionLayout: string,
+  title: string,
+  subTitle: string,
+  description: string
+}
+
+interface DocumentStoreProps {
+  postDocuments: PostDocument[],
+  featuredDocuments: FeaturedDocument[],
+  addPostDocument(doc: PostDocument): void,
+  removePostDocument(doc: PostDocument): void,
+  addFeaturedDocument(doc: FeaturedDocument): void,
+  removeFeaturedDocument(doc: FeaturedDocument): void
+}
+
+export const useFireStoreDocumentsStore = create<DocumentStoreProps>((set) => ({
+  postDocuments: [],
+  featuredDocuments: [],
+  addPostDocument: (doc) => set((state) => ({
+    postDocuments: [...state.postDocuments, doc]
   })), 
-  removeDocument: (doc) => set((state) => ({
-    documents: state.documents.filter((i) => i !== doc)
+  removePostDocument: (doc) => set((state) => ({
+    postDocuments: state.postDocuments.filter((i) => i !== doc)
+  })),
+  addFeaturedDocument: (doc) => set((state) => ({
+    featuredDocuments: [...state.featuredDocuments, doc]
+  })), 
+  removeFeaturedDocument: (doc) => set((state) => ({
+    featuredDocuments: state.featuredDocuments.filter((i) => i !== doc)
   }))
 }))
-
-export default useFireStoreDocumentsStore

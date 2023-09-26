@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 
 import useImageUrlStore from "@/app/hooks/UseImageUrl";
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
-import useFireStoreDocumentsStore from "@/app/hooks/UseFireStoreDocuments";
+import { useFireStoreDocumentsStore, FeaturedDocument } from "@/app/hooks/UseFireStoreDocuments";
 import { useAuth } from "@/app/context/AuthContext";
 import { storage, db } from "@/app/firebase/config";
 
@@ -48,7 +48,7 @@ export default function UploadDialog() {
   } = useImageUrlStore()
 
   const {
-    addDocument
+    addFeaturedDocument
   } = useFireStoreDocumentsStore()
 
   function handleMouseEnter() {
@@ -93,14 +93,14 @@ export default function UploadDialog() {
         }
 
         const documentId = uuidv4();
-        const document = {
+        const document: FeaturedDocument = {
           id: documentId,
           name: `${imageUpload[i].name}`,
           url: url,
           createdAt: new Date()
         }
         await setDoc(doc(db, `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${documentId}`), document);
-        addDocument(document);
+        addFeaturedDocument(document);
       }
 
       setDialogOpen(false);

@@ -3,10 +3,12 @@ import { Circle, Dot, MoreHorizontal } from "lucide-react"
 import { useState } from "react"
 
 interface PostProps {
-	urls: string[]
+	urls: string[],
+  title: string,
+  subTitle: string
 }
 
-export default function Post({ urls }: PostProps) {
+export default function Post({ urls, title, subTitle }: PostProps) {
   const [url, setUrl] = useState<string>(urls[0])
 
   return (
@@ -15,8 +17,8 @@ export default function Post({ urls }: PostProps) {
 				<div className="h-full w-full flex flex-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
 					<div className="relative h-full w-full bg-black">
               <div className="absolute bottom-0 left-0 pb-3 pl-4 z-50 text-left">
-								<h3 className="text-shadow text-white text-md font-medium pb-0">The New Originals, Amsterdam</h3>
-                <h3 className="text-shadow text-white text-md font-medium">2023</h3>
+								<h3 className="text-shadow text-white text-md font-medium pb-0">{title}</h3>
+                <h3 className="text-shadow text-white text-md font-medium">{subTitle}</h3>
 							</div>
               <div className="transparent flex flex-column items-center absolute bottom-0 right-0 pr-3 pb-3 z-50 text-left">
                 {urls.map((url) => (
