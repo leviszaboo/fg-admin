@@ -1,21 +1,46 @@
 import { Button } from "@/components/ui/button"
 import { Circle, Dot, MoreHorizontal } from "lucide-react"
 import { useState } from "react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import DeletePostDialog from "./DeletePostDialog"
+import useDeletePostDialogStore from "@/app/hooks/UseDeletePostDialog"
 
 interface PostProps {
+  id: string,
 	urls: string[],
   title: string,
   subTitle: string
 }
 
-export default function Post({ urls, title, subTitle }: PostProps) {
+export default function Post({ id, urls, title, subTitle }: PostProps) {
   const [url, setUrl] = useState<string>(urls[0])
+  const [menuOpen, setMenuOpen] = useState<boolean>(false)
+
+  const { setDialogOpen } = useDeletePostDialogStore()
 
   return (
     <>
 		  <div className={`border-2 border-brown rounded-lg h-80 flex flex-column overflow-hidden items-center content-center justify-center text-center`}>
 				<div className="h-full w-full flex flex-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
 					<div className="relative h-full w-full bg-black">
+            <div className="absolute top-0 right-0 pt-2 pr-2 z-50">
+              <DeletePostDialog postId={id}/>
+              <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+                <DropdownMenuTrigger>
+								<Button variant={"ghost"} size={"xs"}>
+                  <MoreHorizontal size={28} className="transparent text-white"/>
+                </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>Edit Post</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setDialogOpen(true)}>
+                    <div className="text-red-500">  
+                      Delete Post
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              </div>
               <div className="absolute bottom-0 left-0 pb-3 pl-4 z-50 text-left">
 								<h3 className="text-shadow text-white text-md font-medium pb-0">{title}</h3>
                 <h3 className="text-shadow text-white text-md font-medium">{subTitle}</h3>
@@ -29,11 +54,6 @@ export default function Post({ urls, title, subTitle }: PostProps) {
                   </div>
                 ))}
               </div>
-              <div className="absolute top-0 right-0 pt-2 pr-2 z-50">
-								<Button variant={"ghost"} size={"xs"}>
-                  <MoreHorizontal size={28} className="transparent text-white"/>
-                </Button>
-							</div>
 						<img className={`object-cover min-h-full -z-50 brightness-80`} src={url}/>
 					</div>
 				</div>

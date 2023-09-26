@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
-interface GalleryProps {
+interface GalleryStore {
   isAnalogSelected: boolean,
   setIsAnalogSelected(value: boolean): void
 }
 
-const useGalleryStore= create<GalleryProps>((set) => ({
+const useGalleryStore= create<GalleryStore>((set) => ({
   isAnalogSelected: true,
   setIsAnalogSelected: (value) => set({ isAnalogSelected: value }),
 }))

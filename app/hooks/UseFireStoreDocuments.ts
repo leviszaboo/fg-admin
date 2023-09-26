@@ -15,10 +15,11 @@ export interface PostDocument extends Document{
   descriptionLayout: string,
   title: string,
   subTitle: string,
-  description: string
+  description: string,
+  destinationGallery: string
 }
 
-interface DocumentStoreProps {
+interface FirestoreDocumentStore {
   postDocuments: PostDocument[],
   featuredDocuments: FeaturedDocument[],
   addPostDocument(doc: PostDocument): void,
@@ -27,7 +28,7 @@ interface DocumentStoreProps {
   removeFeaturedDocument(doc: FeaturedDocument): void
 }
 
-export const useFireStoreDocumentsStore = create<DocumentStoreProps>((set) => ({
+export const useFireStoreDocumentsStore = create<FirestoreDocumentStore>((set) => ({
   postDocuments: [],
   featuredDocuments: [],
   addPostDocument: (doc) => set((state) => ({

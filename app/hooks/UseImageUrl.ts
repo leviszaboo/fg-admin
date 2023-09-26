@@ -1,6 +1,6 @@
 import { create }from 'zustand';
 
-interface ImageUrlProps {
+interface ImageUrlStore {
   verticalUrls: string[];
   horizontalUrls: string[];
   setVerticalUrls(urls: string[]): void;
@@ -11,7 +11,7 @@ interface ImageUrlProps {
   removeHorizontalUrl(url: string): void; 
 }
 
-const useImageUrlStore = create<ImageUrlProps>((set) => ({
+const useImageUrlStore = create<ImageUrlStore>((set) => ({
   verticalUrls: [],
   horizontalUrls: [],
   setVerticalUrls: (urls) => set({ verticalUrls: urls }),

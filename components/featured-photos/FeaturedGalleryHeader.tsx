@@ -3,7 +3,7 @@ import useSelectImagesStore from "@/app/hooks/UseSelectImages"
 import ComboBox from "../ComboBox"
 import { Button } from "@/components/ui/button"
 
-import DeleteDialog from "./DeleteDialog";
+import DeleteFeaturedDialog from "./DeleteFeaturedDialog";
 
 const comboBoxOptions = [
   {
@@ -49,7 +49,7 @@ export default function FeaturedGalleryHeader() {
           )}
           {isSelected && (
             <>
-              <DeleteDialog />
+              <DeleteFeaturedDialog />
               <Button variant={"outline"} size={"xs"} onClick={handleCancel}>
                 Cancel
               </Button>

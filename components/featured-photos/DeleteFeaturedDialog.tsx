@@ -25,10 +25,12 @@ import useImageUrlStore from "@/app/hooks/UseImageUrl";
 import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
 import { storage, db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
+import DeleteDialog from "../DeleteDialog";
 
-export default function DeleteDialog() {
+export default function DeleteFeaturedDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const auth = useAuth()
   const user = auth.currentUser
@@ -65,6 +67,8 @@ export default function DeleteDialog() {
         if (document) {
           await deleteDoc(doc(db, `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${document.id}`));
           removeFeaturedDocument(document);
+        } else {
+          setError("Document not found.")
         }
         
         removeFromSelected(item);
@@ -77,40 +81,18 @@ export default function DeleteDialog() {
       setDialogOpen(false);
     } catch (err) {
       console.log(err);
+      setError("Something went wrong.")
     } finally {
       setLoading(false);
     }
   }
   
-
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogTrigger>
-        <Button size={"sm"} variant={"destructive"} disabled={selectedImages.length <= 0}>
-          Delete
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="w-96">
-        <DialogHeader>
-          <DialogTitle>
-            <div className="flex h-6 pb-1 items-end">
-              <div>
-                <Trash2 className="h-5 w-5 mr-2" />
-              </div>
-              <div className="">
-                Are you sure you want to delete?
-              </div>
-            </div>
-          </DialogTitle>
-          <DialogDescription>
-            This action will permanently delete all selected images from your gallery.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button variant={"destructive"} onClick={handleDelete} disabled={loading}>{!loading ? "Delete" : "Deleting..."}</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <DeleteDialog loading={loading} error={error} handleDelete={handleDelete} dialogOpen={dialogOpen} setDialogOpen={setDialogOpen}>
+      <Button size={"sm"} variant={"destructive"} disabled={selectedImages.length <= 0}>
+        Delete
+      </Button>
+    </DeleteDialog>
   )
 }
 

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface SelectImagesProps {
+interface SelectImagesStore {
   isVerticalSelected: boolean,
   isSelected: boolean,
   selectedImages: string[]
@@ -11,7 +11,7 @@ interface SelectImagesProps {
   resetSelected(): void
 }
 
-const useSelectImagesStore= create<SelectImagesProps>((set) => ({
+const useSelectImagesStore= create<SelectImagesStore>((set) => ({
   isVerticalSelected: true,
   isSelected: false,
   selectedImages: [],

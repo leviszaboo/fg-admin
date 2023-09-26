@@ -152,6 +152,7 @@ export default function AddPostDialog() {
         title,
         subTitle,
         description,
+        destinationGallery: isAnalogSelected ? "analog" : "digital",
         createdAt: new Date()
       }
 
