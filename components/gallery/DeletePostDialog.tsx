@@ -38,15 +38,17 @@ export default function DeletePostDialog({ postId }: DeltePostDialogProps) {
       const document = postDocuments.find((doc) => doc.id === postId);
 
       if (document) {
-        //needs work
-        const deletePromises = document.imageUrls.map(async (item) => {
-          const desertRef = ref(storage, item);
+        const path = `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`
+
+        const deletePromises = document.imageUrls.map(async (_, index) => {
+          const imagePath = path + `_${index}`
+          const desertRef = ref(storage, imagePath);
           await deleteObject(desertRef);
         });
           
         await Promise.all(deletePromises);
 
-        await deleteDoc(doc(db, `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`));
+        await deleteDoc(doc(db, path));
         removePostDocument(document);
       } else {
         setError("Document not found.")

@@ -137,7 +137,7 @@ export default function AddPostDialog() {
       const urls = []
 
       for (let i = 0; i < imageUpload.length; i++) {
-        const imageRef = ref(storage, `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}/${imageUpload[i].name}`);
+        const imageRef = ref(storage, `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}_${i}`);
         const snapshot = await uploadBytes(imageRef, imageUpload[i]);
         const url = await getDownloadURL(snapshot.ref);
         urls.push(url)
