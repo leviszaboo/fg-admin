@@ -57,12 +57,12 @@ export default function PostStorage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
         {isAnalogSelected && (
           analog.map((doc) => (
-            <Post id={doc.id} urls={doc.imageUrls} title={doc.title} subTitle={doc.subTitle} />
+            <Post key={doc.id} id={doc.id} urls={doc.imageUrls} title={doc.title} subTitle={doc.subTitle} />
           ))
         )}
         {!isAnalogSelected && (
           digital.map((doc) => (
-            <Post id={doc.id} urls={doc.imageUrls} title={doc.title} subTitle={doc.subTitle} />
+            <Post key={doc.id} id={doc.id} urls={doc.imageUrls} title={doc.title} subTitle={doc.subTitle} />
           ))
         )}
       </div>

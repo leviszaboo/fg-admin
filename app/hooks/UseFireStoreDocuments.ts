@@ -32,7 +32,7 @@ export const useFireStoreDocumentsStore = create<FirestoreDocumentStore>((set) =
   postDocuments: [],
   featuredDocuments: [],
   addPostDocument: (doc) => set((state) => ({
-    postDocuments: [...state.postDocuments, doc]
+    postDocuments: [doc, ...state.postDocuments]
   })), 
   removePostDocument: (doc) => set((state) => ({
     postDocuments: state.postDocuments.filter((i) => i !== doc)
