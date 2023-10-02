@@ -2,8 +2,6 @@ import ComboBox from "../ComboBox"
 import { AddPostDialog } from "./AddPostDialog"
 import useGalleryStore from "@/app/hooks/UseGallery"
 
-
-
 export default function GalleryHeader() {
   const comboBoxOptions = [
     {

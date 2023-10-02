@@ -1,7 +1,5 @@
-import { Button } from "@/components/ui/button"
-import { Circle, Dot, MoreHorizontal } from "lucide-react"
+import { Circle } from "lucide-react"
 import { useState } from "react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import DeletePostDialog from "./DeletePostDialog"
 import PostOptions from "./PostOptions"
 import UpdatePostDialog from "./UpdatePostDialog"

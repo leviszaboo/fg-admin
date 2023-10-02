@@ -5,7 +5,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore"; 
-import { Plus, ImagePlus, GalleryHorizontalEnd } from "lucide-react";
+import { Plus, GalleryHorizontalEnd } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
 
 import { db, storage } from "@/app/firebase/config";
