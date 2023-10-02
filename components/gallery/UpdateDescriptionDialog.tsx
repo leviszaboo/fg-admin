@@ -5,7 +5,8 @@ import {
   } from "firebase/storage";
 import { 
   doc, 
-  deleteDoc 
+  deleteDoc, 
+  updateDoc
 } from "firebase/firestore";
 
 import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
@@ -36,24 +37,22 @@ import { Textarea } from "../ui/textarea";
 
 import { GalleryHorizontalEnd } from "lucide-react";
 
-interface UpdatePostDialogProps {
+interface UpdateDescriptionDialogProps {
   postId: string,
   dialogOpen: boolean,
   setDialogOpen(open: boolean): void
 }
 
-export default function UpdatePostDialog({ postId, dialogOpen, setDialogOpen }: UpdatePostDialogProps) {
+export default function UpdateDescriptionDialog({ postId, dialogOpen, setDialogOpen }: UpdateDescriptionDialogProps) {
   const auth = useAuth()
   const user = auth.currentUser
 
-  const { postDocuments, removePostDocument } = useFireStoreDocumentsStore()
+  const { postDocuments, updatePostDocumentFields } = useFireStoreDocumentsStore()
+  const { isAnalogSelected } = useGalleryStore();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("")
-  const [imageUpload, setImageUpload] = useState<FileList | null>(null);
   const [descriptionLayoutValue, setdescriptionLayoutValue] = useState<string>("");
-  const [imageCount, setImageCount] = useState<number>(0);
-
   const [postDescription, setPostDescription] = useState<PostDescription>({
     title: "",
     subTitle: "",
@@ -65,18 +64,12 @@ export default function UpdatePostDialog({ postId, dialogOpen, setDialogOpen }: 
       ...prevState,
       [fieldName]: value
     }))
-  }
-
-  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setImageUpload(event.target.files);
-  }
+  }  
 
   useEffect(() => {
     const document = postDocuments.find((doc) => doc.id === postId);
-    console.log(document)
     if (document) {
       setdescriptionLayoutValue(document.descriptionLayout || "");
-      setImageCount(document.imageUrls.length || 0);
       setPostDescription({
         title: document.title || "",
         subTitle: document.subTitle || "",
@@ -86,10 +79,36 @@ export default function UpdatePostDialog({ postId, dialogOpen, setDialogOpen }: 
   }, [postId, postDocuments]);
 
   async function handleUpdate() {
+    setLoading(true);
+    setError("");
     try {
-      setLoading(true);
-      setError("");
-      
+      if (
+        descriptionLayoutValue !== "left" && descriptionLayoutValue !== "right"
+      ) {
+        setError("Some required elements are missing. Check if you uploaded the correct number of images.")
+        setLoading(false)
+
+        return
+      }
+      const document = postDocuments.find((doc) => doc.id === postId);
+      if (document) {
+        const path = `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`
+        const ref = doc(db, path)
+        await updateDoc(ref, {
+          descriptionLayout: descriptionLayoutValue,
+          title: postDescription.title,
+          subTitle: postDescription.subTitle,
+          description: postDescription.description
+        })
+
+        updatePostDocumentFields(document.id, {
+          title: postDescription.title,
+          subTitle: postDescription.subTitle,
+          description: postDescription.description,
+          descriptionLayout: descriptionLayoutValue
+        })
+      }
+
       setDialogOpen(false);
     } catch (err) {
       console.log(err);
@@ -109,7 +128,7 @@ export default function UpdatePostDialog({ postId, dialogOpen, setDialogOpen }: 
               <GalleryHorizontalEnd className="h-5 w-5 mr-2" />
             </div>
             <div className="">
-              Update Post
+              Update Description
             </div>
           </div>
         </DialogTitle>
@@ -117,12 +136,6 @@ export default function UpdatePostDialog({ postId, dialogOpen, setDialogOpen }: 
       <div className="flex flex-col pt-2 pb-2">
         {error && <div className="text-sm text-red-500 pb-3 font-semibold">{error}</div>}
         <div className="grid grid-cols-2 w-full items-center gap-4">
-          <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
-            How many pictures to display?
-          </Label>
-          <div className="ml-auto mr-auto">
-            <ComboBox optionsList={imageNumberOptions} autoSelect={imageCount !== 0} autoSelectIndex={imageCount - 1}/>
-          </div>
           <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
             Description on which side?
           </Label>
@@ -133,19 +146,8 @@ export default function UpdatePostDialog({ postId, dialogOpen, setDialogOpen }: 
               autoSelectIndex={descriptionOptions.findIndex((option) => option.value === descriptionLayoutValue)}
             />
           </div>
-          <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
-            Upload Image(s)
-          </Label>
-          <Input 
-            className="hover:cursor-pointer" 
-            id="picture" 
-            type="file" 
-            accept="image/*" 
-            multiple
-            onChange={handleFileChange}
-          />
         </div>
-        <Label htmlFor="pictures" className={`text-left py-4`}>
+        <Label className={`text-left py-4`}>
           Add Title
         </Label>
         <Input 
@@ -153,7 +155,7 @@ export default function UpdatePostDialog({ postId, dialogOpen, setDialogOpen }: 
           value={postDescription.title}
           onChange={(e) => onChange('title', e.target.value)}
         />
-        <Label htmlFor="pictures" className={`text-left py-4`}>
+        <Label className={`text-left py-4`}>
           Add Subtitle
         </Label>
         <Input 
@@ -161,7 +163,7 @@ export default function UpdatePostDialog({ postId, dialogOpen, setDialogOpen }: 
           value={postDescription.subTitle }
           onChange={(e) => onChange('subTitle', e.target.value)}
         />
-        <Label htmlFor="pictures" className={`text-left py-4`}>
+        <Label htmlFor="description" className={`text-left py-4`}>
           Add Description
         </Label>
         <Textarea
@@ -170,7 +172,7 @@ export default function UpdatePostDialog({ postId, dialogOpen, setDialogOpen }: 
         />
       </div>
       <DialogFooter>
-        <Button variant={"black"} disabled={loading} onClick={handleUpdate}>{!loading ? "Upload" : "Uploading..."}</Button>
+        <Button variant={"black"} disabled={loading} onClick={handleUpdate}>{!loading ? "Update Post" : "Updating..."}</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>

@@ -18,7 +18,12 @@ export default function PostOptions({open, setOpen, setDeleteDialogOpen, setUpda
       </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem onClick={() => setUpdateDialogOpen(true)}>Edit Post</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setUpdateDialogOpen(true)}>
+          Edit Post
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => {}}>
+          Edit Pictures
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setDeleteDialogOpen(true)}>
           <div className="text-red-500">  
             Delete Post

@@ -2,7 +2,7 @@ import { Circle } from "lucide-react"
 import { useState } from "react"
 import DeletePostDialog from "./DeletePostDialog"
 import PostOptions from "./PostOptions"
-import UpdatePostDialog from "./UpdatePostDialog"
+import UpdateDescriptionDialog from "./UpdateDescriptionDialog"
 
 interface PostProps {
   id: string,
@@ -24,7 +24,7 @@ export default function Post({ id, urls, title, subTitle }: PostProps) {
 					<div className="relative h-full w-full bg-black">
             <div className="absolute top-0 right-0 pt-2 pr-2 z-50">
               <DeletePostDialog postId={id} dialogOpen={deleteDialogOpen} setDialogOpen={setDeleteDialogOpen} />
-              <UpdatePostDialog postId={id} dialogOpen={updateDialogOpen} setDialogOpen={setUpdateDialogOpen} />
+              <UpdateDescriptionDialog postId={id} dialogOpen={updateDialogOpen} setDialogOpen={setUpdateDialogOpen} />
               <PostOptions open={menuOpen} setOpen={setMenuOpen} setDeleteDialogOpen={setDeleteDialogOpen} setUpdateDialogOpen={setUpdateDialogOpen}/>
               </div>
               <div className="absolute bottom-0 left-0 pb-3 pl-4 z-50 text-left">
