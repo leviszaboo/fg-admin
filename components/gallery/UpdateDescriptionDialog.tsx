@@ -66,6 +66,10 @@ export default function UpdateDescriptionDialog({ postId, dialogOpen, setDialogO
     }))
   }  
 
+  function onSelectDescription(value: string) {
+    setdescriptionLayoutValue(value);
+  }
+
   useEffect(() => {
     const document = postDocuments.find((doc) => doc.id === postId);
     if (document) {
@@ -95,10 +99,10 @@ export default function UpdateDescriptionDialog({ postId, dialogOpen, setDialogO
         const path = `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`
         const ref = doc(db, path)
         await updateDoc(ref, {
-          descriptionLayout: descriptionLayoutValue,
           title: postDescription.title,
           subTitle: postDescription.subTitle,
-          description: postDescription.description
+          description: postDescription.description,
+          descriptionLayout: descriptionLayoutValue,
         })
 
         updatePostDocumentFields(document.id, {
@@ -142,6 +146,7 @@ export default function UpdateDescriptionDialog({ postId, dialogOpen, setDialogO
           <div className="ml-auto mr-auto">
             <ComboBox 
               optionsList={descriptionOptions} 
+              onSelect={onSelectDescription}
               autoSelect={descriptionLayoutValue === "left" || descriptionLayoutValue === "right"} 
               autoSelectIndex={descriptionOptions.findIndex((option) => option.value === descriptionLayoutValue)}
             />
