@@ -3,7 +3,8 @@ import { Circle, Dot, MoreHorizontal } from "lucide-react"
 import { useState } from "react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import DeletePostDialog from "./DeletePostDialog"
-import useDeletePostDialogStore from "@/app/hooks/UseDeletePostDialog"
+import PostOptions from "./PostOptions"
+import UpdatePostDialog from "./UpdatePostDialog"
 
 interface PostProps {
   id: string,
@@ -15,8 +16,8 @@ interface PostProps {
 export default function Post({ id, urls, title, subTitle }: PostProps) {
   const [url, setUrl] = useState<string>(urls[0])
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
-
-  const { setDialogOpen } = useDeletePostDialogStore()
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
+  const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false)
 
   return (
     <>
@@ -24,22 +25,9 @@ export default function Post({ id, urls, title, subTitle }: PostProps) {
 				<div className="h-full w-full flex flex-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
 					<div className="relative h-full w-full bg-black">
             <div className="absolute top-0 right-0 pt-2 pr-2 z-50">
-              <DeletePostDialog postId={id}/>
-              <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-                <DropdownMenuTrigger>
-								<Button variant={"ghost"} size={"xs"}>
-                  <MoreHorizontal size={28} className="transparent text-white"/>
-                </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem>Edit Post</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setDialogOpen(true)}>
-                    <div className="text-red-500">  
-                      Delete Post
-                    </div>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <DeletePostDialog postId={id} dialogOpen={deleteDialogOpen} setDialogOpen={setDeleteDialogOpen} />
+              <UpdatePostDialog postId={id} dialogOpen={updateDialogOpen} setDialogOpen={setUpdateDialogOpen} />
+              <PostOptions open={menuOpen} setOpen={setMenuOpen} setDeleteDialogOpen={setDeleteDialogOpen} setUpdateDialogOpen={setUpdateDialogOpen}/>
               </div>
               <div className="absolute bottom-0 left-0 pb-3 pl-4 z-50 text-left">
 								<h3 className="text-shadow text-white text-md font-medium pb-0">{title}</h3>
