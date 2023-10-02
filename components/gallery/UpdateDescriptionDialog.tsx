@@ -1,22 +1,16 @@
 import { useEffect, useState } from "react";
 import { 
-  deleteObject,
-  ref
-  } from "firebase/storage";
-import { 
   doc, 
-  deleteDoc, 
   updateDoc
 } from "firebase/firestore";
 
 import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
-import { storage, db } from "@/app/firebase/config";
+import { db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 import useGalleryStore from "@/app/hooks/UseGallery";
 
 import { 
   descriptionOptions, 
-  imageNumberOptions,
   PostDescription
 } from "./AddPostDialog";
 import ComboBox from "../ComboBox";
@@ -24,11 +18,9 @@ import ComboBox from "../ComboBox";
 import { 
   Dialog, 
   DialogContent, 
-  DialogDescription, 
   DialogFooter, 
   DialogHeader, 
   DialogTitle, 
-  DialogTrigger 
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
