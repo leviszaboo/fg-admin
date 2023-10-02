@@ -34,7 +34,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
-import { GalleryHorizontalEnd, Plus } from "lucide-react";
+import { GalleryHorizontalEnd } from "lucide-react";
 
 interface UpdatePostDialogProps {
   postId: string,
@@ -66,8 +66,6 @@ export default function UpdatePostDialog({ postId, dialogOpen, setDialogOpen }: 
       [fieldName]: value
     }))
   }
-
-  const { isAnalogSelected } = useGalleryStore()
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     setImageUpload(event.target.files);
@@ -123,13 +121,17 @@ export default function UpdatePostDialog({ postId, dialogOpen, setDialogOpen }: 
             How many pictures to display?
           </Label>
           <div className="ml-auto mr-auto">
-            <ComboBox optionsList={imageNumberOptions} autoSelect={false}/>
+            <ComboBox optionsList={imageNumberOptions} autoSelect={imageCount !== 0} autoSelectIndex={imageCount - 1}/>
           </div>
           <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
             Description on which side?
           </Label>
           <div className="ml-auto mr-auto">
-            <ComboBox optionsList={descriptionOptions} autoSelect={false}/>
+            <ComboBox 
+              optionsList={descriptionOptions} 
+              autoSelect={descriptionLayoutValue === "left" || descriptionLayoutValue === "right"} 
+              autoSelectIndex={descriptionOptions.findIndex((option) => option.value === descriptionLayoutValue)}
+            />
           </div>
           <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
             Upload Image(s)
