@@ -5,7 +5,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore"; 
-import { Plus, ImagePlus, GalleryHorizontalEnd } from "lucide-react";
+import { Plus, GalleryHorizontalEnd } from "lucide-react";
 import { v4 as uuidv4 } from 'uuid';
 
 import { db, storage } from "@/app/firebase/config";
@@ -30,7 +30,7 @@ import { Textarea } from "@/components/ui/textarea";
 import ComboBox from "../ComboBox";
 
 
-const comboBoxOptions = [
+export const imageNumberOptions = [
   {
     value: "1",
     label: "1",
@@ -41,7 +41,7 @@ const comboBoxOptions = [
   },
 ]
 
-const descriptionOptions = [
+export const descriptionOptions = [
   {
     value: "left",
     label: "Left",
@@ -52,20 +52,20 @@ const descriptionOptions = [
   },
 ]
 
-interface PostDescription {
+export interface PostDescription {
   title: string,
   subTitle: string,
   description: string
 }
 
-export default function AddPostDialog() {
+export function AddPostDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [imageUpload, setImageUpload] = useState<FileList | null>(null);
   const [descriptionLayoutValue, setdescriptionLayoutValue] = useState<string>("");
   const [imageCount, setImageCount] = useState<number>(0);
-  //const [urls, setUrls] = useState<string[]>([]);
+
   const [postDescription, setPostDescription] = useState<PostDescription>({
     title: '',
     subTitle: '',
@@ -196,7 +196,7 @@ export default function AddPostDialog() {
               How many pictures to display?
             </Label>
             <div className="ml-auto mr-auto">
-              <ComboBox optionsList={comboBoxOptions} onSelect={onSelectImageCount} autoSelect={false}/>
+              <ComboBox optionsList={imageNumberOptions} onSelect={onSelectImageCount} autoSelect={false}/>
             </div>
             <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
               Description on which side?

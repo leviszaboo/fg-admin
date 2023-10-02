@@ -5,12 +5,12 @@ interface Document {
   createdAt: Date
 }
 
-export interface FeaturedDocument extends Document{
+export interface FeaturedDocument extends Document {
   name: string,
   url: string,
 }
 
-export interface PostDocument extends Document{
+export interface PostDocument extends Document {
   imageUrls: string[],
   descriptionLayout: string,
   title: string,
@@ -25,7 +25,9 @@ interface FirestoreDocumentStore {
   addPostDocument(doc: PostDocument): void,
   removePostDocument(doc: PostDocument): void,
   addFeaturedDocument(doc: FeaturedDocument): void,
-  removeFeaturedDocument(doc: FeaturedDocument): void
+  removeFeaturedDocument(doc: FeaturedDocument): void,
+  updatePostDocumentFields(docId: string, fields: Partial<PostDocument>): void,
+  updateFeaturedDocumentFields(docId: string, fields: Partial<FeaturedDocument>): void,
 }
 
 export const useFireStoreDocumentsStore = create<FirestoreDocumentStore>((set) => ({
@@ -42,5 +44,28 @@ export const useFireStoreDocumentsStore = create<FirestoreDocumentStore>((set) =
   })), 
   removeFeaturedDocument: (doc) => set((state) => ({
     featuredDocuments: state.featuredDocuments.filter((i) => i !== doc)
-  }))
-}))
+  })),
+  updatePostDocumentFields: (docId, fields) => set((state) => ({
+    postDocuments: state.postDocuments.map((doc) => {
+      if (doc.id === docId) {
+        return {
+          ...doc,
+          ...fields, 
+        };
+      }
+      return doc;
+    }),
+  })),
+  updateFeaturedDocumentFields: (docId, fields) => set((state) => ({
+    featuredDocuments: state.featuredDocuments.map((doc) => {
+      if (doc.id === docId) {
+        return {
+          ...doc,
+          ...fields,
+        };
+      }
+      return doc;
+    }),
+  })),
+}));
+

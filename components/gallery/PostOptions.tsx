@@ -5,10 +5,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 interface PostOptionsProps {
   open: boolean, 
   setOpen(open: boolean): void,
-  setDialogOpen(Open: boolean): void,
+  setDeleteDialogOpen(open: boolean): void,
+  setUpdateDialogOpen(open: boolean): void,
 }
 
-export default function PostOptions({open, setOpen, setDialogOpen}: PostOptionsProps) {
+export default function PostOptions({open, setOpen, setDeleteDialogOpen, setUpdateDialogOpen}: PostOptionsProps) {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger>
@@ -17,8 +18,13 @@ export default function PostOptions({open, setOpen, setDialogOpen}: PostOptionsP
       </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>Edit Post</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setDialogOpen(true)}>
+        <DropdownMenuItem onClick={() => setUpdateDialogOpen(true)}>
+          Edit Post
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => {}}>
+          Edit Pictures
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setDeleteDialogOpen(true)}>
           <div className="text-red-500">  
             Delete Post
           </div>

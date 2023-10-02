@@ -2,6 +2,7 @@ import { Circle } from "lucide-react"
 import { useState } from "react"
 import DeletePostDialog from "./DeletePostDialog"
 import PostOptions from "./PostOptions"
+import UpdateDescriptionDialog from "./UpdateDescriptionDialog"
 
 interface PostProps {
   id: string,
@@ -13,7 +14,8 @@ interface PostProps {
 export default function Post({ id, urls, title, subTitle }: PostProps) {
   const [url, setUrl] = useState<string>(urls[0])
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
+  const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false)
 
   return (
     <>
@@ -21,8 +23,9 @@ export default function Post({ id, urls, title, subTitle }: PostProps) {
 				<div className="h-full w-full flex flex-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
 					<div className="relative h-full w-full bg-black">
             <div className="absolute top-0 right-0 pt-2 pr-2 z-50">
-              <DeletePostDialog postId={id} dialogOpen={dialogOpen} setDialogOpen={setDialogOpen} />
-              <PostOptions open={menuOpen} setOpen={setMenuOpen} setDialogOpen={setDialogOpen}/>
+              <DeletePostDialog postId={id} dialogOpen={deleteDialogOpen} setDialogOpen={setDeleteDialogOpen} />
+              <UpdateDescriptionDialog postId={id} dialogOpen={updateDialogOpen} setDialogOpen={setUpdateDialogOpen} />
+              <PostOptions open={menuOpen} setOpen={setMenuOpen} setDeleteDialogOpen={setDeleteDialogOpen} setUpdateDialogOpen={setUpdateDialogOpen}/>
               </div>
               <div className="absolute bottom-0 left-0 pb-3 pl-4 z-50 text-left">
 								<h3 className="text-shadow text-white text-md font-medium pb-0">{title}</h3>

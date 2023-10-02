@@ -14,13 +14,13 @@ import { useAuth } from "@/app/context/AuthContext";
 import DeleteDialog from "../DeleteDialog";
 import useGalleryStore from "@/app/hooks/UseGallery";
 
-interface DeltePostDialogProps {
+interface DeletePostDialogProps {
   postId: string,
   dialogOpen: boolean,
   setDialogOpen(open: boolean): void
 }
 
-export default function DeletePostDialog({ postId, dialogOpen, setDialogOpen }: DeltePostDialogProps) {
+export default function DeletePostDialog({ postId, dialogOpen, setDialogOpen }: DeletePostDialogProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("")
 

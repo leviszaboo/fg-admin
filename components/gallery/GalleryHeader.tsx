@@ -1,10 +1,6 @@
 import ComboBox from "../ComboBox"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import AddPostDialog from "./AddPostDialog"
+import { AddPostDialog } from "./AddPostDialog"
 import useGalleryStore from "@/app/hooks/UseGallery"
-
-
 
 export default function GalleryHeader() {
   const comboBoxOptions = [
