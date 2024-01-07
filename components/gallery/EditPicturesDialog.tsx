@@ -1,0 +1,113 @@
+import { useEffect, useState } from "react";
+import { 
+  doc, 
+  updateDoc
+} from "firebase/firestore";
+
+import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
+import { db } from "@/app/firebase/config";
+import { useAuth } from "@/app/context/AuthContext";
+import useGalleryStore from "@/app/hooks/UseGallery";
+
+import { 
+  descriptionOptions, 
+  PostDescription
+} from "./AddPostDialog";
+import ComboBox from "../ComboBox";
+
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle, 
+} from "../ui/dialog";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+
+import { GalleryHorizontalEnd } from "lucide-react";
+
+interface EditPicturesDialogProps {
+  postId: string,
+  urls: string[],
+  dialogOpen: boolean,
+  setDialogOpen(open: boolean): void
+}
+
+export default function EditPicturesDialog({ postId, urls, dialogOpen, setDialogOpen }: EditPicturesDialogProps) {
+  const auth = useAuth();
+  const user = auth.currentUser;
+
+  const { postDocuments, updatePostDocumentFields } = useFireStoreDocumentsStore();
+  const { isAnalogSelected } = useGalleryStore();
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [imageUpload, setImageUpload] = useState<FileList | null>(null);
+
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setImageUpload(event.target.files);
+  }
+
+  useEffect(() => {
+    const document = postDocuments.find((doc) => doc.id === postId);
+    if (document) {
+     
+    }
+  }, [postId, postDocuments]);
+
+  async function handleUpdate() {
+    setLoading(true);
+    setError("");
+    try {
+    } catch (err) {
+      console.log(err);
+      setError("Something went wrong.")
+    } finally {
+      setLoading(false);
+    }
+  }
+  
+  return (
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <DialogContent className="w-96">
+      <DialogHeader>
+        <DialogTitle>
+          <div className="flex h-6 pb-1 items-end">
+            <div>
+              <GalleryHorizontalEnd className="h-5 w-5 mr-2" />
+            </div>
+            <div className="">
+              Edit Pictures
+            </div>
+          </div>
+        </DialogTitle>
+      </DialogHeader>
+      <div className="flex flex-col pt-2 pb-2 gap-3">
+        {error && <div className="text-sm text-red-500 pb-3 font-semibold">{error}</div>}
+        <div className="flex align-center justify-center gap-6">
+          {urls.map(url => <img className={`${urls.length > 1 ? "w-1/3" : "w-2/3"} rounded-xl outline outline-2 outline-amber-400 outline-offset-1`} src={url}></img>)}
+        </div>
+        <div className="flex flex-col pt-4 pb-4 gap-3 w-10/12 self-center">
+          <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
+            Upload Image(s)
+          </Label>
+          <Input 
+            className="hover:cursor-pointer" 
+            id="picture" 
+            type="file" 
+            accept="image/*" 
+            multiple
+            onChange={handleFileChange}
+          />
+        </div>
+      </div>
+      <DialogFooter>
+        <Button variant={"black"} disabled={loading} onClick={handleUpdate}>{!loading ? "Update Post" : "Updating..."}</Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+  )
+}

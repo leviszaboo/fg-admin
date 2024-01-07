@@ -3,6 +3,7 @@ import { useState } from "react"
 import DeletePostDialog from "./DeletePostDialog"
 import PostOptions from "./PostOptions"
 import UpdateDescriptionDialog from "./UpdateDescriptionDialog"
+import EditPicturesDialog from "./EditPicturesDialog"
 
 interface PostProps {
   id: string,
@@ -12,10 +13,11 @@ interface PostProps {
 }
 
 export default function Post({ id, urls, title, subTitle }: PostProps) {
-  const [url, setUrl] = useState<string>(urls[0])
-  const [menuOpen, setMenuOpen] = useState<boolean>(false)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false)
-  const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false)
+  const [url, setUrl] = useState<string>(urls[0]);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState<boolean>(false);
+  const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
 
   return (
     <>
@@ -25,7 +27,14 @@ export default function Post({ id, urls, title, subTitle }: PostProps) {
             <div className="absolute top-0 right-0 pt-2 pr-2 z-50">
               <DeletePostDialog postId={id} dialogOpen={deleteDialogOpen} setDialogOpen={setDeleteDialogOpen} />
               <UpdateDescriptionDialog postId={id} dialogOpen={updateDialogOpen} setDialogOpen={setUpdateDialogOpen} />
-              <PostOptions open={menuOpen} setOpen={setMenuOpen} setDeleteDialogOpen={setDeleteDialogOpen} setUpdateDialogOpen={setUpdateDialogOpen}/>
+              <EditPicturesDialog postId={id} urls={urls} dialogOpen={editDialogOpen} setDialogOpen={setEditDialogOpen} />
+              <PostOptions 
+                open={menuOpen} 
+                setOpen={setMenuOpen} 
+                setDeleteDialogOpen={setDeleteDialogOpen} 
+                setUpdateDialogOpen={setUpdateDialogOpen}
+                setEditDialogOpen={setEditDialogOpen}
+              />
               </div>
               <div className="absolute bottom-0 left-0 pb-3 pl-4 z-50 text-left">
 								<h3 className="text-shadow text-white text-md font-medium pb-0">{title}</h3>

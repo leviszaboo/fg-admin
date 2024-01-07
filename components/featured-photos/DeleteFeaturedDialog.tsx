@@ -50,7 +50,6 @@ export default function DeleteFeaturedDialog() {
         const splitPath = desertRef.fullPath.split('/')
         const name = splitPath[splitPath.length - 1]
         await deleteObject(desertRef);
-        console.log(name)
   
         const document = featuredDocuments.find((doc) => doc.name === name);
 

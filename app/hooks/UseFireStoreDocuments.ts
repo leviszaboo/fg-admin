@@ -10,6 +10,10 @@ export interface FeaturedDocument extends Document {
   url: string,
 }
 
+export interface ParagraphDocument extends Document {
+  value: string
+}
+
 export interface PostDocument extends Document {
   imageUrls: string[],
   descriptionLayout: string,
@@ -21,8 +25,11 @@ export interface PostDocument extends Document {
 
 interface FirestoreDocumentStore {
   postDocuments: PostDocument[],
+  paragraphDocuments: ParagraphDocument[],
   featuredDocuments: FeaturedDocument[],
   addPostDocument(doc: PostDocument): void,
+  addParagraphDocument(doc: ParagraphDocument): void,
+  removeParagraphDocument(doc: ParagraphDocument): void,
   removePostDocument(doc: PostDocument): void,
   addFeaturedDocument(doc: FeaturedDocument): void,
   removeFeaturedDocument(doc: FeaturedDocument): void,
@@ -32,12 +39,19 @@ interface FirestoreDocumentStore {
 
 export const useFireStoreDocumentsStore = create<FirestoreDocumentStore>((set) => ({
   postDocuments: [],
+  paragraphDocuments: [],
   featuredDocuments: [],
   addPostDocument: (doc) => set((state) => ({
     postDocuments: [doc, ...state.postDocuments]
   })), 
   removePostDocument: (doc) => set((state) => ({
     postDocuments: state.postDocuments.filter((i) => i !== doc)
+  })),
+  addParagraphDocument: (doc) => set((state) => ({
+    paragraphDocuments: [doc, ...state.paragraphDocuments]
+  })), 
+  removeParagraphDocument: (doc) => set((state) => ({
+    paragraphDocuments: state.paragraphDocuments.filter((i) => i !== doc)
   })),
   addFeaturedDocument: (doc) => set((state) => ({
     featuredDocuments: [...state.featuredDocuments, doc]

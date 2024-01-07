@@ -42,8 +42,6 @@ export default function PostStorage() {
   const digital = postDocuments.filter((doc) => doc.destinationGallery === "digital")
 
   useEffect(() => {
-    console.log(analog)
-    console.log(digital)
     if (analog.length === 0) {
       fetchImageUrls(analogRef);
     }

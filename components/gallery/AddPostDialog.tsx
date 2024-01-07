@@ -29,18 +29,6 @@ import { Textarea } from "@/components/ui/textarea";
 
 import ComboBox from "../ComboBox";
 
-
-export const imageNumberOptions = [
-  {
-    value: "1",
-    label: "1",
-  },
-  {
-    value: "2",
-    label: "2",
-  },
-]
-
 export const descriptionOptions = [
   {
     value: "left",
@@ -74,6 +62,24 @@ export function AddPostDialog() {
 
   const { isAnalogSelected } = useGalleryStore();
   const { addPostDocument } = useFireStoreDocumentsStore();
+
+
+  const imageNumberOptions = isAnalogSelected ? [
+    {
+      value: "1",
+      label: "1",
+    },
+    {
+      value: "2",
+      label: "2",
+    },
+  ] :
+  [
+    {
+      value: "1",
+      label: "1",
+    }
+  ]
 
   const auth = useAuth();
   const user = auth.currentUser
@@ -120,8 +126,8 @@ export function AddPostDialog() {
         || imageCount !== 1 && imageCount !==2
         || imageCount !== imageUpload.length
       ) {
-        setError("Some required elements are missing. Check if you uploaded the correct number of images.")
-        setLoading(false)
+        setError("Some required elements are missing. Check if you uploaded the correct number of images.");
+        setLoading(false);
 
         return
       }
@@ -142,8 +148,6 @@ export function AddPostDialog() {
         const url = await getDownloadURL(snapshot.ref);
         urls.push(url)
       }
-
-      console.log(urls)
 
       const document: PostDocument = {
         id: postId,

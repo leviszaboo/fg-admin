@@ -2,32 +2,28 @@ import { MoreHorizontal } from "lucide-react"
 import { Button } from "../ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
 
-interface PostOptionsProps {
+interface ParagraphOptionsProps {
   open: boolean, 
   setOpen(open: boolean): void,
   setDeleteDialogOpen(open: boolean): void,
   setUpdateDialogOpen(open: boolean): void,
-  setEditDialogOpen(open: boolean): void,
 }
 
-export default function PostOptions({open, setOpen, setDeleteDialogOpen, setUpdateDialogOpen, setEditDialogOpen}: PostOptionsProps) {
+export default function ParagraphOptions({open, setOpen, setDeleteDialogOpen, setUpdateDialogOpen }: ParagraphOptionsProps) {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger>
       <Button variant={"ghost"} size={"xs"}>
-        <MoreHorizontal size={28} className="transparent text-white"/>
+        <MoreHorizontal size={28} className="transparent text-black"/>
       </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem onClick={() => setUpdateDialogOpen(true)}>
-          Edit Post
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setEditDialogOpen(true)}>
-          Edit Pictures
+          Edit Paragraph
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setDeleteDialogOpen(true)}>
           <div className="text-red-500">  
-            Delete Post
+            Delete Paragraph
           </div>
         </DropdownMenuItem>
       </DropdownMenuContent>

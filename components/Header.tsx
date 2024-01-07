@@ -27,7 +27,7 @@ export default function Header() {
   useEffect(() => {
     const currentPathname = window.location.pathname;
 
-    if (currentPathname === '/home') {
+    if (currentPathname === '/analog' ) {
       setActiveLink(0);
     } else if (currentPathname === '/featured-photos') {
       setActiveLink(1);
@@ -71,7 +71,7 @@ export default function Header() {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/home" onClick={() => setActiveLink(2)}>
+                <Link href="/text-management" onClick={() => setActiveLink(2)}>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     <div className={`text-base ${activeLink === 2 ? "text-amber-900" : null}`}>Text Management</div>
                   </NavigationMenuLink>
