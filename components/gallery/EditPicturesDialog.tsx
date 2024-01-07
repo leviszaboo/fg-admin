@@ -88,7 +88,7 @@ export default function EditPicturesDialog({ postId, urls, dialogOpen, setDialog
       <div className="flex flex-col pt-2 pb-2 gap-3">
         {error && <div className="text-sm text-red-500 pb-3 font-semibold">{error}</div>}
         <div className="flex align-center justify-center gap-6">
-          {urls.map(url => <img className={`${urls.length > 1 ? "w-1/3" : "w-2/3"} rounded-xl outline outline-2 outline-amber-400 outline-offset-1`} src={url}></img>)}
+          {urls.map(url => <img key={url} className={`${urls.length > 1 ? "w-1/3" : "w-2/3"} rounded-xl outline outline-2 outline-amber-400 outline-offset-1`} src={url}></img>)}
         </div>
         <div className="flex flex-col pt-4 pb-4 gap-3 w-10/12 self-center">
           <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>

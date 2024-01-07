@@ -41,7 +41,7 @@ export default function ParagraphCollection() {
     <div className="h-4/6 overflow-y-scroll ">
       <div className="grid grid-cols-3 gap-2">
         {paragraphDocuments.map((document) => (
-          <Paragraph  paragraph={document}/>
+          <Paragraph key={document.id} paragraph={document}/>
         ))}
       </div>
     </div>
