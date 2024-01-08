@@ -13,14 +13,9 @@ import { storage, db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 import DeleteDialog from "../DeleteDialog";
 import useGalleryStore from "@/app/hooks/UseGallery";
+import { DialogProps } from "@/app/interfaces/dialogProps";
 
-interface DeletePostDialogProps {
-  postId: string,
-  dialogOpen: boolean,
-  setDialogOpen(open: boolean): void
-}
-
-export default function DeletePostDialog({ postId, dialogOpen, setDialogOpen }: DeletePostDialogProps) {
+export default function DeletePostDialog({ id, dialogOpen, setDialogOpen }: DialogProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("")
 
@@ -28,15 +23,15 @@ export default function DeletePostDialog({ postId, dialogOpen, setDialogOpen }: 
   const { postDocuments, removePostDocument } = useFireStoreDocumentsStore()
 
   const auth = useAuth()
-  const user = auth.currentUser
+  const user = auth.currentUser;
 
  
   async function handleDelete() {
     try {
       setLoading(true);
       setError("");
-      const document = postDocuments.find((doc) => doc.id === postId);
-      console.log(postId, document)
+      const document = postDocuments.find((doc) => doc.id === id);
+      console.log(id, document)
 
       if (document) {
         const path = `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`

@@ -25,9 +25,9 @@ export default function Post({ id, urls, title, subTitle }: PostProps) {
 				<div className="h-full w-full flex flex-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
 					<div className="relative h-full w-full bg-black">
             <div className="absolute top-0 right-0 pt-2 pr-2 z-50">
-              <DeletePostDialog postId={id} dialogOpen={deleteDialogOpen} setDialogOpen={setDeleteDialogOpen} />
-              <UpdateDescriptionDialog postId={id} dialogOpen={updateDialogOpen} setDialogOpen={setUpdateDialogOpen} />
-              <EditPicturesDialog postId={id} urls={urls} dialogOpen={editDialogOpen} setDialogOpen={setEditDialogOpen} />
+              <DeletePostDialog id={id} dialogOpen={deleteDialogOpen} setDialogOpen={setDeleteDialogOpen} />
+              <UpdateDescriptionDialog id={id} dialogOpen={updateDialogOpen} setDialogOpen={setUpdateDialogOpen} />
+              <EditPicturesDialog id={id} urls={urls} dialogOpen={editDialogOpen} setDialogOpen={setEditDialogOpen} />
               <PostOptions 
                 open={menuOpen} 
                 setOpen={setMenuOpen} 

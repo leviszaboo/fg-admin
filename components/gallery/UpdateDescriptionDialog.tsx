@@ -28,14 +28,9 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
 import { GalleryHorizontalEnd } from "lucide-react";
+import { DialogProps } from "@/app/interfaces/dialogProps";
 
-interface UpdateDescriptionDialogProps {
-  postId: string,
-  dialogOpen: boolean,
-  setDialogOpen(open: boolean): void
-}
-
-export default function UpdateDescriptionDialog({ postId, dialogOpen, setDialogOpen }: UpdateDescriptionDialogProps) {
+export default function UpdateDescriptionDialog({ id, dialogOpen, setDialogOpen }: DialogProps) {
   const auth = useAuth()
   const user = auth.currentUser
 
@@ -63,7 +58,7 @@ export default function UpdateDescriptionDialog({ postId, dialogOpen, setDialogO
   }
 
   useEffect(() => {
-    const document = postDocuments.find((doc) => doc.id === postId);
+    const document = postDocuments.find((doc) => doc.id === id);
     if (document) {
       setdescriptionLayoutValue(document.descriptionLayout || "");
       setPostDescription({
@@ -72,7 +67,7 @@ export default function UpdateDescriptionDialog({ postId, dialogOpen, setDialogO
         description: document.description || "",
       });
     }
-  }, [postId, postDocuments]);
+  }, [id, postDocuments]);
 
   async function handleUpdate() {
     setLoading(true);
@@ -86,7 +81,7 @@ export default function UpdateDescriptionDialog({ postId, dialogOpen, setDialogO
 
         return
       }
-      const document = postDocuments.find((doc) => doc.id === postId);
+      const document = postDocuments.find((doc) => doc.id === id);
       if (document) {
         const path = `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`
         const ref = doc(db, path)

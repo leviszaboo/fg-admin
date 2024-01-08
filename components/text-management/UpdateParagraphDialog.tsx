@@ -7,7 +7,6 @@ import {
 import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
 import { db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
-import useGalleryStore from "@/app/hooks/UseGallery";
 
 import { 
   Dialog, 
@@ -17,38 +16,45 @@ import {
   DialogTitle, 
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 import { GalleryHorizontalEnd } from "lucide-react";
-import { EditPicturesDialogProps } from "@/app/interfaces/dialogProps";
+import { DialogProps } from "@/app/interfaces/dialogProps";
 
-export default function EditPicturesDialog({ id, urls, dialogOpen, setDialogOpen }: EditPicturesDialogProps) {
+export default function UpdateParagraphDialog({ id, dialogOpen, setDialogOpen }: DialogProps) {
   const auth = useAuth();
   const user = auth.currentUser;
 
-  const { postDocuments, updatePostDocumentFields } = useFireStoreDocumentsStore();
-  const { isAnalogSelected } = useGalleryStore();
+  const { paragraphDocuments, updateParagraph } = useFireStoreDocumentsStore();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [imageUpload, setImageUpload] = useState<FileList | null>(null);
+  const [paragraph, setParagraph] = useState<string>("");
 
-  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setImageUpload(event.target.files);
-  }
 
   useEffect(() => {
-    const document = postDocuments.find((doc) => doc.id === id);
+    const document = paragraphDocuments.find((doc) => doc.id === id);
     if (document) {
-     
+      setParagraph(document.value || "")
     }
-  }, [id, postDocuments]);
+  }, [id, paragraphDocuments]);
 
   async function handleUpdate() {
     setLoading(true);
     setError("");
     try {
+      const document = paragraphDocuments.find((doc) => doc.id === id);
+      if (document) {
+        const path = `${user?.email}/about-me/paragraphs/${document.id}`
+        const ref = doc(db, path);
+        await updateDoc(ref, {
+          value: paragraph,
+        })
+
+        updateParagraph(id, paragraph);
+      }
+
+      setDialogOpen(false);
     } catch (err) {
       console.log(err);
       setError("Something went wrong.")
@@ -67,29 +73,17 @@ export default function EditPicturesDialog({ id, urls, dialogOpen, setDialogOpen
               <GalleryHorizontalEnd className="h-5 w-5 mr-2" />
             </div>
             <div className="">
-              Edit Pictures
+              Update Description
             </div>
           </div>
         </DialogTitle>
       </DialogHeader>
-      <div className="flex flex-col pt-2 pb-2 gap-3">
+      <div className="flex flex-col pt-2 pb-2">
         {error && <div className="text-sm text-red-500 pb-3 font-semibold">{error}</div>}
-        <div className="flex align-center justify-center gap-6">
-          {urls.map(url => <img key={url} className={`${urls.length > 1 ? "w-1/3" : "w-2/3"} rounded-xl outline outline-2 outline-amber-400 outline-offset-1`} src={url}></img>)}
-        </div>
-        <div className="flex flex-col pt-4 pb-4 gap-3 w-10/12 self-center">
-          <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
-            Upload Image(s)
-          </Label>
-          <Input 
-            className="hover:cursor-pointer" 
-            id="picture" 
-            type="file" 
-            accept="image/*" 
-            multiple
-            onChange={handleFileChange}
-          />
-        </div>
+        <Textarea
+          value={paragraph}
+          onChange={(e) => setParagraph(e.target.value)}
+        />
       </div>
       <DialogFooter>
         <Button variant={"black"} disabled={loading} onClick={handleUpdate}>{!loading ? "Update Post" : "Updating..."}</Button>

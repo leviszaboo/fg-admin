@@ -35,6 +35,7 @@ interface FirestoreDocumentStore {
   removeFeaturedDocument(doc: FeaturedDocument): void,
   updatePostDocumentFields(docId: string, fields: Partial<PostDocument>): void,
   updateFeaturedDocumentFields(docId: string, fields: Partial<FeaturedDocument>): void,
+  updateParagraph(id: string, value: string): void,
 }
 
 export const useFireStoreDocumentsStore = create<FirestoreDocumentStore>((set) => ({
@@ -81,5 +82,17 @@ export const useFireStoreDocumentsStore = create<FirestoreDocumentStore>((set) =
       return doc;
     }),
   })),
+  updateParagraph: (id, value) => set((state) => ({
+    paragraphDocuments: state.paragraphDocuments.map((doc) => {
+      if (doc.id === id) {
+        return {
+          ...doc, 
+          value
+        }
+      }
+
+      return doc
+    })
+  }))
 }));
 

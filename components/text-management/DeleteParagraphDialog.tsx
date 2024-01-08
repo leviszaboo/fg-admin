@@ -8,14 +8,9 @@ import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
 import { db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 import DeleteDialog from "../DeleteDialog";
+import { DialogProps } from "@/app/interfaces/dialogProps";
 
-interface DeleteParagraphDialogProps {
-  paragraphId: string,
-  dialogOpen: boolean,
-  setDialogOpen(open: boolean): void
-}
-
-export default function DeleteParagraphDialog({ paragraphId, dialogOpen, setDialogOpen }: DeleteParagraphDialogProps) {
+export default function DeleteParagraphDialog({ id, dialogOpen, setDialogOpen }: DialogProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("")
 
@@ -29,7 +24,7 @@ export default function DeleteParagraphDialog({ paragraphId, dialogOpen, setDial
     try {
       setLoading(true);
       setError("");
-      const document = paragraphDocuments.find((doc) => doc.id === paragraphId);
+      const document = paragraphDocuments.find((doc) => doc.id === id);
 
       if (document) {
         const path = `${user?.email}/about-me/paragraphs/${document.id}`

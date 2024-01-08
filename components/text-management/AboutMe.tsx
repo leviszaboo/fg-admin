@@ -5,7 +5,7 @@ import ParagraphCollection from "./ParagraphCollection";
 
 export default function AboutMe() {
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-4 p-4 h-11/12">
       <ParagraphCollection />
       <AddParagraphDialog />
     </div>
