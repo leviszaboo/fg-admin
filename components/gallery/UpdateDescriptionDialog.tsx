@@ -12,7 +12,7 @@ import useGalleryStore from "@/app/hooks/UseGallery";
 import { 
   descriptionOptions, 
   PostDescription
-} from "./AddPostDialog";
+} from "./AddAnalogPostDialog";
 import ComboBox from "../ComboBox";
 
 import { 
@@ -74,9 +74,9 @@ export default function UpdateDescriptionDialog({ id, dialogOpen, setDialogOpen 
     setError("");
     try {
       if (
-        descriptionLayoutValue !== "left" && descriptionLayoutValue !== "right"
+        isAnalogSelected && descriptionLayoutValue !== "left" && descriptionLayoutValue !== "right"
       ) {
-        setError("Some required elements are missing. Check if you uploaded the correct number of images.")
+        setError("Some required elements are missing. Make sure to choose a description layout value.")
         setLoading(false)
 
         return
@@ -126,19 +126,21 @@ export default function UpdateDescriptionDialog({ id, dialogOpen, setDialogOpen 
       </DialogHeader>
       <div className="flex flex-col pt-2 pb-2">
         {error && <div className="text-sm text-red-500 pb-3 font-semibold">{error}</div>}
-        <div className="grid grid-cols-2 w-full items-center gap-4">
-          <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
-            Description on which side?
-          </Label>
-          <div className="ml-auto mr-auto">
-            <ComboBox 
-              optionsList={descriptionOptions} 
-              onSelect={onSelectDescription}
-              autoSelect={descriptionLayoutValue === "left" || descriptionLayoutValue === "right"} 
-              autoSelectIndex={descriptionOptions.findIndex((option) => option.value === descriptionLayoutValue)}
-            />
-          </div>
-        </div>
+        {isAnalogSelected && (
+            <div className="grid grid-cols-2 w-full items-center gap-4">
+              <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
+                Description on which side?
+              </Label>
+              <div className="ml-auto mr-auto">
+                <ComboBox 
+                  optionsList={descriptionOptions} 
+                  onSelect={onSelectDescription}
+                  autoSelect={descriptionLayoutValue === "left" || descriptionLayoutValue === "right"} 
+                  autoSelectIndex={descriptionOptions.findIndex((option) => option.value === descriptionLayoutValue)}
+                />
+              </div>
+            </div>
+          )}
         <Label className={`text-left py-4`}>
           Add Title
         </Label>
@@ -155,13 +157,17 @@ export default function UpdateDescriptionDialog({ id, dialogOpen, setDialogOpen 
           value={postDescription.subTitle }
           onChange={(e) => onChange('subTitle', e.target.value)}
         />
-        <Label htmlFor="description" className={`text-left py-4`}>
-          Add Description
-        </Label>
-        <Textarea
-          value={postDescription.description}
-          onChange={(e) => onChange('description', e.target.value)}
-        />
+        {isAnalogSelected && (
+          <>
+            <Label htmlFor="description" className={`text-left py-4`}>
+              Add Description
+            </Label>
+            <Textarea
+              value={postDescription.description}
+              onChange={(e) => onChange('description', e.target.value)}
+            />
+          </>
+        )}
       </div>
       <DialogFooter>
         <Button variant={"black"} disabled={loading} onClick={handleUpdate}>{!loading ? "Update Post" : "Updating..."}</Button>

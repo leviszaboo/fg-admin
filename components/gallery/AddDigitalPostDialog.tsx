@@ -46,13 +46,11 @@ export interface PostDescription {
   description: string
 }
 
-export function AddPostDialog() {
+export function AddDigitalPostDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [imageUpload, setImageUpload] = useState<FileList | null>(null);
-  const [descriptionLayoutValue, setdescriptionLayoutValue] = useState<string>("");
-  const [imageCount, setImageCount] = useState<number>(0);
 
   const [postDescription, setPostDescription] = useState<PostDescription>({
     title: '',
@@ -60,26 +58,7 @@ export function AddPostDialog() {
     description: '',
   });
 
-  const { isAnalogSelected } = useGalleryStore();
   const { addPostDocument } = useFireStoreDocumentsStore();
-
-
-  const imageNumberOptions = isAnalogSelected ? [
-    {
-      value: "1",
-      label: "1",
-    },
-    {
-      value: "2",
-      label: "2",
-    },
-  ] :
-  [
-    {
-      value: "1",
-      label: "1",
-    }
-  ]
 
   const auth = useAuth();
   const user = auth.currentUser
@@ -87,8 +66,6 @@ export function AddPostDialog() {
   function handleOpen() {
     setError("");
     setImageUpload(null);
-    setdescriptionLayoutValue("");
-    setImageCount(0);
     setPostDescription({
       title: '',
       subTitle: '',
@@ -107,24 +84,13 @@ export function AddPostDialog() {
     setImageUpload(event.target.files);
   }
 
-  function onSelectDescription(value: string) {
-    setdescriptionLayoutValue(value);
-  }
-
-  function onSelectImageCount(value: string) {
-    setImageCount(parseInt(value));
-  }
-
   async function handleSubmit() {
     setError("");
     setLoading(true);
     try {
       if (
-        !imageUpload
-        || imageUpload.length === 0 
-        || descriptionLayoutValue !== "left" && descriptionLayoutValue !== "right"
-        || imageCount !== 1 && imageCount !==2
-        || imageCount !== imageUpload.length
+        !imageUpload ||
+        imageUpload.length !== 1
       ) {
         setError("Some required elements are missing. Check if you uploaded the correct number of images.");
         setLoading(false);
@@ -143,7 +109,7 @@ export function AddPostDialog() {
       const urls = []
 
       for (let i = 0; i < imageUpload.length; i++) {
-        const imageRef = ref(storage, `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}_${i}`);
+        const imageRef = ref(storage, `${user?.email}/gallery/digital/${postId}_${i}`);
         const snapshot = await uploadBytes(imageRef, imageUpload[i]);
         const url = await getDownloadURL(snapshot.ref);
         urls.push(url)
@@ -152,15 +118,15 @@ export function AddPostDialog() {
       const document: PostDocument = {
         id: postId,
         imageUrls: urls,
-        descriptionLayout: descriptionLayoutValue,
+        descriptionLayout: "",
         title,
         subTitle,
         description,
-        destinationGallery: isAnalogSelected ? "analog" : "digital",
+        destinationGallery: "digital",
         createdAt: new Date()
       }
 
-      await setDoc(doc(db, `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}`), document);
+      await setDoc(doc(db, `${user?.email}/gallery/digital/${postId}`), document);
       addPostDocument(document)
       setDialogOpen(false)
     } catch(err) {
@@ -197,18 +163,6 @@ export function AddPostDialog() {
           {error && <div className="text-sm text-red-500 pb-3 font-semibold">{error}</div>}
           <div className="grid grid-cols-2 w-full items-center gap-4">
             <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
-              How many pictures to display?
-            </Label>
-            <div className="ml-auto mr-auto">
-              <ComboBox optionsList={imageNumberOptions} onSelect={onSelectImageCount} autoSelect={false}/>
-            </div>
-            <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
-              Description on which side?
-            </Label>
-            <div className="ml-auto mr-auto">
-              <ComboBox optionsList={descriptionOptions} onSelect={onSelectDescription} autoSelect={false}/>
-            </div>
-            <Label htmlFor="pictures" className={`text-left ${error ? "text-red-500" : null}`}>
               Upload Image(s)
             </Label>
             <Input 
@@ -216,7 +170,6 @@ export function AddPostDialog() {
               id="picture" 
               type="file" 
               accept="image/*" 
-              multiple
               onChange={handleFileChange}
             />
           </div>
@@ -235,13 +188,6 @@ export function AddPostDialog() {
             type="text" 
             value={postDescription.subTitle}
             onChange={(e) => onChange('subTitle', e.target.value)}
-          />
-          <Label htmlFor="pictures" className={`text-left py-4`}>
-            Add Description
-          </Label>
-          <Textarea
-            value={postDescription.description}
-            onChange={(e) => onChange('description', e.target.value)}
           />
         </div>
         <DialogFooter>
