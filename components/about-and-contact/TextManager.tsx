@@ -1,5 +1,5 @@
 import React from 'react'
-import ParagraphManager from './ParagraphManager'
+import ParagraphManager from './paragraphs/ParagraphManager'
 import ContactInfoManager from './ContactInfoManager'
 
 export default function TextManager() {
