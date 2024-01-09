@@ -7,7 +7,7 @@ import {
 import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
 import { db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
-import DeleteDialog from "../DeleteDialog";
+import DeleteDialog from "../../DeleteDialog";
 import { DialogProps } from "@/app/interfaces/dialogProps";
 
 export default function DeleteParagraphDialog({ id, dialogOpen, setDialogOpen }: DialogProps) {

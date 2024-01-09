@@ -31,7 +31,7 @@ export default function Header() {
       setActiveLink(0);
     } else if (currentPathname === '/featured-photos') {
       setActiveLink(1);
-    } else if (currentPathname === '/text-management') {
+    } else if (currentPathname === '/about-and-contact') {
       setActiveLink(2);
     }
   }, []);
@@ -71,9 +71,9 @@ export default function Header() {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/text-management" onClick={() => setActiveLink(2)}>
+                <Link href="/about-and-contact" onClick={() => setActiveLink(2)}>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    <div className={`text-base ${activeLink === 2 ? "text-amber-900" : null}`}>Text Management</div>
+                    <div className={`text-base ${activeLink === 2 ? "text-amber-900" : null}`}>About and Contact</div>
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>

@@ -10,7 +10,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { db, storage } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
-import useGalleryStore from "@/app/hooks/UseGallery";
 import { useFireStoreDocumentsStore, PostDocument } from "@/app/hooks/UseFireStoreDocuments";
 
 import {
@@ -25,20 +24,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-
-import ComboBox from "../ComboBox";
-
-export const descriptionOptions = [
-  {
-    value: "left",
-    label: "Left",
-  },
-  {
-    value: "right",
-    label: "Right",
-  },
-]
+import imageCompression from "browser-image-compression";
 
 export interface PostDescription {
   title: string,
@@ -87,6 +73,7 @@ export function AddDigitalPostDialog() {
   async function handleSubmit() {
     setError("");
     setLoading(true);
+
     try {
       if (
         !imageUpload ||
@@ -105,12 +92,16 @@ export function AddDigitalPostDialog() {
       } = postDescription
 
       const postId = uuidv4();
-
+      const options = {
+        maxSizeMB: 2,
+      }
       const urls = []
 
       for (let i = 0; i < imageUpload.length; i++) {
+        const compressedFile = await imageCompression(imageUpload[i], options);
+        
         const imageRef = ref(storage, `${user?.email}/gallery/digital/${postId}_${i}`);
-        const snapshot = await uploadBytes(imageRef, imageUpload[i]);
+        const snapshot = await uploadBytes(imageRef, compressedFile);
         const url = await getDownloadURL(snapshot.ref);
         urls.push(url)
       }

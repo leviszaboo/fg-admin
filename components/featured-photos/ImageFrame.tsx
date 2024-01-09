@@ -40,19 +40,17 @@ export default function ImageFrame({ url }: ImageFrameProps) {
   }, [isSelected, selectedImages])
 
   return (
-    <>
-		  <div onClick={handleClick} className={` flex flex-column border-2 border-brown rounded-lg ${isVerticalSelected ? "h-80" : "h-44"} ${isSelected ? "cursor-pointer" : null} overflow-hidden items-center content-center justify-center text-center`}>
-				<div className="h-full w-full flex flex-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
-					<div className="relative h-full w-full">
-						{isSelected && (
-							<div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
-								<Checkbox checked={checked} onCheckedChange={setChecked}/>
-							</div>
-						)}
-						<img className={`object-cover min-h-full -z-50 ${isSelected ? "opacity-80 blur-xs" : null}`} src={url}/>
-					</div>
-				</div>
-			</div>
-		</>
+    <div onClick={handleClick} className={` flex flex-column border-2 border-brown rounded-lg ${isVerticalSelected ? "h-80" : "h-44"} ${isSelected ? "cursor-pointer" : null} overflow-hidden items-center content-center justify-center text-center`}>
+      <div className="h-full w-full flex flex-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
+        <div className="relative h-full w-full">
+          {isSelected && (
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+              <Checkbox checked={checked} onCheckedChange={setChecked}/>
+            </div>
+          )}
+          <img className={`object-cover min-h-full -z-50 ${isSelected ? "opacity-80 blur-xs" : null}`} src={url}/>
+        </div>
+      </div>
+    </div>
   )
 }

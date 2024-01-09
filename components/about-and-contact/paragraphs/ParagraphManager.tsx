@@ -1,7 +1,7 @@
 "use client";
 
-import AboutMe from "./AboutMe";
-import ContactInfo from "./ContactInfoManager";
+import AboutMe from "../AboutMe";
+import ContactInfo from "../ContactInfoManager";
 
 
 export default function ParagraphManager() {

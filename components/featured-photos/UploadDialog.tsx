@@ -26,6 +26,7 @@ import useSelectImagesStore from "@/app/hooks/UseSelectImages";
 import { useFireStoreDocumentsStore, FeaturedDocument } from "@/app/hooks/UseFireStoreDocuments";
 import { useAuth } from "@/app/context/AuthContext";
 import { storage, db } from "@/app/firebase/config";
+import imageCompression from "browser-image-compression";
 
 export default function UploadDialog() {
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -79,11 +80,15 @@ export default function UploadDialog() {
       return
     };
 
+    const options = {
+      maxSizeMB: 2,
+    }
+
     try {
       for (let i = 0; i < imageUpload.length; i++) {
         const imageRef = ref(storage, `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${imageUpload[i].name}`);
-
-        const snapshot = await uploadBytes(imageRef, imageUpload[i]);
+        const compressedFile = await imageCompression(imageUpload[i], options);
+        const snapshot = await uploadBytes(imageRef, compressedFile);
         const url = await getDownloadURL(snapshot.ref);
     
         if (isVerticalSelected) {

@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 
 import { useAuth } from "@/app/context/AuthContext";
 import { storage, db } from "@/app/firebase/config";
-import { Textarea } from "../ui/textarea";
+import { Textarea } from "../../ui/textarea";
 import { ParagraphDocument, useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
 
 export default function AddParagraphDialog() {

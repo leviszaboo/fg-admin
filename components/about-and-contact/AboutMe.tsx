@@ -1,7 +1,7 @@
 import { Button } from "../ui/button";
-import AddParagraphDialog from "./AddParagraphDialog";
-import Paragraph from "./Paragraph";
-import ParagraphCollection from "./ParagraphCollection";
+import AddParagraphDialog from "./paragraphs/AddParagraphDialog";
+import Paragraph from "./paragraphs/Paragraph";
+import ParagraphCollection from "./paragraphs/ParagraphCollection";
 
 export default function AboutMe() {
   return (

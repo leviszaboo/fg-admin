@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import ComboBox from "../ComboBox";
+import imageCompression from "browser-image-compression";
 
 export const descriptionOptions = [
   {
@@ -139,12 +140,16 @@ export function AddAnalogPostDialog() {
       } = postDescription
 
       const postId = uuidv4();
+      const options = {
+        maxSizeMB: 2,
+      }
 
       const urls = []
 
       for (let i = 0; i < imageUpload.length; i++) {
+        const compressedFile = await imageCompression(imageUpload[i], options);
         const imageRef = ref(storage, `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}_${i}`);
-        const snapshot = await uploadBytes(imageRef, imageUpload[i]);
+        const snapshot = await uploadBytes(imageRef, compressedFile);
         const url = await getDownloadURL(snapshot.ref);
         urls.push(url)
       }

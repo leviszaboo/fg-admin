@@ -14,9 +14,9 @@ import {
   DialogFooter, 
   DialogHeader, 
   DialogTitle, 
-} from "../ui/dialog";
-import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
+} from "../../ui/dialog";
+import { Button } from "../../ui/button";
+import { Textarea } from "../../ui/textarea";
 
 import { GalleryHorizontalEnd } from "lucide-react";
 import { DialogProps } from "@/app/interfaces/dialogProps";
