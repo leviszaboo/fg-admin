@@ -93,7 +93,7 @@ export function AddDigitalPostDialog() {
 
       const postId = uuidv4();
       const options = {
-        maxSizeMB: 2,
+        maxSizeMB: 1,
       }
       const urls = []
 
