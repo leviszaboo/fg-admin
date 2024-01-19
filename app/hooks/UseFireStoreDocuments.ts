@@ -90,7 +90,6 @@ export const useFireStoreDocumentsStore = create<FirestoreDocumentStore>((set) =
           value
         }
       }
-
       return doc
     })
   }))

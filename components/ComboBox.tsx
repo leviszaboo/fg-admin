@@ -56,7 +56,7 @@ export default function ComboBox({ optionsList, onSelect, autoSelect = true, aut
               <CommandItem
                 key={option.value}
                 onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue);
+                  setValue(currentValue);
                   if (onSelect) onSelect(currentValue);
                   setOpen(false)
                 }}

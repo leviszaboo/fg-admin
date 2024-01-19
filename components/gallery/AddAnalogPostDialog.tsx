@@ -142,6 +142,7 @@ export function AddAnalogPostDialog() {
       const postId = uuidv4();
       const options = {
         maxSizeMB: 0.6,
+        maxWidthOrHeight: 1920,
       }
 
       const urls = []

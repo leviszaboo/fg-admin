@@ -82,6 +82,7 @@ export default function UploadDialog() {
 
     const options = {
       maxSizeMB: 0.6,
+      maxWidthOrHeight: 1920,
     }
 
     try {
