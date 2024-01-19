@@ -141,7 +141,7 @@ export function AddAnalogPostDialog() {
 
       const postId = uuidv4();
       const options = {
-        maxSizeMB: 1,
+        maxSizeMB: 0.6,
       }
 
       const urls = []
@@ -168,7 +168,7 @@ export function AddAnalogPostDialog() {
       await setDoc(doc(db, `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}`), document);
       addPostDocument(document)
       setDialogOpen(false)
-    } catch(err) {
+    } catch (err) {
       console.log(err)
       setError("Something went wrong. Try again.");
     }
