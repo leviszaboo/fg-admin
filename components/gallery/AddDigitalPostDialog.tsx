@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import imageCompression from "browser-image-compression";
+import { imageUploadOptions as options } from "@/app/config/imageUploadOptions";
 
 export interface PostDescription {
   title: string,
@@ -92,10 +93,6 @@ export function AddDigitalPostDialog() {
       } = postDescription
 
       const postId = uuidv4();
-      const options = {
-        maxSizeMB: 0.6,
-        maxWidthOrHeight: 1920,
-      }
       const urls = []
 
       for (let i = 0; i < imageUpload.length; i++) {

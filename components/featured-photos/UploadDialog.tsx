@@ -27,6 +27,7 @@ import { useFireStoreDocumentsStore, FeaturedDocument } from "@/app/hooks/UseFir
 import { useAuth } from "@/app/context/AuthContext";
 import { storage, db } from "@/app/firebase/config";
 import imageCompression from "browser-image-compression";
+import { imageUploadOptions as options } from "@/app/config/imageUploadOptions";
 
 export default function UploadDialog() {
   const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -79,11 +80,6 @@ export default function UploadDialog() {
       setLoading(false);
       return
     };
-
-    const options = {
-      maxSizeMB: 0.6,
-      maxWidthOrHeight: 1920,
-    }
 
     try {
       for (let i = 0; i < imageUpload.length; i++) {

@@ -24,6 +24,7 @@ import { GalleryHorizontalEnd } from "lucide-react";
 import { EditPicturesDialogProps } from "@/app/interfaces/dialogProps";
 import imageCompression from "browser-image-compression";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { imageUploadOptions as options } from "@/app/config/imageUploadOptions";
 
 export default function EditPicturesDialog({ id, urls, dialogOpen, setDialogOpen }: EditPicturesDialogProps) {
   const auth = useAuth();
@@ -52,10 +53,6 @@ export default function EditPicturesDialog({ id, urls, dialogOpen, setDialogOpen
     setError("");
     try {
       if (imageUpload && imageUpload.length === urls.length) {
-        const options = {
-          maxSizeMB: 0.6,
-          maxWidthOrHeight: 1920,
-        }
         const newUrls = []
         for (let i = 0; i < imageUpload.length; i++) {
           const compressedFile = await imageCompression(imageUpload[i], options);

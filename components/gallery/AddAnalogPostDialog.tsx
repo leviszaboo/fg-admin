@@ -29,6 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import ComboBox from "../ComboBox";
 import imageCompression from "browser-image-compression";
+import { imageUploadOptions as options } from "@/app/config/imageUploadOptions";
 
 export const descriptionOptions = [
   {
@@ -140,10 +141,6 @@ export function AddAnalogPostDialog() {
       } = postDescription
 
       const postId = uuidv4();
-      const options = {
-        maxSizeMB: 0.6,
-        maxWidthOrHeight: 1920,
-      }
 
       const urls = []
 
