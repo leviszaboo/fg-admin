@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +18,8 @@ import {
 import { useAuth } from "@/app/context/AuthContext";
 import Logo from "./Logo";
 import UpdateUserDataDialog from "./auth/UpdateUserDataDialog";
+import useSelectImagesStore from "@/app/hooks/UseSelectImages";
+import useGalleryStore from "@/app/hooks/UseGallery";
 
 export default function Header() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -24,11 +27,17 @@ export default function Header() {
   const [emailDialogOpen, setEmailDialogOpen] = useState<boolean>(false);
   const [passwordDialogOpen, setPasswordDialogOpen] = useState<boolean>(false);
 
+  const { setIsVerticalSelected } = useSelectImagesStore();
+  const { setIsAnalogSelected } = useGalleryStore();
+
   const auth = useAuth();
   const user = auth.currentUser;
 
+  const currentPathname = usePathname();
+
   useEffect(() => {
-    const currentPathname = window.location.pathname;
+    setIsVerticalSelected(true);
+    setIsAnalogSelected(true);
 
     if (currentPathname === "/analog") {
       setActiveLink(0);
@@ -37,7 +46,7 @@ export default function Header() {
     } else if (currentPathname === "/about-and-contact") {
       setActiveLink(2);
     }
-  }, []);
+  }, [currentPathname]);
 
   async function handleSignOut() {
     setLoading(true);

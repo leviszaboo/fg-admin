@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
-import useSelectImagesStore from "@/app/hooks/UseSelectImages";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
