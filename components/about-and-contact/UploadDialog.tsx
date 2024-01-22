@@ -38,10 +38,8 @@ export default function UploadDialog() {
   const auth = useAuth();
   const user = auth.currentUser;
 
-  const { isSelected, isVerticalSelected } = useSelectImagesStore();
-
-  const { addHorizontalUrl, addVerticalUrl } = useImageUrlStore();
-
+  const { isSelected } = useSelectImagesStore();
+  const { addAboutMeUrl } = useImageUrlStore();
   const { addFeaturedDocument } = useFireStoreDocumentsStore();
 
   function handleMouseEnter() {
@@ -69,43 +67,38 @@ export default function UploadDialog() {
     if (!imageUpload) {
       setError("Please select the files to upload.");
       setLoading(false);
+
       return;
     }
 
     try {
       for (let i = 0; i < imageUpload.length; i++) {
-        const imageRef = ref(
-          storage,
-          `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${imageUpload[i].name}`,
-        );
         const compressedFile = await imageCompression(imageUpload[i], options);
-        const snapshot = await uploadBytes(imageRef, compressedFile);
-        const url = await getDownloadURL(snapshot.ref);
 
-        if (isVerticalSelected) {
-          addVerticalUrl(url);
-        } else {
-          addHorizontalUrl(url);
-        }
+        const storageRef = ref(
+          storage,
+          `${user?.email}/featured/about-me/${imageUpload[i].name}`,
+        );
+        await uploadBytes(storageRef, compressedFile);
+        const url = await getDownloadURL(storageRef);
+        const id = uuidv4();
 
-        const documentId = uuidv4();
         const document: FeaturedDocument = {
-          id: documentId,
+          id,
           name: `${imageUpload[i].name}`,
-          url: url,
+          url,
           createdAt: new Date(),
         };
+
         await setDoc(
-          doc(
-            db,
-            `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${documentId}`,
-          ),
+          doc(db, `${user?.email}/featured/about-me/${id}`),
           document,
         );
-        addFeaturedDocument(document);
-      }
 
-      setDialogOpen(false);
+        addAboutMeUrl(url);
+        addFeaturedDocument(document);
+        setDialogOpen(false);
+      }
     } catch (err) {
       setError("Something went wrong. Try again.");
       console.log(err);
@@ -118,7 +111,7 @@ export default function UploadDialog() {
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger>
         <div
-          className={`border-2 border-lightbrown rounded-lg ${isVerticalSelected ? "h-80" : "h-44"} cursor-pointer flex flex-column items-center content-center justify-center text-center`}
+          className="border-2 border-lightbrown rounded-lg h-80 cursor-pointer flex flex-column items-center content-center justify-center text-center"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onClick={handleOpen}
@@ -140,7 +133,7 @@ export default function UploadDialog() {
             </div>
           </DialogTitle>
           <DialogDescription>
-            {`Select the photos to be featured on the homepage of your website on ${isVerticalSelected ? "small-screen" : "large-screen"} devices.`}
+            Select the photos to be featured on the About Me page.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col pt-2 pb-2">

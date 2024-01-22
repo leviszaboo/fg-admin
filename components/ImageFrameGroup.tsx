@@ -1,7 +1,7 @@
-import ImageFrame from "./ImageFrame"
+import ImageFrame from "./ImageFrame";
 
 interface ImageFrameGroupProps {
-    urls: string[]
+  urls: string[];
 }
 
 export default function ImageFrameGroup({ urls }: ImageFrameGroupProps) {
@@ -13,4 +13,3 @@ export default function ImageFrameGroup({ urls }: ImageFrameGroupProps) {
     </>
   );
 }
-

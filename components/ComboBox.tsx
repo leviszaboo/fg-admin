@@ -1,39 +1,42 @@
-"use client"
- 
-import { useState } from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
+"use client";
 
-import useSelectImagesStore from "@/app/hooks/UseSelectImages"
- 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Command,
-  CommandGroup,
-  CommandItem,
-} from "@/components/ui/command"
+import { useState } from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+
+import useSelectImagesStore from "@/app/hooks/UseSelectImages";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
 interface ComboBoxOptions {
-  value: string,
-  label: string
+  value: string;
+  label: string;
 }
 
 interface ComboBoxProps {
-  optionsList: ComboBoxOptions[],
-  onSelect?(value: string): void,
-  autoSelect?: boolean,
-  autoSelectIndex?: number
+  optionsList: ComboBoxOptions[];
+  onSelect?(value: string): void;
+  autoSelect?: boolean;
+  autoSelectIndex?: number;
 }
- 
-export default function ComboBox({ optionsList, onSelect, autoSelect = true, autoSelectIndex}: ComboBoxProps) {
-  const [open, setOpen] = useState(false)
-  const [value, setValue] = useState(!autoSelect ? "" : optionsList[autoSelectIndex || 0].value)
- 
+
+export default function ComboBox({
+  optionsList,
+  onSelect,
+  autoSelect = true,
+  autoSelectIndex,
+}: ComboBoxProps) {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(
+    !autoSelect ? "" : optionsList[autoSelectIndex || 0].value,
+  );
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -58,13 +61,13 @@ export default function ComboBox({ optionsList, onSelect, autoSelect = true, aut
                 onSelect={(currentValue) => {
                   setValue(currentValue);
                   if (onSelect) onSelect(currentValue);
-                  setOpen(false)
+                  setOpen(false);
                 }}
               >
                 <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    value === option.value ? "opacity-100" : "opacity-0"
+                    value === option.value ? "opacity-100" : "opacity-0",
                   )}
                 />
                 {option.label}
@@ -74,5 +77,5 @@ export default function ComboBox({ optionsList, onSelect, autoSelect = true, aut
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-import PrivateRoute from "../../utils/PrivateRoute"
-import FeaturedGallery from "@/components/featured-photos/FeaturedGallery"
-import Header from "@/components/Header"
+import PrivateRoute from "../../utils/PrivateRoute";
+import FeaturedGallery from "@/components/featured-photos/FeaturedGallery";
+import Header from "@/components/Header";
 
 export default function FeaturedPage() {
   return (
@@ -8,5 +8,5 @@ export default function FeaturedPage() {
       <Header />
       <FeaturedGallery />
     </PrivateRoute>
-  )
+  );
 }

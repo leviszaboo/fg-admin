@@ -16,14 +16,9 @@ export default function PrivateRoute({ children }: PrivateRouteProps) {
 
   useEffect(() => {
     if (!user) {
-      router.push('/');
+      router.push("/");
     }
   }, [user]);
 
-  return (
-    <>
-      {user ? children : null}
-    </>
-  );
+  return <>{user ? children : null}</>;
 }
-

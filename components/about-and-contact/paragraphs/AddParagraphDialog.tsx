@@ -1,13 +1,8 @@
 import { useState } from "react";
 
-import { 
-  ref, 
-  uploadBytes, 
-  getDownloadURL,
-} from "firebase/storage";
-import { doc, setDoc } from "firebase/firestore"; 
-import { Plus, ImagePlus, PencilLine } from "lucide-react";
-import { v4 as uuidv4 } from 'uuid';
+import { doc, setDoc } from "firebase/firestore";
+import { PencilLine } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   Dialog,
@@ -16,15 +11,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter
-} from "@/components/ui/dialog"
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 import { useAuth } from "@/app/context/AuthContext";
-import { storage, db } from "@/app/firebase/config";
+import { db } from "@/app/firebase/config";
 import { Textarea } from "../../ui/textarea";
-import { ParagraphDocument, useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
+import {
+  ParagraphDocument,
+  useFireStoreDocumentsStore,
+} from "@/app/hooks/UseFireStoreDocuments";
 
 export default function AddParagraphDialog() {
   const [paragraph, setParagraph] = useState<string>("");
@@ -47,14 +44,17 @@ export default function AddParagraphDialog() {
       const document: ParagraphDocument = {
         id: paragraphId,
         value: paragraph,
-        createdAt: new Date()
-      }
+        createdAt: new Date(),
+      };
 
-      await setDoc(doc(db, `${user?.email}/about-me/paragraphs/${paragraphId}`), document);
+      await setDoc(
+        doc(db, `${user?.email}/about-me/paragraphs/${paragraphId}`),
+        document
+      );
       addParagraphDocument(document);
       setDialogOpen(false);
-    } catch(err) {
-      setError("Something went wrong. Try again.")
+    } catch (err) {
+      setError("Something went wrong. Try again.");
       console.log(err);
     }
 
@@ -73,9 +73,7 @@ export default function AddParagraphDialog() {
               <div>
                 <PencilLine className="h-5 w-5 mr-2" />
               </div>
-              <div className="">
-                Add Paragraph
-              </div>
+              <div className="">Add Paragraph</div>
             </div>
           </DialogTitle>
           <DialogDescription>
@@ -85,13 +83,15 @@ export default function AddParagraphDialog() {
         <div className="flex flex-col pt-2 pb-2">
           {error && <div className="text-sm text-red-500 p-1">{error}</div>}
           <div className="grid w-full items-center gap-1.5">
-            <Textarea onChange={(e) => setParagraph(e.target.value)}/>
+            <Textarea onChange={(e) => setParagraph(e.target.value)} />
           </div>
         </div>
         <DialogFooter>
-          <Button variant={"black"} onClick={addParagraph} disabled={loading}>{!loading ? "Upload" : "Uploading..."}</Button>
+          <Button variant={"black"} onClick={addParagraph} disabled={loading}>
+            {!loading ? "Upload" : "Uploading..."}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -11,7 +11,7 @@ import { storage, db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 import DeleteDialog from "../DeleteDialog";
 
-export default function DeleteFeaturedDialog() {
+export default function DeleteAboutMePhotosDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -19,14 +19,10 @@ export default function DeleteFeaturedDialog() {
   const auth = useAuth();
   const user = auth.currentUser;
 
-  const {
-    isVerticalSelected,
-    selectedImages,
-    removeFromSelected,
-    setSelected,
-  } = useSelectImagesStore();
+  const { selectedImages, removeFromSelected, setSelected } =
+    useSelectImagesStore();
 
-  const { removeHorizontalUrl, removeVerticalUrl } = useImageUrlStore();
+  const { removeAboutMeUrl } = useImageUrlStore();
 
   const { featuredDocuments, removeFeaturedDocument } =
     useFireStoreDocumentsStore();
@@ -43,7 +39,7 @@ export default function DeleteFeaturedDialog() {
         const document = featuredDocuments.find((doc) => doc.name === name);
 
         if (document) {
-          const path = `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${document.id}`;
+          const path = `${user?.email}/featured/about-me/${document.id}`;
 
           await deleteDoc(doc(db, path));
 
@@ -53,9 +49,7 @@ export default function DeleteFeaturedDialog() {
         }
 
         removeFromSelected(item);
-        isVerticalSelected
-          ? removeVerticalUrl(item)
-          : removeHorizontalUrl(item);
+        removeAboutMeUrl(item);
       });
 
       await Promise.all(deletePromises);

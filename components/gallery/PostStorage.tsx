@@ -1,7 +1,10 @@
 import { useEffect } from "react";
 
 import Post from "./Post";
-import { PostDocument, useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
+import {
+  PostDocument,
+  useFireStoreDocumentsStore,
+} from "@/app/hooks/UseFireStoreDocuments";
 import useGalleryStore from "@/app/hooks/UseGallery";
 import { useAuth } from "@/app/context/AuthContext";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
@@ -12,13 +15,15 @@ export default function PostStorage() {
   const { isAnalogSelected } = useGalleryStore();
 
   const auth = useAuth();
-  const user = auth.currentUser
+  const user = auth.currentUser;
   const analogRef = `${user?.email}/gallery/analog`;
   const digitalRef = `${user?.email}/gallery/digital`;
 
-  async function fetchImageUrls(ref: string) { 
+  async function fetchImageUrls(ref: string) {
     try {
-      const querySnapshot = await getDocs(query(collection(db, ref), orderBy("createdAt", "asc")));
+      const querySnapshot = await getDocs(
+        query(collection(db, ref), orderBy("createdAt", "asc")),
+      );
       querySnapshot.forEach((doc) => {
         const document: PostDocument = {
           id: doc.data().id,
@@ -28,42 +33,56 @@ export default function PostStorage() {
           destinationGallery: doc.data().destinationGallery,
           description: doc.data().description,
           descriptionLayout: doc.data().descriptionLayout,
-          createdAt: doc.data().createdAt
-        }
-        
-        addPostDocument(document)
-      })      
+          createdAt: doc.data().createdAt,
+        };
+
+        addPostDocument(document);
+      });
     } catch (error) {
       console.error("Error fetching image URLs:", error);
     }
   }
 
-  const analog = postDocuments.filter((doc) => doc.destinationGallery === "analog");
-  const digital = postDocuments.filter((doc) => doc.destinationGallery === "digital")
+  const analog = postDocuments.filter(
+    (doc) => doc.destinationGallery === "analog",
+  );
+  const digital = postDocuments.filter(
+    (doc) => doc.destinationGallery === "digital",
+  );
 
   useEffect(() => {
     if (analog.length === 0) {
       fetchImageUrls(analogRef);
     }
     if (digital.length === 0) {
-      fetchImageUrls(digitalRef)
+      fetchImageUrls(digitalRef);
     }
-  }, [])
+  }, []);
 
   return (
     <div className="h-11/12 overflow-y-scroll rounded-3xl">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
-        {isAnalogSelected && (
+        {isAnalogSelected &&
           analog.map((doc) => (
-            <Post key={doc.id} id={doc.id} urls={doc.imageUrls} title={doc.title} subTitle={doc.subTitle} />
-          ))
-        )}
-        {!isAnalogSelected && (
+            <Post
+              key={doc.id}
+              id={doc.id}
+              urls={doc.imageUrls}
+              title={doc.title}
+              subTitle={doc.subTitle}
+            />
+          ))}
+        {!isAnalogSelected &&
           digital.map((doc) => (
-            <Post key={doc.id} id={doc.id} urls={doc.imageUrls} title={doc.title} subTitle={doc.subTitle} />
-          ))
-        )}
+            <Post
+              key={doc.id}
+              id={doc.id}
+              urls={doc.imageUrls}
+              title={doc.title}
+              subTitle={doc.subTitle}
+            />
+          ))}
       </div>
     </div>
-  )
+  );
 }

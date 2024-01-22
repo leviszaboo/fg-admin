@@ -1,6 +1,6 @@
-import Login from "@/components/auth/Login.tsx"
-import Header from "@/components/Header.tsx"
-import AnonymRoute from "../utils/AnonymRoute.tsx"
+import Login from "@/components/auth/Login.tsx";
+import Header from "@/components/Header.tsx";
+import AnonymRoute from "../utils/AnonymRoute.tsx";
 
 export default function Auth() {
   return (
@@ -8,5 +8,5 @@ export default function Auth() {
       <Header />
       <Login />
     </AnonymRoute>
-  )
+  );
 }

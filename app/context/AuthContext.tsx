@@ -4,26 +4,28 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
   signOut,
-  User as FirebaseUser, 
+  User as FirebaseUser,
   UserCredential,
   setPersistence,
-  browserSessionPersistence
+  browserSessionPersistence,
+  verifyBeforeUpdateEmail,
 } from "firebase/auth";
 
 import { auth } from "../firebase/config";
 
 interface AuthContextProps {
-  currentUser: FirebaseUser | null,
-  login(email: string, password: string): Promise<UserCredential>,
-  logout(): Promise<void>,
-  resetPassword(email: string): Promise<void>,
-  browserSession(): Promise<void>,
+  currentUser: FirebaseUser | null;
+  login(email: string, password: string): Promise<UserCredential>;
+  logout(): Promise<void>;
+  resetPassword(email: string): Promise<void>;
+  updateUserEmail(email: string): Promise<void> | undefined;
+  browserSession(): Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 
 export function useAuth() {
-  return useContext(AuthContext)
+  return useContext(AuthContext);
 }
 
 interface AuthProviderProps {
@@ -31,8 +33,8 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   function login(email: string, password: string) {
     return signInWithEmailAndPassword(auth, email, password);
@@ -46,16 +48,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return sendPasswordResetEmail(auth, email);
   }
 
+  function updateUserEmail(email: string) {
+    if (!currentUser) return;
+    return verifyBeforeUpdateEmail(currentUser, email);
+  }
+
   function browserSession() {
-    return setPersistence(auth, browserSessionPersistence)
+    return setPersistence(auth, browserSessionPersistence);
   }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user: FirebaseUser | null) => {
-      console.log(user);
-      setCurrentUser(user);
-      setLoading(false);
-    });
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (user: FirebaseUser | null) => {
+        console.log(user);
+        setCurrentUser(user);
+        setLoading(false);
+      },
+      (error) => {
+        console.log(error);
+      },
+    );
 
     return unsubscribe;
   }, []);
@@ -65,14 +78,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     login,
     logout,
     resetPassword,
-    browserSession
-  }
+    updateUserEmail,
+    browserSession,
+  };
 
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
     </AuthContext.Provider>
-  )
+  );
 }
-
-
