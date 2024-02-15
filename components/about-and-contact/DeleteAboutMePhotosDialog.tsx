@@ -39,7 +39,7 @@ export default function DeleteAboutMePhotosDialog() {
         const document = featuredDocuments.find((doc) => doc.name === name);
 
         if (document) {
-          const path = `${user?.email}/featured/about-me/${document.id}`;
+          const path = `${user?.uid}/featured/about-me/${document.id}`;
 
           await deleteDoc(doc(db, path));
 

@@ -43,7 +43,7 @@ export default function DeleteFeaturedDialog() {
         const document = featuredDocuments.find((doc) => doc.name === name);
 
         if (document) {
-          const path = `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${document.id}`;
+          const path = `${user?.uid}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${document.id}`;
 
           await deleteDoc(doc(db, path));
 

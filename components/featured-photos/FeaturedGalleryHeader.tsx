@@ -4,7 +4,6 @@ import ComboBox from "../ComboBox";
 import { Button } from "@/components/ui/button";
 
 import DeleteFeaturedDialog from "./DeleteFeaturedDialog";
-import { useEffect } from "react";
 
 const comboBoxOptions = [
   {

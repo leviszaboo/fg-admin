@@ -48,7 +48,7 @@ export default function AddParagraphDialog() {
       };
 
       await setDoc(
-        doc(db, `${user?.email}/about-me/paragraphs/${paragraphId}`),
+        doc(db, `${user?.uid}/about-me/paragraphs/${paragraphId}`),
         document
       );
       addParagraphDocument(document);

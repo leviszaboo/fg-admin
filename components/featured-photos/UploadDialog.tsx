@@ -76,7 +76,7 @@ export default function UploadDialog() {
       for (let i = 0; i < imageUpload.length; i++) {
         const imageRef = ref(
           storage,
-          `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${imageUpload[i].name}`,
+          `${user?.uid}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${imageUpload[i].name}`,
         );
         const compressedFile = await imageCompression(imageUpload[i], options);
         const snapshot = await uploadBytes(imageRef, compressedFile);
@@ -98,7 +98,7 @@ export default function UploadDialog() {
         await setDoc(
           doc(
             db,
-            `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${documentId}`,
+            `${user?.uid}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${documentId}`,
           ),
           document,
         );

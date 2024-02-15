@@ -63,7 +63,7 @@ export default function EditPicturesDialog({
           );
           const imageRef = ref(
             storage,
-            `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${id}_${i}`,
+            `${user?.uid}/gallery/${isAnalogSelected ? "analog" : "digital"}/${id}_${i}`,
           );
           const snapshot = await uploadBytes(imageRef, compressedFile);
           const url = await getDownloadURL(snapshot.ref);

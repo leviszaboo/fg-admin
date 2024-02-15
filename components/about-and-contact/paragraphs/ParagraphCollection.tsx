@@ -11,7 +11,7 @@ import { useEffect } from "react";
 export default function ParagraphCollection() {
   const auth = useAuth();
   const user = auth.currentUser;
-  const ref = `${user?.email}/about-me/paragraphs`;
+  const ref = `${user?.uid}/about-me/paragraphs`;
   const { paragraphDocuments, addParagraphDocument } =
     useFireStoreDocumentsStore();
 

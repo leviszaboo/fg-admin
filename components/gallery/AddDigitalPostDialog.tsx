@@ -94,7 +94,7 @@ export function AddDigitalPostDialog() {
 
         const imageRef = ref(
           storage,
-          `${user?.email}/gallery/digital/${postId}_${i}`,
+          `${user?.uid}/gallery/digital/${postId}_${i}`,
         );
         const snapshot = await uploadBytes(imageRef, compressedFile);
         const url = await getDownloadURL(snapshot.ref);
@@ -113,7 +113,7 @@ export function AddDigitalPostDialog() {
       };
 
       await setDoc(
-        doc(db, `${user?.email}/gallery/digital/${postId}`),
+        doc(db, `${user?.uid}/gallery/digital/${postId}`),
         document,
       );
       addPostDocument(document);

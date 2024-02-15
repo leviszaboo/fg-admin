@@ -31,7 +31,7 @@ export default function DeletePostDialog({
       console.log(id, document);
 
       if (document) {
-        const path = `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`;
+        const path = `${user?.uid}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`;
 
         const deletePromises = document.imageUrls.map(async (_, index) => {
           const imagePath = path + `_${index}`;

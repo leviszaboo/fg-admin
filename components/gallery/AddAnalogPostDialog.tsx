@@ -147,7 +147,7 @@ export function AddAnalogPostDialog() {
         const compressedFile = await imageCompression(imageUpload[i], options);
         const imageRef = ref(
           storage,
-          `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}_${i}`,
+          `${user?.uid}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}_${i}`,
         );
         const snapshot = await uploadBytes(imageRef, compressedFile);
         const url = await getDownloadURL(snapshot.ref);
@@ -168,7 +168,7 @@ export function AddAnalogPostDialog() {
       await setDoc(
         doc(
           db,
-          `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}`,
+          `${user?.uid}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}`,
         ),
         document,
       );

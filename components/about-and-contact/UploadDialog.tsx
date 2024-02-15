@@ -77,7 +77,7 @@ export default function UploadDialog() {
 
         const storageRef = ref(
           storage,
-          `${user?.email}/featured/about-me/${imageUpload[i].name}`,
+          `${user?.uid}/featured/about-me/${imageUpload[i].name}`,
         );
         await uploadBytes(storageRef, compressedFile);
         const url = await getDownloadURL(storageRef);
@@ -91,7 +91,7 @@ export default function UploadDialog() {
         };
 
         await setDoc(
-          doc(db, `${user?.email}/featured/about-me/${id}`),
+          doc(db, `${user?.uid}/featured/about-me/${id}`),
           document,
         );
 

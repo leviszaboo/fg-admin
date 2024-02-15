@@ -15,7 +15,7 @@ export default function AboutMePhotos() {
   const { aboutMeUrls, addAboutMeUrl } = useImageUrlStore();
   const { fetchImageUrls } = useFetchImageUrls();
 
-  const ref = `${user?.email}/featured/about-me`;
+  const ref = `${user?.uid}/featured/about-me`;
 
   useEffect(() => {
     if (aboutMeUrls.length === 0) {

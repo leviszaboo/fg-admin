@@ -18,7 +18,7 @@ export function useContactInfo() {
 
   const auth = useAuth();
   const user = auth.currentUser;
-  const ref = `${user?.email}/contact-info`;
+  const ref = `${user?.uid}/contact-info`;
 
   async function getContactInfo() {
     setLoading(true);

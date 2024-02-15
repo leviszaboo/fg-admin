@@ -22,8 +22,8 @@ export default function ImageStorage() {
 
   const auth = useAuth();
   const user = auth.currentUser;
-  const verticalRef = `${user?.email}/featured/vertical`;
-  const horizontalRef = `${user?.email}/featured/horizontal`;
+  const verticalRef = `${user?.uid}/featured/vertical`;
+  const horizontalRef = `${user?.uid}/featured/horizontal`;
 
   async function fetchImageUrls(
     ref: string,
