@@ -37,7 +37,6 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await auth.browserSession();
       await auth.login(data.email, data.password);
     } catch (err) {
       if (

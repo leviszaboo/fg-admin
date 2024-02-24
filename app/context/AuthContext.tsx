@@ -6,8 +6,6 @@ import {
   signOut,
   User as FirebaseUser,
   UserCredential,
-  setPersistence,
-  browserSessionPersistence,
   verifyBeforeUpdateEmail,
 } from "firebase/auth";
 
@@ -19,7 +17,6 @@ interface AuthContextProps {
   logout(): Promise<void>;
   resetPassword(email: string): Promise<void>;
   updateUserEmail(email: string): Promise<void> | undefined;
-  browserSession(): Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
@@ -53,10 +50,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return verifyBeforeUpdateEmail(currentUser, email);
   }
 
-  function browserSession() {
-    return setPersistence(auth, browserSessionPersistence);
-  }
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(
       auth,
@@ -79,7 +72,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     logout,
     resetPassword,
     updateUserEmail,
-    browserSession,
   };
 
   return (

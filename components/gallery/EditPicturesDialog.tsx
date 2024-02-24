@@ -72,7 +72,7 @@ export default function EditPicturesDialog({
         await updateDoc(
           doc(
             db,
-            `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${id}`,
+            `${user?.uid}/gallery/${isAnalogSelected ? "analog" : "digital"}/${id}`,
           ),
           {
             imageUrls: newUrls,
