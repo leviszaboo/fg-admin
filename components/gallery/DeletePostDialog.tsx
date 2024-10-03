@@ -1,67 +1,42 @@
-import { useState } from "react";
-import { deleteObject, ref } from "firebase/storage";
-import { doc, deleteDoc } from "firebase/firestore";
-
+import useDeleteHandler from "@/app/hooks/useDeleteHandler";
 import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
-import { storage, db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
-import DeleteDialog from "../DeleteDialog";
+import DeleteDialogWrapper from "@/components/DeleteDialogWrapper";
 import useGalleryStore from "@/app/hooks/UseGallery";
 import { DialogProps } from "@/app/interfaces/dialogProps";
 
-export default function DeletePostDialog({
-  id,
-  dialogOpen,
-  setDialogOpen,
-}: DialogProps) {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+export default function DeletePostDialog({ id, dialogOpen, setDialogOpen }: DialogProps) {
+  const { loading, error, handleDelete } = useDeleteHandler();
+  const auth = useAuth();
+  const user = auth.currentUser;
 
   const { isAnalogSelected } = useGalleryStore();
   const { postDocuments, removePostDocument } = useFireStoreDocumentsStore();
 
-  const auth = useAuth();
-  const user = auth.currentUser;
+  const handleDeleteClick = () => {
+    const document = postDocuments.find((doc) => doc.id === id);
 
-  async function handleDelete() {
-    try {
-      setLoading(true);
-      setError("");
-      const document = postDocuments.find((doc) => doc.id === id);
-      console.log(id, document);
-
-      if (document) {
-        const path = `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`;
-
-        const deletePromises = document.imageUrls.map(async (_, index) => {
-          const imagePath = path + `_${index}`;
-          const desertRef = ref(storage, imagePath);
-          await deleteObject(desertRef);
-        });
-
-        await Promise.all(deletePromises);
-
-        await deleteDoc(doc(db, path));
-        removePostDocument(document);
-      } else {
-        setError("Document not found.");
-      }
-      setDialogOpen(false);
-    } catch (err) {
-      console.log(err);
-      setError("Something went wrong.");
-    } finally {
-      setLoading(false);
+    if (document) {
+      handleDelete({
+        selectedImages: document.imageUrls,
+        getFirestorePath: (name) =>
+          `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`,
+        getStoragePath: (item, index) => `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}_${index}`,
+        removeDocument: removePostDocument,
+        removeUrl: () => {}, // No URL store management in this case
+        removeFromSelected: () => {}, // No selection management in this case
+      });
     }
-  }
+  };
 
   return (
-    <DeleteDialog
+    <DeleteDialogWrapper
       loading={loading}
       error={error}
-      handleDelete={handleDelete}
       dialogOpen={dialogOpen}
       setDialogOpen={setDialogOpen}
+      handleDelete={handleDeleteClick}
+      disabled={false}
     />
   );
 }
