@@ -2,6 +2,7 @@ import { useState } from "react";
 import { deleteObject, ref } from "firebase/storage";
 import { doc, deleteDoc } from "firebase/firestore";
 import { storage, db } from "@/app/firebase/config";
+import { FeaturedDocument, PostDocument } from "./UseFireStoreDocuments";
 
 export default function useDeleteHandler() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -14,6 +15,7 @@ export default function useDeleteHandler() {
     removeDocument,
     removeUrl,
     removeFromSelected,
+    document
   }: {
     selectedImages: string[],
     getFirestorePath: (name: string) => string,
@@ -21,6 +23,7 @@ export default function useDeleteHandler() {
     removeDocument: (doc: any) => void,
     removeUrl: (item: string) => void,
     removeFromSelected: (item: string) => void,
+    document?: FeaturedDocument | PostDocument,
   }) {
     try {
       setLoading(true);
@@ -39,7 +42,7 @@ export default function useDeleteHandler() {
         const path = getFirestorePath(name || "");
         try {
           await deleteDoc(doc(db, path));
-          removeDocument({ name });
+          document ? removeDocument(document) : removeDocument({ name });
         } catch (err) {
           setError("Failed to delete document.");
         }
