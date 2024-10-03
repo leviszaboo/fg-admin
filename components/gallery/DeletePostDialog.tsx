@@ -23,8 +23,9 @@ export default function DeletePostDialog({ id, dialogOpen, setDialogOpen }: Dial
           `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`,
         getStoragePath: (item, index) => `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}_${index}`,
         removeDocument: removePostDocument,
-        removeUrl: () => {}, // No URL store management in this case
-        removeFromSelected: () => {}, // No selection management in this case
+        removeUrl: () => {}, 
+        removeFromSelected: () => {}, 
+        document: document,
       });
     }
   };
@@ -37,6 +38,7 @@ export default function DeletePostDialog({ id, dialogOpen, setDialogOpen }: Dial
       setDialogOpen={setDialogOpen}
       handleDelete={handleDeleteClick}
       disabled={false}
+      button={false}
     />
   );
 }

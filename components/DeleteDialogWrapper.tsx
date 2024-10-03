@@ -1,6 +1,16 @@
 import { Button } from "@/components/ui/button";
 import DeleteDialog from "./DeleteDialog";
 
+interface DeleteDialogWrapperProps {
+  loading: boolean;
+  error: string;
+  dialogOpen: boolean;
+  setDialogOpen: (open: boolean) => void;
+  handleDelete: () => void;
+  disabled: boolean;
+  button?: boolean;
+}
+
 export default function DeleteDialogWrapper({
   loading,
   error,
@@ -8,14 +18,8 @@ export default function DeleteDialogWrapper({
   setDialogOpen,
   handleDelete,
   disabled,
-}: {
-  loading: boolean;
-  error: string;
-  dialogOpen: boolean;
-  setDialogOpen: (open: boolean) => void;
-  handleDelete: () => void;
-  disabled: boolean;
-}) {
+  button = true,
+}: DeleteDialogWrapperProps) {
   return (
     <DeleteDialog
       loading={loading}
@@ -24,9 +28,11 @@ export default function DeleteDialogWrapper({
       dialogOpen={dialogOpen}
       setDialogOpen={setDialogOpen}
     >
-      <Button size={"sm"} variant={"destructive"} disabled={disabled}>
-        Delete
-      </Button>
+      {button && (
+        <Button size={"sm"} variant={"destructive"} disabled={disabled}>
+          Delete
+        </Button>
+      )}
     </DeleteDialog>
   );
 }
