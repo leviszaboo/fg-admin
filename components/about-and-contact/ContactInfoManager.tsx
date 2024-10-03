@@ -18,6 +18,8 @@ export default function ContactInfoManager() {
     email: "",
     phoneNumber: "",
     address: "",
+    instagram: "",
+    linkedIn: "",
   });
 
   const auth = useAuth();
@@ -50,6 +52,8 @@ export default function ContactInfoManager() {
         email: contactInfo.email,
         address: contactInfo.address,
         phoneNumber: contactInfo.phoneNumber,
+        instagram: contactInfo.instagram,
+        linkedIn: contactInfo.linkedIn
       });
       setIsEditing(false);
     } catch (err) {
@@ -109,6 +113,26 @@ export default function ContactInfoManager() {
             type="text"
             value={contactInfo.address}
             onChange={(e) => onChange("address", e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label>
+            <h2 className="font-semibold">Instagram</h2>
+          </Label>
+          <Input
+            type="text"
+            value={contactInfo.instagram}
+            onChange={(e) => onChange("instagram", e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label>
+            <h2 className="font-semibold">LinkedIn</h2>
+          </Label>
+          <Input
+            type="text"
+            value={contactInfo.linkedIn}
+            onChange={(e) => onChange("linkedIn", e.target.value)}
           />
         </div>
       </div>

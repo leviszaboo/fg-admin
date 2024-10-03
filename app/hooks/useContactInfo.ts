@@ -14,6 +14,8 @@ export function useContactInfo() {
     email: "",
     address: "",
     phoneNumber: "",
+    instagram: "",
+    linkedIn: ""
   });
 
   const auth = useAuth();
