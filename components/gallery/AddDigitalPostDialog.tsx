@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { doc, setDoc } from "firebase/firestore";
-import { Plus, GalleryHorizontalEnd } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-
-import { db, storage } from "@/app/firebase/config";
+import { doc, setDoc } from "firebase/firestore";
 import { useAuth } from "@/app/context/AuthContext";
+import { Plus, GalleryHorizontalEnd } from "lucide-react";
+
+import { db } from "@/app/firebase/config";
 import {
   useFireStoreDocumentsStore,
   PostDocument,
@@ -23,8 +22,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import imageCompression from "browser-image-compression";
-import { imageUploadOptions as options } from "@/app/config/imageUploadOptions";
+import ImageKitUpload from "../ImageKitUpload";
 
 export interface PostDescription {
   title: string;
@@ -36,7 +34,8 @@ export function AddDigitalPostDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [imageUpload, setImageUpload] = useState<FileList | null>(null);
+  const [imageUrls, setImageUrls] = useState<string[]>([]); // For multiple images
+  const [coverPhoto, setCoverPhoto] = useState<string | null>(null); // For cover photo URL
 
   const [postDescription, setPostDescription] = useState<PostDescription>({
     title: "",
@@ -49,9 +48,13 @@ export function AddDigitalPostDialog() {
   const auth = useAuth();
   const user = auth.currentUser;
 
+  const postId = uuidv4();
+  const basePath = `${user?.uid}/gallery/digital/${postId}`;
+
   function handleOpen() {
     setError("");
-    setImageUpload(null);
+    setImageUrls([]);
+    setCoverPhoto(null);
     setPostDescription({
       title: "",
       subTitle: "",
@@ -66,44 +69,38 @@ export function AddDigitalPostDialog() {
     }));
   }
 
-  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setImageUpload(event.target.files);
-  }
+  const handleImageUploadSuccess = (response: any) => {
+    const uploadedUrl = response.url;
+    setImageUrls((prevUrls) => [...prevUrls, uploadedUrl]); // Append to the list
+  };
+
+  const handleCoverPhotoUploadSuccess = (response: any) => {
+    const uploadedUrl = response.url;
+    setCoverPhoto(uploadedUrl); // Set the cover photo URL
+  };
+
+  const handleImageUploadError = (err: any) => {
+    console.error("ImageKit Upload Error:", err);
+    setError("Image upload failed. Please try again.");
+  };
 
   async function handleSubmit() {
     setError("");
     setLoading(true);
 
     try {
-      if (!imageUpload || imageUpload.length !== 1) {
-        setError(
-          "Some required elements are missing. Check if you uploaded the correct number of images.",
-        );
+      if (imageUrls.length === 0 || !coverPhoto) {
+        setError("Please upload at least one image and select a cover photo.");
         setLoading(false);
-
         return;
       }
 
       const { title, subTitle, description } = postDescription;
 
-      const postId = uuidv4();
-      const urls = [];
-
-      for (let i = 0; i < imageUpload.length; i++) {
-        const compressedFile = await imageCompression(imageUpload[i], options);
-
-        const imageRef = ref(
-          storage,
-          `${user?.email}/gallery/digital/${postId}_${i}`,
-        );
-        const snapshot = await uploadBytes(imageRef, compressedFile);
-        const url = await getDownloadURL(snapshot.ref);
-        urls.push(url);
-      }
-
       const document: PostDocument = {
         id: postId,
-        imageUrls: urls,
+        imageUrls, // List of images
+        //coverPhoto, // Cover photo URL
         descriptionLayout: "",
         title,
         subTitle,
@@ -113,13 +110,13 @@ export function AddDigitalPostDialog() {
       };
 
       await setDoc(
-        doc(db, `${user?.email}/gallery/digital/${postId}`),
-        document,
+        doc(db, basePath),
+        document
       );
       addPostDocument(document);
       setDialogOpen(false);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError("Something went wrong. Try again.");
     }
     setLoading(false);
@@ -156,14 +153,27 @@ export function AddDigitalPostDialog() {
               htmlFor="pictures"
               className={`text-left ${error ? "text-red-500" : null}`}
             >
-              Upload Image(s)
+              Upload Images
             </Label>
-            <Input
-              className="hover:cursor-pointer"
-              id="picture"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
+            <ImageKitUpload
+              folder={basePath}
+              fileName={postDescription.title}
+              onSuccessCb={handleImageUploadSuccess}
+              onErrorCb={handleImageUploadError}
+            />
+          </div>
+          <div className="grid grid-cols-2 w-full items-center gap-4 mt-4">
+            <Label
+              htmlFor="cover-photo"
+              className={`text-left ${error ? "text-red-500" : null}`}
+            >
+              Upload Cover Photo
+            </Label>
+            <ImageKitUpload
+              folder={basePath}
+              fileName={`${postDescription.title}_cover`}
+              onSuccessCb={handleCoverPhotoUploadSuccess}
+              onErrorCb={handleImageUploadError}
             />
           </div>
           <Label htmlFor="pictures" className={`text-left py-4`}>

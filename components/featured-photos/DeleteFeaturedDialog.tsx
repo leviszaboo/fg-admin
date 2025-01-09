@@ -22,7 +22,7 @@ export default function DeleteFeaturedDialog() {
   const { featuredDocuments, removeFeaturedDocument } =
     useFireStoreDocumentsStore();
 
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false); // Manage your dialog state here
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false); 
 
   const handleDeleteClick = () => {
     handleDelete({
