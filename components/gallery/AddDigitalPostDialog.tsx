@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { doc, setDoc } from "firebase/firestore";
 import { useAuth } from "@/app/context/AuthContext";
 import { Plus, GalleryHorizontalEnd } from "lucide-react";
+import { uploadFile } from "@/app/utils/upload";
 
 import { db } from "@/app/firebase/config";
 import {
@@ -13,7 +14,6 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -22,7 +22,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ImageKitUpload from "../ImageKitUpload";
 
 export interface PostDescription {
   title: string;
@@ -34,8 +33,8 @@ export function AddDigitalPostDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [imageUrls, setImageUrls] = useState<string[]>([]); // For multiple images
-  const [coverPhoto, setCoverPhoto] = useState<string | null>(null); // For cover photo URL
+  const [files, setFiles] = useState<File[]>([]);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
 
   const [postDescription, setPostDescription] = useState<PostDescription>({
     title: "",
@@ -44,7 +43,6 @@ export function AddDigitalPostDialog() {
   });
 
   const { addPostDocument } = useFireStoreDocumentsStore();
-
   const auth = useAuth();
   const user = auth.currentUser;
 
@@ -53,8 +51,8 @@ export function AddDigitalPostDialog() {
 
   function handleOpen() {
     setError("");
-    setImageUrls([]);
-    setCoverPhoto(null);
+    setFiles([]);
+    setCoverFile(null);
     setPostDescription({
       title: "",
       subTitle: "",
@@ -69,19 +67,16 @@ export function AddDigitalPostDialog() {
     }));
   }
 
-  const handleImageUploadSuccess = (response: any) => {
-    const uploadedUrl = response.url;
-    setImageUrls((prevUrls) => [...prevUrls, uploadedUrl]); // Append to the list
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setFiles(Array.from(event.target.files));
+    }
   };
 
-  const handleCoverPhotoUploadSuccess = (response: any) => {
-    const uploadedUrl = response.url;
-    setCoverPhoto(uploadedUrl); // Set the cover photo URL
-  };
-
-  const handleImageUploadError = (err: any) => {
-    console.error("ImageKit Upload Error:", err);
-    setError("Image upload failed. Please try again.");
+  const handleCoverFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setCoverFile(event.target.files[0]);
+    }
   };
 
   async function handleSubmit() {
@@ -89,18 +84,29 @@ export function AddDigitalPostDialog() {
     setLoading(true);
 
     try {
-      if (imageUrls.length === 0 || !coverPhoto) {
-        setError("Please upload at least one image and select a cover photo.");
+      if (files.length === 0 || !coverFile) {
+        setError("Please upload at least one image and a cover photo.");
         setLoading(false);
         return;
       }
+
+      const imageUploadPromises = files.map((file) =>
+        uploadFile(file, file.name, basePath)
+      );
+      const imageUrls = await Promise.all(imageUploadPromises);
+
+      const coverPhotoUrl = await uploadFile(
+        coverFile,
+        `${postDescription.title}_cover`,
+        basePath
+      );
 
       const { title, subTitle, description } = postDescription;
 
       const document: PostDocument = {
         id: postId,
-        imageUrls, // List of images
-        //coverPhoto, // Cover photo URL
+        imageUrls,
+        coverPhoto: coverPhotoUrl,
         descriptionLayout: "",
         title,
         subTitle,
@@ -109,17 +115,15 @@ export function AddDigitalPostDialog() {
         createdAt: new Date(),
       };
 
-      await setDoc(
-        doc(db, basePath),
-        document
-      );
+      await setDoc(doc(db, basePath), document);
       addPostDocument(document);
       setDialogOpen(false);
     } catch (err) {
-      console.error(err);
+      console.error("Error creating post:", err);
       setError("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
@@ -134,67 +138,52 @@ export function AddDigitalPostDialog() {
         <DialogHeader>
           <DialogTitle>
             <div className="flex h-6 pb-1 items-end">
-              <div>
-                <GalleryHorizontalEnd className="h-5 w-5 mr-2" />
-              </div>
-              <div className="">Create New Post</div>
+              <GalleryHorizontalEnd className="h-5 w-5 mr-2" />
+              <div>Create New Post</div>
             </div>
           </DialogTitle>
-          <DialogDescription></DialogDescription>
         </DialogHeader>
         <div className="flex flex-col pt-2 pb-2">
-          {error && (
-            <div className="text-sm text-red-500 pb-3 font-semibold">
-              {error}
-            </div>
-          )}
-          <div className="grid grid-cols-2 w-full items-center gap-4">
-            <Label
-              htmlFor="pictures"
-              className={`text-left ${error ? "text-red-500" : null}`}
-            >
-              Upload Images
-            </Label>
-            <ImageKitUpload
-              folder={basePath}
-              fileName={postDescription.title}
-              onSuccessCb={handleImageUploadSuccess}
-              onErrorCb={handleImageUploadError}
-            />
-          </div>
-          <div className="grid grid-cols-2 w-full items-center gap-4 mt-4">
-            <Label
-              htmlFor="cover-photo"
-              className={`text-left ${error ? "text-red-500" : null}`}
-            >
-              Upload Cover Photo
-            </Label>
-            <ImageKitUpload
-              folder={basePath}
-              fileName={`${postDescription.title}_cover`}
-              onSuccessCb={handleCoverPhotoUploadSuccess}
-              onErrorCb={handleImageUploadError}
-            />
-          </div>
-          <Label htmlFor="pictures" className={`text-left py-4`}>
-            Add Title
-          </Label>
+          {error && <div className="text-sm text-red-500 pb-3">{error}</div>}
+          <Label>Upload Images</Label>
           <Input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFileChange}
+            className="mt-2"
+          />
+          <Label className="mt-4">Upload Cover Photo</Label>
+          <Input 
+            type="file" 
+            accept="image/*"
+            onChange={handleCoverFileChange} 
+            className="mt-2" 
+          />
+          <Label className="mt-4">Add Title</Label>
+          <Input
+            className="mt-2"
             type="text"
             value={postDescription.title}
             onChange={(e) => onChange("title", e.target.value)}
           />
-          <Label htmlFor="pictures" className={`text-left py-4`}>
-            Add Subtitle
-          </Label>
+          <Label className="mt-4">Add Subtitle</Label>
           <Input
+            className="mt-2"
             type="text"
             value={postDescription.subTitle}
             onChange={(e) => onChange("subTitle", e.target.value)}
           />
+          <Label className="mt-4">Add Description</Label>
+          <Input
+            className="mt-2"
+            type="text"
+            value={postDescription.description}
+            onChange={(e) => onChange("description", e.target.value)}
+          />
         </div>
         <DialogFooter>
-          <Button variant={"black"} disabled={loading} onClick={handleSubmit}>
+          <Button disabled={loading} onClick={handleSubmit}>
             {!loading ? "Upload" : "Uploading..."}
           </Button>
         </DialogFooter>

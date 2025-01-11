@@ -21,6 +21,7 @@ export interface PostDocument extends Document {
   subTitle: string;
   description: string;
   destinationGallery: string;
+  coverPhoto?: string;
 }
 
 interface FirestoreDocumentStore {
