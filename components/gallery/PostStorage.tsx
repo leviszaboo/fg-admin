@@ -16,8 +16,8 @@ export default function PostStorage() {
 
   const auth = useAuth();
   const user = auth.currentUser;
-  const analogRef = `${user?.email}/gallery/analog`;
-  const digitalRef = `${user?.email}/gallery/digital`;
+  const analogRef = `${user?.uid}/gallery/analog`;
+  const digitalRef = `${user?.uid}/gallery/digital`;
 
   async function fetchImageUrls(ref: string) {
     try {

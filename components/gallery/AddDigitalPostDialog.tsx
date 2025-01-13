@@ -3,7 +3,8 @@ import { v4 as uuidv4 } from "uuid";
 import { doc, setDoc } from "firebase/firestore";
 import { useAuth } from "@/app/context/AuthContext";
 import { Plus, GalleryHorizontalEnd } from "lucide-react";
-import { uploadFile } from "@/app/utils/upload";
+import { uploadFile } from "@/app/utils/imageKit";
+import { PostDescription } from "@/app/interfaces/gallery";
 
 import { db } from "@/app/firebase/config";
 import {
@@ -22,12 +23,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-export interface PostDescription {
-  title: string;
-  subTitle: string;
-  description: string;
-}
 
 export function AddDigitalPostDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -90,8 +85,8 @@ export function AddDigitalPostDialog() {
         return;
       }
 
-      const imageUploadPromises = files.map((file) =>
-        uploadFile(file, file.name, basePath)
+      const imageUploadPromises = files.map((file, i) => 
+        uploadFile(file, `${postId}_${i}`, basePath)
       );
       const imageUrls = await Promise.all(imageUploadPromises);
 

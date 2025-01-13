@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 
 import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
-import { db, storage } from "@/app/firebase/config";
+import { db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 import useGalleryStore from "@/app/hooks/UseGallery";
 
@@ -19,9 +19,7 @@ import { Input } from "../ui/input";
 
 import { GalleryHorizontalEnd } from "lucide-react";
 import { EditPicturesDialogProps } from "@/app/interfaces/dialogProps";
-import imageCompression from "browser-image-compression";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { imageUploadOptions as options } from "@/app/config/imageUploadOptions";
+import { uploadFile } from "@/app/utils/imageKit";
 
 export default function EditPicturesDialog({
   id,
@@ -36,12 +34,16 @@ export default function EditPicturesDialog({
     useFireStoreDocumentsStore();
   const { isAnalogSelected } = useGalleryStore();
 
+  const basePath = `${user?.uid}/gallery/${isAnalogSelected ? "analog" : "digital"}/${id}`
+
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [imageUpload, setImageUpload] = useState<FileList | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setImageUpload(event.target.files);
+    if (event.target.files) {
+      setFiles(Array.from(event.target.files));
+    }
   }
 
   useEffect(() => {
@@ -54,25 +56,16 @@ export default function EditPicturesDialog({
     setLoading(true);
     setError("");
     try {
-      if (imageUpload && imageUpload.length === urls.length) {
-        const newUrls = [];
-        for (let i = 0; i < imageUpload.length; i++) {
-          const compressedFile = await imageCompression(
-            imageUpload[i],
-            options,
-          );
-          const imageRef = ref(
-            storage,
-            `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${id}_${i}`,
-          );
-          const snapshot = await uploadBytes(imageRef, compressedFile);
-          const url = await getDownloadURL(snapshot.ref);
-          newUrls.push(url);
-        }
+      if (files && files.length === urls.length) {
+        const imageUploadPromises = files.map((file) =>
+          uploadFile(file, file.name, basePath)
+        );
+        const newUrls = await Promise.all(imageUploadPromises);
+
         await updateDoc(
           doc(
             db,
-            `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${id}`,
+            basePath,
           ),
           {
             imageUrls: newUrls,
@@ -115,15 +108,15 @@ export default function EditPicturesDialog({
             </div>
           )}
           <div className="flex align-center justify-center gap-6">
-            {imageUpload &&
-              Array.from(imageUpload).map((file) => (
+            {files &&
+              Array.from(files).map((file) => (
                 <img
                   key={file.name}
-                  className={`${imageUpload.length > 1 ? "w-1/3" : "w-2/3"} rounded-xl outline outline-2 outline-amber-400 outline-offset-1`}
+                  className={`${files.length > 1 ? "w-1/3" : "w-2/3"} rounded-xl outline outline-2 outline-amber-400 outline-offset-1`}
                   src={URL.createObjectURL(file)}
                 ></img>
               ))}
-            {(!imageUpload || imageUpload.length === 0) &&
+            {(!files || files.length === 0) &&
               urls.map((url) => (
                 <img
                   key={url}

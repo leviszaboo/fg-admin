@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { Plus, GalleryHorizontalEnd } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
-import { db, storage } from "@/app/firebase/config";
+import { db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 import useGalleryStore from "@/app/hooks/UseGallery";
+import { uploadFile } from "@/app/utils/imageKit"
 import {
   useFireStoreDocumentsStore,
   PostDocument,
 } from "@/app/hooks/UseFireStoreDocuments";
+import { PostDescription } from "@/app/interfaces/gallery";
 
 import {
   Dialog,
@@ -41,17 +42,11 @@ export const descriptionOptions = [
   },
 ];
 
-export interface PostDescription {
-  title: string;
-  subTitle: string;
-  description: string;
-}
-
 export function AddAnalogPostDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [imageUpload, setImageUpload] = useState<FileList | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [descriptionLayoutValue, setdescriptionLayoutValue] =
     useState<string>("");
   const [imageCount, setImageCount] = useState<number>(0);
@@ -85,10 +80,12 @@ export function AddAnalogPostDialog() {
 
   const auth = useAuth();
   const user = auth.currentUser;
+  const postId = uuidv4();
+  const basePath = `${user?.uid}/gallery/analog/${postId}`;
 
   function handleOpen() {
     setError("");
-    setImageUpload(null);
+    setFiles([]);
     setdescriptionLayoutValue("");
     setImageCount(0);
     setPostDescription({
@@ -106,7 +103,9 @@ export function AddAnalogPostDialog() {
   }
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setImageUpload(event.target.files);
+    if (event.target.files) {
+      setFiles(Array.from(event.target.files));
+    }
   }
 
   function onSelectDescription(value: string) {
@@ -122,12 +121,12 @@ export function AddAnalogPostDialog() {
     setLoading(true);
     try {
       if (
-        !imageUpload ||
-        imageUpload.length === 0 ||
+        !files ||
+        files.length === 0 ||
         (descriptionLayoutValue !== "left" &&
           descriptionLayoutValue !== "right") ||
         (imageCount !== 1 && imageCount !== 2) ||
-        imageCount !== imageUpload.length
+        imageCount !== files.length
       ) {
         setError(
           "Some required elements are missing. Check if you uploaded the correct number of images.",
@@ -139,20 +138,10 @@ export function AddAnalogPostDialog() {
 
       const { title, subTitle, description } = postDescription;
 
-      const postId = uuidv4();
-
-      const urls = [];
-
-      for (let i = 0; i < imageUpload.length; i++) {
-        const compressedFile = await imageCompression(imageUpload[i], options);
-        const imageRef = ref(
-          storage,
-          `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}_${i}`,
-        );
-        const snapshot = await uploadBytes(imageRef, compressedFile);
-        const url = await getDownloadURL(snapshot.ref);
-        urls.push(url);
-      }
+      const imageUploadPromises = files.map((file) =>
+        uploadFile(file, file.name, basePath)
+      );
+      const urls = await Promise.all(imageUploadPromises);
 
       const document: PostDocument = {
         id: postId,
@@ -168,7 +157,7 @@ export function AddAnalogPostDialog() {
       await setDoc(
         doc(
           db,
-          `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${postId}`,
+          basePath,
         ),
         document,
       );
