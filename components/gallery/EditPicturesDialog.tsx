@@ -60,7 +60,9 @@ export default function EditPicturesDialog({
         const imageUploadPromises = files.map((file) =>
           uploadFile(file, file.name, basePath)
         );
-        const newUrls = await Promise.all(imageUploadPromises);
+        
+        const result = await Promise.all(imageUploadPromises);
+        const newUrls = result.map((res) => res.url);
 
         await updateDoc(
           doc(

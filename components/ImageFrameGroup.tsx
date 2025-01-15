@@ -1,14 +1,15 @@
+import { FeaturedDocument } from "@/app/interfaces/documents";
 import ImageFrame from "./ImageFrame";
 
 interface ImageFrameGroupProps {
-  urls: string[];
+  docs: FeaturedDocument[];
 }
 
-export default function ImageFrameGroup({ urls }: ImageFrameGroupProps) {
+export default function ImageFrameGroup({ docs }: ImageFrameGroupProps) {
   return (
     <>
-      {urls.map((url) => (
-        <ImageFrame url={url} key={url} />
+      {docs.map((doc) => (
+        <ImageFrame doc={doc} key={doc.fileId} />
       ))}
     </>
   );

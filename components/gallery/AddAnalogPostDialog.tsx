@@ -9,9 +9,9 @@ import useGalleryStore from "@/app/hooks/UseGallery";
 import { uploadFile } from "@/app/utils/imageKit"
 import {
   useFireStoreDocumentsStore,
-  PostDocument,
 } from "@/app/hooks/UseFireStoreDocuments";
 import { PostDescription } from "@/app/interfaces/gallery";
+import { PostDocument } from "@/app/interfaces/documents";
 
 import {
   Dialog,
@@ -141,11 +141,14 @@ export function AddAnalogPostDialog() {
       const imageUploadPromises = files.map((file) =>
         uploadFile(file, file.name, basePath)
       );
-      const urls = await Promise.all(imageUploadPromises);
+      const results = await Promise.all(imageUploadPromises);
+      const urls = results.map((result) => result.url);
+      const fileIds = results.map((result) => result.fileId);
 
       const document: PostDocument = {
         id: postId,
         imageUrls: urls,
+        fileIds,
         descriptionLayout: descriptionLayoutValue,
         title,
         subTitle,

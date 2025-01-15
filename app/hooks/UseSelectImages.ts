@@ -1,13 +1,14 @@
 import { create } from "zustand";
+import { FeaturedDocument } from "../interfaces/documents";
 
 interface SelectImagesStore {
   isVerticalSelected: boolean;
   isSelected: boolean;
-  selectedImages: string[];
+  selectedImages: FeaturedDocument[];
   setIsVerticalSelected(value: boolean): void;
   setSelected(value: boolean): void;
-  addToSelected(url: string): void;
-  removeFromSelected(url: string): void;
+  addToSelected(doc: FeaturedDocument): void;
+  removeFromSelected(doc: FeaturedDocument): void;
   resetSelected(): void;
 }
 
@@ -17,13 +18,13 @@ const useSelectImagesStore = create<SelectImagesStore>((set) => ({
   selectedImages: [],
   setIsVerticalSelected: (value) => set({ isVerticalSelected: value }),
   setSelected: (value) => set({ isSelected: value }),
-  addToSelected: (url) =>
+  addToSelected: (doc) =>
     set((state) => ({
-      selectedImages: [url, ...state.selectedImages],
+      selectedImages: [doc, ...state.selectedImages],
     })),
-  removeFromSelected: (url) =>
+  removeFromSelected: (doc) =>
     set((state) => ({
-      selectedImages: state.selectedImages.filter((i) => i !== url),
+      selectedImages: state.selectedImages.filter((i) => i !== doc),
     })),
   resetSelected: () => set({ selectedImages: [] }),
 }));

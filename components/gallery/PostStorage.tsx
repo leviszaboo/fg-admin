@@ -28,6 +28,7 @@ export default function PostStorage() {
         const document: PostDocument = {
           id: doc.data().id,
           imageUrls: doc.data().imageUrls,
+          fileIds: doc.data().fileIds,
           title: doc.data().title,
           subTitle: doc.data().subTitle,
           destinationGallery: doc.data().destinationGallery,

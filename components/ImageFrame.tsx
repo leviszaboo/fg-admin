@@ -4,12 +4,9 @@ import useSelectImagesStore from "@/app/hooks/UseSelectImages";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { CheckedState } from "@radix-ui/react-checkbox";
+import { FeaturedDocument } from "@/app/interfaces/documents";
 
-interface ImageFrameProps {
-  url: string;
-}
-
-export default function ImageFrame({ url }: ImageFrameProps) {
+export default function ImageFrame({ doc }: {doc: FeaturedDocument}) {
   const {
     isVerticalSelected,
     isSelected,
@@ -28,9 +25,9 @@ export default function ImageFrame({ url }: ImageFrameProps) {
     }
 
     if (!checked) {
-      addToSelected(url);
+      addToSelected(doc);
     } else {
-      removeFromSelected(url);
+      removeFromSelected(doc);
     }
   }
 
@@ -53,7 +50,7 @@ export default function ImageFrame({ url }: ImageFrameProps) {
           )}
           <img
             className={`object-cover min-h-full -z-50 ${isSelected ? "opacity-80 blur-xs" : null}`}
-            src={url}
+            src={doc.url}
           />
         </div>
       </div>

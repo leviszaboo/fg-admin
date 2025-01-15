@@ -1,3 +1,5 @@
+import { ImageKitResponse } from "../interfaces/imageKit";
+
 function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -22,7 +24,11 @@ export const uploadFile = async (file: File, fileName: string, folder: string) =
   }
 
   const data = await response.json();
-  return data.url as string;
+  
+  return {
+    url: data.url,
+    fileId: data.fileId,
+  } as ImageKitResponse;
 };
 
 export const deleteFile = async (fileId: string) => {

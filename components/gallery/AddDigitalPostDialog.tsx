@@ -5,11 +5,11 @@ import { useAuth } from "@/app/context/AuthContext";
 import { Plus, GalleryHorizontalEnd } from "lucide-react";
 import { uploadFile } from "@/app/utils/imageKit";
 import { PostDescription } from "@/app/interfaces/gallery";
+import { PostDocument } from "@/app/interfaces/documents";
 
 import { db } from "@/app/firebase/config";
 import {
   useFireStoreDocumentsStore,
-  PostDocument,
 } from "@/app/hooks/UseFireStoreDocuments";
 
 import {
@@ -88,9 +88,12 @@ export function AddDigitalPostDialog() {
       const imageUploadPromises = files.map((file, i) => 
         uploadFile(file, `${postId}_${i}`, basePath)
       );
-      const imageUrls = await Promise.all(imageUploadPromises);
 
-      const coverPhotoUrl = await uploadFile(
+      const result = await Promise.all(imageUploadPromises);
+      const imageUrls = result.map((file) => file.url);
+      const fileIds = result.map((file) => file.fileId);
+
+      const coverPhoto = await uploadFile(
         coverFile,
         `${postDescription.title}_cover`,
         basePath
@@ -101,7 +104,8 @@ export function AddDigitalPostDialog() {
       const document: PostDocument = {
         id: postId,
         imageUrls,
-        coverPhoto: coverPhotoUrl,
+        fileIds,
+        coverPhoto: coverPhoto.url,
         descriptionLayout: "",
         title,
         subTitle,

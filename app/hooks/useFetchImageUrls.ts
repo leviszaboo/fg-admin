@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
 import { getDocs, query, collection, orderBy } from "firebase/firestore";
 import {
-  FeaturedDocument,
   useFireStoreDocumentsStore,
 } from "./UseFireStoreDocuments";
 import { db } from "../firebase/config";
+import { FeaturedDocument } from "../interfaces/documents";
 
 export function useFetchImageUrls() {
   const { addFeaturedDocument } = useFireStoreDocumentsStore();
@@ -12,19 +12,20 @@ export function useFetchImageUrls() {
   const [loading, setLoading] = useState(false);
 
   const fetchImageUrls = useCallback(
-    async (ref: string, destinationSetter: (url: string) => void) => {
+    async (ref: string) => {
       try {
         setLoading(true);
         const querySnapshot = await getDocs(
           query(collection(db, ref), orderBy("createdAt", "asc")),
         );
         querySnapshot.forEach((doc) => {
-          destinationSetter(doc.data().url);
           const document: FeaturedDocument = {
             id: doc.data().id,
             name: doc.data().name,
             url: doc.data().url,
+            fileId: doc.data().fileId,
             createdAt: doc.data().createdAt,
+            type: doc.data().type,
           };
 
           addFeaturedDocument(document);

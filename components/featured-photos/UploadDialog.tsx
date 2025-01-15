@@ -1,9 +1,6 @@
 import { useState } from "react";
 
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { doc, setDoc } from "firebase/firestore";
 import { Plus, ImagePlus } from "lucide-react";
-import { v4 as uuidv4 } from "uuid";
 
 import {
   Dialog,
@@ -17,32 +14,24 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import useImageUrlStore from "@/app/hooks/UseImageUrl";
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
 import {
-  useFireStoreDocumentsStore,
-  FeaturedDocument,
+  useFireStoreDocumentsStore
 } from "@/app/hooks/UseFireStoreDocuments";
 import { useAuth } from "@/app/context/AuthContext";
-import { storage, db } from "@/app/firebase/config";
-import imageCompression from "browser-image-compression";
-import { imageUploadOptions as options } from "@/app/config/imageUploadOptions";
+import { createFeaturedPhotos } from "@/app/utils/featuredPhotos";
 
 export default function UploadDialog() {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [imageUpload, setImageUpload] = useState<FileList | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   const auth = useAuth();
   const user = auth.currentUser;
 
   const { isSelected, isVerticalSelected } = useSelectImagesStore();
-
-  const { addHorizontalUrl, addVerticalUrl } = useImageUrlStore();
-
-  const { addFeaturedDocument } = useFireStoreDocumentsStore();
 
   function handleMouseEnter() {
     setIsHovered(true);
@@ -55,55 +44,30 @@ export default function UploadDialog() {
   function handleOpen() {
     if (isSelected) return;
     setError("");
-    setImageUpload(null);
+    setFiles([]);
   }
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setImageUpload(event.target.files);
+    if (event.target.files) {
+      setFiles(Array.from(event.target.files));
+    }
   }
 
   async function uploadImage() {
     setLoading(true);
     setError("");
 
-    if (!imageUpload) {
+    if (files.length === 0) {
       setError("Please select the files to upload.");
       setLoading(false);
       return;
     }
 
     try {
-      for (let i = 0; i < imageUpload.length; i++) {
-        const imageRef = ref(
-          storage,
-          `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${imageUpload[i].name}`,
-        );
-        const compressedFile = await imageCompression(imageUpload[i], options);
-        const snapshot = await uploadBytes(imageRef, compressedFile);
-        const url = await getDownloadURL(snapshot.ref);
+      const type = isVerticalSelected ? "vertical" : "horizontal";
+      const basePath = `${user?.uid}/featured/${type}`;
 
-        if (isVerticalSelected) {
-          addVerticalUrl(url);
-        } else {
-          addHorizontalUrl(url);
-        }
-
-        const documentId = uuidv4();
-        const document: FeaturedDocument = {
-          id: documentId,
-          name: `${imageUpload[i].name}`,
-          url: url,
-          createdAt: new Date(),
-        };
-        await setDoc(
-          doc(
-            db,
-            `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${documentId}`,
-          ),
-          document,
-        );
-        addFeaturedDocument(document);
-      }
+      await createFeaturedPhotos({ basePath, files, type});
 
       setDialogOpen(false);
     } catch (err) {

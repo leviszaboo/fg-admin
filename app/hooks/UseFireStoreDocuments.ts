@@ -1,28 +1,6 @@
 import { create } from "zustand";
 
-interface Document {
-  id: string;
-  createdAt: Date;
-}
-
-export interface FeaturedDocument extends Document {
-  name: string;
-  url: string;
-}
-
-export interface ParagraphDocument extends Document {
-  value: string;
-}
-
-export interface PostDocument extends Document {
-  imageUrls: string[];
-  descriptionLayout: string;
-  title: string;
-  subTitle: string;
-  description: string;
-  destinationGallery: string;
-  coverPhoto?: string;
-}
+import { FeaturedDocument, ParagraphDocument, PostDocument } from "@/app/interfaces/documents";
 
 interface FirestoreDocumentStore {
   postDocuments: PostDocument[];
