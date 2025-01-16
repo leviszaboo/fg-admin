@@ -1,25 +1,29 @@
 "use client";
 
-import useImageUrlStore from "@/app/hooks/UseImageUrl";
 import UploadDialog from "./UploadDialog";
-import { useFetchImageUrls } from "@/app/hooks/useFetchImageUrls";
 import { useAuth } from "@/app/context/AuthContext";
 import { useEffect } from "react";
 import ImageFrameGroup from "../ImageFrameGroup";
 import AboutMePhotosHeader from "./AboutMePhotosHeader";
+import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
+import { useFetchDocs } from "@/app/hooks/useFetchDocs";
 
 export default function AboutMePhotos() {
   const auth = useAuth();
   const user = auth.currentUser;
 
-  const { aboutMeUrls, addAboutMeUrl } = useImageUrlStore();
-  const { fetchImageUrls } = useFetchImageUrls();
+  const { featuredDocuments, addFeaturedDocument } = useFireStoreDocumentsStore();
+  const { fetchDocs } = useFetchDocs();
 
-  const ref = `${user?.email}/featured/about-me`;
+  const aboutMeDocs = featuredDocuments.filter(
+    (doc) => doc.type === "about-me",
+  );
+
+  const ref = `${user?.uid}/featured/about-me`;
 
   useEffect(() => {
-    if (aboutMeUrls.length === 0) {
-      fetchImageUrls(ref, addAboutMeUrl);
+    if (aboutMeDocs.length === 0) {
+      fetchDocs(ref, addFeaturedDocument);
     }
   }, []);
 
@@ -28,7 +32,7 @@ export default function AboutMePhotos() {
       <AboutMePhotosHeader />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-5">
         <UploadDialog />
-        <ImageFrameGroup urls={aboutMeUrls} />
+        <ImageFrameGroup docs={aboutMeDocs} />
       </div>
     </div>
   );

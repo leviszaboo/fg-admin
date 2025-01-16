@@ -2,47 +2,23 @@ import { useEffect } from "react";
 
 import Post from "./Post";
 import {
-  PostDocument,
   useFireStoreDocumentsStore,
 } from "@/app/hooks/UseFireStoreDocuments";
 import useGalleryStore from "@/app/hooks/UseGallery";
 import { useAuth } from "@/app/context/AuthContext";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
+import { useFetchDocs } from "@/app/hooks/useFetchDocs";
 
 export default function PostStorage() {
   const { postDocuments, addPostDocument } = useFireStoreDocumentsStore();
   const { isAnalogSelected } = useGalleryStore();
+  const { fetchDocs } = useFetchDocs();
 
   const auth = useAuth();
   const user = auth.currentUser;
   const analogRef = `${user?.uid}/gallery/analog`;
   const digitalRef = `${user?.uid}/gallery/digital`;
-
-  async function fetchImageUrls(ref: string) {
-    try {
-      const querySnapshot = await getDocs(
-        query(collection(db, ref), orderBy("createdAt", "asc")),
-      );
-      querySnapshot.forEach((doc) => {
-        const document: PostDocument = {
-          id: doc.data().id,
-          imageUrls: doc.data().imageUrls,
-          fileIds: doc.data().fileIds,
-          title: doc.data().title,
-          subTitle: doc.data().subTitle,
-          destinationGallery: doc.data().destinationGallery,
-          description: doc.data().description,
-          descriptionLayout: doc.data().descriptionLayout,
-          createdAt: doc.data().createdAt,
-        };
-
-        addPostDocument(document);
-      });
-    } catch (error) {
-      console.error("Error fetching image URLs:", error);
-    }
-  }
 
   const analog = postDocuments.filter(
     (doc) => doc.destinationGallery === "analog",
@@ -53,10 +29,10 @@ export default function PostStorage() {
 
   useEffect(() => {
     if (analog.length === 0) {
-      fetchImageUrls(analogRef);
+      fetchDocs(analogRef, addPostDocument);
     }
     if (digital.length === 0) {
-      fetchImageUrls(digitalRef);
+      fetchDocs(digitalRef, addPostDocument);
     }
   }, []);
 

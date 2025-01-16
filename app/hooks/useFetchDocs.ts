@@ -4,40 +4,33 @@ import {
   useFireStoreDocumentsStore,
 } from "./UseFireStoreDocuments";
 import { db } from "../firebase/config";
-import { FeaturedDocument } from "../interfaces/documents";
+import { FeaturedDocument, FsDocument, PostDocument } from "../interfaces/documents";
 
-export function useFetchImageUrls() {
-  const { addFeaturedDocument } = useFireStoreDocumentsStore();
+export function useFetchDocs() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchImageUrls = useCallback(
-    async (ref: string) => {
+  const fetchDocs = 
+    async <T extends FsDocument>(ref: string, setter: (doc: T) => void) => {
       try {
         setLoading(true);
         const querySnapshot = await getDocs(
           query(collection(db, ref), orderBy("createdAt", "asc")),
         );
         querySnapshot.forEach((doc) => {
-          const document: FeaturedDocument = {
+          const document: T = {
             id: doc.data().id,
-            name: doc.data().name,
-            url: doc.data().url,
-            fileId: doc.data().fileId,
-            createdAt: doc.data().createdAt,
-            type: doc.data().type,
-          };
+            ...doc.data(),
+          } as T;
 
-          addFeaturedDocument(document);
+          setter(document);
         });
       } catch (error) {
         console.error("Error fetching image URLs:", error);
         setError("An error occurred while fetching images.");
       }
       setLoading(false);
-    },
-    [addFeaturedDocument],
-  );
+    }
 
-  return { fetchImageUrls, error, loading };
+  return { fetchDocs, error, loading };
 }
