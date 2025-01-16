@@ -6,7 +6,7 @@ import { db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 import useGalleryStore from "@/app/hooks/UseGallery";
 
-import { descriptionOptions, PostDescription } from "./AddAnalogPostDialog";
+import { descriptionOptions } from "./AddAnalogPostDialog";
 import ComboBox from "../ComboBox";
 
 import {
@@ -23,6 +23,7 @@ import { Textarea } from "../ui/textarea";
 
 import { GalleryHorizontalEnd } from "lucide-react";
 import { DialogProps } from "@/app/interfaces/dialogProps";
+import { PostDescription } from "@/app/interfaces/gallery";
 
 export default function UpdateDescriptionDialog({
   id,
@@ -167,17 +168,13 @@ export default function UpdateDescriptionDialog({
             value={postDescription.subTitle}
             onChange={(e) => onChange("subTitle", e.target.value)}
           />
-          {isAnalogSelected && (
-            <>
-              <Label htmlFor="description" className={`text-left py-4`}>
-                Add Description
-              </Label>
-              <Textarea
-                value={postDescription.description}
-                onChange={(e) => onChange("description", e.target.value)}
-              />
-            </>
-          )}
+          <Label htmlFor="description" className={`text-left py-4`}>
+            Add Description
+          </Label>
+          <Textarea
+            value={postDescription.description}
+            onChange={(e) => onChange("description", e.target.value)}
+          />
         </div>
         <DialogFooter>
           <Button variant={"black"} disabled={loading} onClick={handleUpdate}>

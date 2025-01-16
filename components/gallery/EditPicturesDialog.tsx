@@ -56,11 +56,11 @@ export default function EditPicturesDialog({
     setLoading(true);
     setError("");
     try {
-      if (files && files.length === urls.length) {
+      if (files.length > 0) {
         const imageUploadPromises = files.map((file) =>
           uploadFile(file, file.name, basePath)
         );
-        
+
         const result = await Promise.all(imageUploadPromises);
         const newUrls = result.map((res) => res.url);
 
@@ -79,7 +79,7 @@ export default function EditPicturesDialog({
         setDialogOpen(false);
       } else {
         setError(
-          "Please upload the same number of images as the original post.",
+          "Please upload at least one image to update the post.",
         );
       }
     } catch (err) {

@@ -28,10 +28,10 @@ export default function DeleteParagraphDialog({
       const document = paragraphDocuments.find((doc) => doc.id === id);
 
       if (document) {
-        const path = `${user?.email}/about-me/paragraphs/${document.id}`;
+        const path = `${user?.uid}/about-me/paragraphs/${document.id}`;
 
         await deleteDoc(doc(db, path));
-        removeParagraphDocument(document);
+        removeParagraphDocument(document.id);
       } else {
         setError("Document not found.");
       }

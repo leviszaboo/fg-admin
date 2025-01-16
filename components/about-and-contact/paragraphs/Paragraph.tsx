@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import ParagraphOptions from "./ParagraphOptions";
 import DeleteParagraphDialog from "./DeleteParagraphDialog";
-import { ParagraphDocument } from "@/app/hooks/UseFireStoreDocuments";
 import UpdateParagraphDialog from "./UpdateParagraphDialog";
+import { ParagraphDocument } from "@/app/interfaces/documents";
 
 export default function Paragraph({
   paragraph,

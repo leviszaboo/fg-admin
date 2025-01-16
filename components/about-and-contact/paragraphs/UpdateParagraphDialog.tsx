@@ -45,7 +45,7 @@ export default function UpdateParagraphDialog({
     try {
       const document = paragraphDocuments.find((doc) => doc.id === id);
       if (document) {
-        const path = `${user?.email}/about-me/paragraphs/${document.id}`;
+        const path = `${user?.uid}/about-me/paragraphs/${document.id}`;
         const ref = doc(db, path);
         await updateDoc(ref, {
           value: paragraph,

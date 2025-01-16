@@ -1,4 +1,4 @@
-import PrivateRoute from "../../utils/PrivateRoute";
+import PrivateRoute from "../../utils/routing/PrivateRoute";
 import FeaturedGallery from "@/components/featured-photos/FeaturedGallery";
 import Header from "@/components/Header";
 

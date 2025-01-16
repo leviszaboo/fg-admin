@@ -18,16 +18,15 @@ export default function DeletePostDialog({ id, dialogOpen, setDialogOpen }: Dial
 
     if (document) {
       handleDelete({
-        selectedImages: document.imageUrls,
-        getFirestorePath: (name) =>
-          `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`,
-        getStoragePath: (item, index) => `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}_${index}`,
-        removeDocument: removePostDocument,
-        removeUrl: () => {}, 
+        fileIds: document.fileIds,
+        documentIds: [document.id],
+        fsPath: `${user?.uid}/gallery/${isAnalogSelected ? "analog" : "digital"}`,
+        remover: removePostDocument,
         removeFromSelected: () => {}, 
-        document: document,
       });
     }
+
+    setDialogOpen(false);
   };
 
   return (

@@ -6,8 +6,6 @@ import {
 } from "@/app/hooks/UseFireStoreDocuments";
 import useGalleryStore from "@/app/hooks/UseGallery";
 import { useAuth } from "@/app/context/AuthContext";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { db } from "@/app/firebase/config";
 import { useFetchDocs } from "@/app/hooks/useFetchDocs";
 
 export default function PostStorage() {

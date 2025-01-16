@@ -1,6 +1,5 @@
 import useDeleteHandler from "@/app/hooks/useDeleteHandler";
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
-import useImageUrlStore from "@/app/hooks/UseImageUrl";
 import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
 import { useAuth } from "@/app/context/AuthContext";
 import DeleteDialogWrapper from "@/components/DeleteDialogWrapper";
@@ -18,20 +17,17 @@ export default function DeleteFeaturedDialog() {
     setSelected,
   } = useSelectImagesStore();
 
-  const { removeHorizontalUrl, removeVerticalUrl } = useImageUrlStore();
-  const { featuredDocuments, removeFeaturedDocument } =
+  const { removeFeaturedDocument } =
     useFireStoreDocumentsStore();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false); 
 
-  const handleDeleteClick = () => {
-    handleDelete({
-      selectedImages,
-      getFirestorePath: (name) =>
-        `${user?.email}/featured/${isVerticalSelected ? "vertical" : "horizontal"}/${name}`,
-      getStoragePath: (item) => item,
-      removeDocument: removeFeaturedDocument,
-      removeUrl: isVerticalSelected ? removeVerticalUrl : removeHorizontalUrl,
+  const handleDeleteClick = async () => {
+    await handleDelete({
+      fileIds: selectedImages.map((image) => image.fileId),
+      documentIds: selectedImages.map((image) => image.id),
+      fsPath: `${user?.uid}/featured/${isVerticalSelected ? "vertical" : "horizontal"}`,
+      remover: removeFeaturedDocument,
       removeFromSelected,
     });
 

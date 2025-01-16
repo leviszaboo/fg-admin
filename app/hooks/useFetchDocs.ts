@@ -1,10 +1,7 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { getDocs, query, collection, orderBy } from "firebase/firestore";
-import {
-  useFireStoreDocumentsStore,
-} from "./UseFireStoreDocuments";
 import { db } from "../firebase/config";
-import { FeaturedDocument, FsDocument, PostDocument } from "../interfaces/documents";
+import { FsDocument } from "../interfaces/documents";
 
 export function useFetchDocs() {
   const [error, setError] = useState<string | null>(null);

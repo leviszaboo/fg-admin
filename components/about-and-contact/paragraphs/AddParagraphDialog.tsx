@@ -19,9 +19,9 @@ import { useAuth } from "@/app/context/AuthContext";
 import { db } from "@/app/firebase/config";
 import { Textarea } from "../../ui/textarea";
 import {
-  ParagraphDocument,
   useFireStoreDocumentsStore,
 } from "@/app/hooks/UseFireStoreDocuments";
+import { ParagraphDocument } from "@/app/interfaces/documents";
 
 export default function AddParagraphDialog() {
   const [paragraph, setParagraph] = useState<string>("");
@@ -48,7 +48,7 @@ export default function AddParagraphDialog() {
       };
 
       await setDoc(
-        doc(db, `${user?.email}/about-me/paragraphs/${paragraphId}`),
+        doc(db, `${user?.uid}/about-me/paragraphs/${paragraphId}`),
         document
       );
       addParagraphDocument(document);

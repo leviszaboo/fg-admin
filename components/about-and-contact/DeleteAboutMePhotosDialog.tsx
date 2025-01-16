@@ -1,7 +1,6 @@
 import useDeleteHandler from "@/app/hooks/useDeleteHandler";
 import { useAuth } from "@/app/context/AuthContext";
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
-import useImageUrlStore from "@/app/hooks/UseImageUrl";
 import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
 import DeleteDialogWrapper from "@/components/DeleteDialogWrapper";
 import { useState } from "react";
@@ -13,20 +12,17 @@ export default function DeleteAboutMePhotosDialog() {
 
   const { selectedImages, removeFromSelected, setSelected } =
     useSelectImagesStore();
-  const { removeAboutMeUrl } = useImageUrlStore();
   const { removeFeaturedDocument } =
     useFireStoreDocumentsStore();
 
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false); // Manage your dialog state here
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false); 
 
-  const handleDeleteClick = () => {
-    handleDelete({
-      selectedImages,
-      getFirestorePath: (name) =>
-        `${user?.email}/featured/about-me/${name}`, // Custom path for about-me photos
-      getStoragePath: (item) => item, // The storage path remains the same for the item
-      removeDocument: removeFeaturedDocument,
-      removeUrl: removeAboutMeUrl, // Remove the About Me URL
+  const handleDeleteClick = async () => {
+    await handleDelete({
+      fileIds: selectedImages.map((image) => image.fileId), 
+      documentIds: selectedImages.map((image) => image.id),
+      fsPath: `${user?.uid}/featured/about-me`,
+      remover: removeFeaturedDocument,
       removeFromSelected,
     });
 

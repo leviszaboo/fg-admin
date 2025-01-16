@@ -8,10 +8,10 @@ interface FirestoreDocumentStore {
   featuredDocuments: FeaturedDocument[];
   addPostDocument(doc: PostDocument): void;
   addParagraphDocument(doc: ParagraphDocument): void;
-  removeParagraphDocument(doc: ParagraphDocument): void;
-  removePostDocument(doc: PostDocument): void;
+  removeParagraphDocument(id: string): void;
+  removePostDocument(id: string): void;
   addFeaturedDocument(doc: FeaturedDocument): void;
-  removeFeaturedDocument(doc: FeaturedDocument): void;
+  removeFeaturedDocument(id: string): void;
   updatePostDocumentFields(docId: string, fields: Partial<PostDocument>): void;
   updateFeaturedDocumentFields(
     docId: string,
@@ -29,25 +29,25 @@ export const useFireStoreDocumentsStore = create<FirestoreDocumentStore>(
       set((state) => ({
         postDocuments: [doc, ...state.postDocuments],
       })),
-    removePostDocument: (doc) =>
+    removePostDocument: (id) =>
       set((state) => ({
-        postDocuments: state.postDocuments.filter((i) => i !== doc),
+        postDocuments: state.postDocuments.filter((i) => i.id !== id),
       })),
     addParagraphDocument: (doc) =>
       set((state) => ({
         paragraphDocuments: [doc, ...state.paragraphDocuments],
       })),
-    removeParagraphDocument: (doc) =>
+    removeParagraphDocument: (id) =>
       set((state) => ({
-        paragraphDocuments: state.paragraphDocuments.filter((i) => i !== doc),
+        paragraphDocuments: state.paragraphDocuments.filter((i) => i.id !== id),
       })),
     addFeaturedDocument: (doc) =>
       set((state) => ({
         featuredDocuments: [...state.featuredDocuments, doc],
       })),
-    removeFeaturedDocument: (doc) =>
+    removeFeaturedDocument: (id) =>
       set((state) => ({
-        featuredDocuments: state.featuredDocuments.filter((i) => i !== doc),
+        featuredDocuments: state.featuredDocuments.filter((i) => i.id !== id),
       })),
     updatePostDocumentFields: (docId, fields) =>
       set((state) => ({

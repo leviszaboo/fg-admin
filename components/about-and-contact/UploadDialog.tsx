@@ -15,24 +15,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
-import {
-  useFireStoreDocumentsStore,
-} from "@/app/hooks/UseFireStoreDocuments";
 import { useAuth } from "@/app/context/AuthContext";
-import { createFeaturedPhotos } from "@/app/utils/featuredPhotos";
+import useFeaturedPhotos from "@/app/hooks/useFeaturedPhotos";
 
 export default function UploadDialog() {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
+  const { loading, error, setError, createFeaturedPhotos } = useFeaturedPhotos()
 
   const auth = useAuth();
   const user = auth.currentUser;
 
   const { isSelected } = useSelectImagesStore();
-  const { addFeaturedDocument } = useFireStoreDocumentsStore();
 
   function handleMouseEnter() {
     setIsHovered(true);
@@ -55,29 +50,15 @@ export default function UploadDialog() {
   }
 
   async function uploadImage() {
-    setLoading(true);
-    setError("");
+    const type = "about-me";
+    const basePath = `${user?.uid}/featured/${type}`;
 
-    if (files.length === 0) { 
-      setError("Please select the files to upload.");
-      setLoading(false);
-
-      return;
-    }
-
-    try {
-      const type = "about-me"
-      const basePath = `${user?.uid}/featured/${type}`;
-
-      await createFeaturedPhotos({ basePath, files, type });
-
-      setDialogOpen(false);
-    } catch (err) {
-      setError("Something went wrong. Try again.");
-      console.log(err);
-    }
-
-    setLoading(false);
+    await createFeaturedPhotos({
+      files,
+      basePath,
+      type,
+      setDialogOpen,
+    });
   }
 
   return (

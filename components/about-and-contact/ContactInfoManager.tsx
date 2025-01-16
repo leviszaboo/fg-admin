@@ -45,7 +45,7 @@ export default function ContactInfoManager() {
   async function handleUpdate() {
     setLoading(true);
     try {
-      const path = `${user?.email}/contact-info`;
+      const path = `${user?.uid}/contact-info`;
       const ref = doc(db, path);
       await updateDoc(ref, {
         name: contactInfo.name,

@@ -1,57 +1,48 @@
 import { useState } from "react";
-import { deleteObject, ref } from "firebase/storage";
 import { doc, deleteDoc } from "firebase/firestore";
-import { storage, db } from "@/app/firebase/config";
-import { FeaturedDocument, PostDocument } from "./UseFireStoreDocuments";
+import { db } from "@/app/firebase/config";
+import { deleteFile } from "../utils/imageKit";
+import { FsDocument } from "../interfaces/documents";
 
 export default function useDeleteHandler() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  async function handleDelete({
-    selectedImages,
-    getFirestorePath,
-    getStoragePath,
-    removeDocument,
-    removeUrl,
+  async function handleDelete<T extends FsDocument>({
+    fileIds,
+    documentIds,
+    fsPath,
+    remover,
     removeFromSelected,
-    document
   }: {
-    selectedImages: string[],
-    getFirestorePath: (name: string) => string,
-    getStoragePath: (item: string, index?: number) => string,
-    removeDocument: (doc: any) => void,
-    removeUrl: (item: string) => void,
-    removeFromSelected: (item: string) => void,
-    document?: FeaturedDocument | PostDocument,
+    fileIds: string[],
+    documentIds: string[],
+    fsPath: string,
+    remover: (id: string) => void,
+    removeFromSelected: (doc: T) => void,
   }) {
     try {
       setLoading(true);
       setError("");
 
-      const deletePromises = selectedImages.map(async (item) => {
-        const desertRef = ref(storage, getStoragePath(item));
-        const name = desertRef.fullPath.split("/").pop(); 
-
+      const ikDeletePromises = fileIds.map(async (item) => {
         try {
-          await deleteObject(desertRef);
+          await deleteFile(item);
         } catch (err) {
-          console.warn("Failed to delete object:", desertRef);
+          console.warn("Failed to delete object:", item); 
         }
-
-        const path = getFirestorePath(name || "");
-        try {
-          await deleteDoc(doc(db, path));
-          document ? removeDocument(document) : removeDocument({ name });
-        } catch (err) {
-          setError("Failed to delete document.");
-        }
-
-        removeFromSelected(item);
-        removeUrl(item);
       });
 
-      await Promise.all(deletePromises);
+      await Promise.all(ikDeletePromises);
+
+      const fsDeletePromises = documentIds.map(async (id) => {
+        await deleteDoc(doc(db, `${fsPath}/${id}`));
+
+        remover(id);
+        removeFromSelected({ id } as T);
+      });
+
+      await Promise.all(fsDeletePromises);
     } catch (err) {
       console.log(err);
       setError("Something went wrong.");
