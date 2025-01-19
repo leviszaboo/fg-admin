@@ -1,15 +1,12 @@
-"use client";
-
-import FeaturedGalleryHeader from "./FeaturedGalleryHeader";
-import ImageStorage from "./ImageStorage";
+import FeaturedPhotos from "./FeaturedPhotos";
 
 export default function FeaturedGallery() {
-  return (
-    <>
-      <div className="absolute p-4 bg-orange-50 rounded-3xl w-10/12 h-4/5 left-1/2 -translate-x-1/2">
-        <FeaturedGalleryHeader />
-        <ImageStorage />
-      </div>
-    </>
-  );
-}
+    return (
+      <div className="absolute flex flex-col w-full left-1/2 -translate-x-1/2 justify-center items-center gap-5">
+        <FeaturedPhotos title={"Home Page (horizontal)"} type={"horizontal"} />
+        <FeaturedPhotos title={"Home Page (vertical) - phone screens"} type={"vertical"} />
+        <FeaturedPhotos title={"About Page"} type={"about-me"} />
+        <FeaturedPhotos title={"Intro Page (scroll-down)"} type={"intro"} />
+    </div>
+    );
+  }

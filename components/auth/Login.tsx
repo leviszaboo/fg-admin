@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FirebaseError } from "firebase/app";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import { FormData, LoginSchema } from "../../app/models/LoginSchema";
 import { useAuth } from "../../app/context/AuthContext";
@@ -24,7 +23,6 @@ export default function Login() {
 
   const auth = useAuth();
   const schema = LoginSchema();
-  const router = useRouter();
 
   const {
     register,

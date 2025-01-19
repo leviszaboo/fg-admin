@@ -18,7 +18,6 @@ import {
 import { useAuth } from "@/app/context/AuthContext";
 import Logo from "./Logo";
 import UpdateUserDataDialog from "./auth/UpdateUserDataDialog";
-import useSelectImagesStore from "@/app/hooks/UseSelectImages";
 import useGalleryStore from "@/app/hooks/UseGallery";
 
 export default function Header() {
@@ -27,7 +26,6 @@ export default function Header() {
   const [emailDialogOpen, setEmailDialogOpen] = useState<boolean>(false);
   const [passwordDialogOpen, setPasswordDialogOpen] = useState<boolean>(false);
 
-  const { setIsVerticalSelected } = useSelectImagesStore();
   const { setIsAnalogSelected } = useGalleryStore();
 
   const auth = useAuth();
@@ -36,7 +34,6 @@ export default function Header() {
   const currentPathname = usePathname();
 
   useEffect(() => {
-    setIsVerticalSelected(true);
     setIsAnalogSelected(true);
 
     if (currentPathname === "/analog") {

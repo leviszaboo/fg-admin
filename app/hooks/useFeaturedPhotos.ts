@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import useSelectImagesStore from "./UseSelectImages";
-import { FeaturedDocument } from "../interfaces/documents";
+import { FeaturedDocument, FeaturedPhotoType } from "../interfaces/documents";
 import { uploadFile } from "../utils/imageKit";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
@@ -15,7 +15,7 @@ export default function useFeaturedPhotos() {
   async function createFeaturedPhotos({ files, basePath, type, setDialogOpen }: {
     files: File[];
     basePath: string;
-    type: "vertical" | "horizontal" | "about-me";
+    type: FeaturedPhotoType;
     setDialogOpen: (open: boolean) => void;
   }
   ) {

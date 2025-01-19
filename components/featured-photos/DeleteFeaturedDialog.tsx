@@ -4,15 +4,16 @@ import { useFireStoreDocumentsStore } from "@/app/hooks/UseFireStoreDocuments";
 import { useAuth } from "@/app/context/AuthContext";
 import DeleteDialogWrapper from "@/components/DeleteDialogWrapper";
 import { useState } from "react";
+import { FeaturedPhotoType } from "@/app/interfaces/documents";
 
-export default function DeleteFeaturedDialog() {
+export default function DeleteFeaturedPhotosDialog({ type }: { type: FeaturedPhotoType }) {
   const { loading, error, handleDelete } = useDeleteHandler();
   const auth = useAuth();
   const user = auth.currentUser;
 
   const {
-    isVerticalSelected,
     selectedImages,
+    typeSelected,
     removeFromSelected,
     setSelected,
   } = useSelectImagesStore();
@@ -26,12 +27,12 @@ export default function DeleteFeaturedDialog() {
     await handleDelete({
       fileIds: selectedImages.map((image) => image.fileId),
       documentIds: selectedImages.map((image) => image.id),
-      fsPath: `${user?.uid}/featured/${isVerticalSelected ? "vertical" : "horizontal"}`,
+      fsPath: `${user?.uid}/featured/${type}`,
       remover: removeFeaturedDocument,
       removeFromSelected,
     });
 
-    setSelected(false);
+    setSelected(false, null);
   };
 
   return (
@@ -41,7 +42,7 @@ export default function DeleteFeaturedDialog() {
       dialogOpen={dialogOpen}
       setDialogOpen={setDialogOpen}
       handleDelete={handleDeleteClick}
-      disabled={selectedImages.length <= 0}
+      disabled={selectedImages.length <= 0 || typeSelected !== type}
     />
   );
 }

@@ -1,3 +1,7 @@
+export type FeaturedPhotoType = "vertical" | "horizontal" | "about-me" | "intro";
+
+export type FsDocumentType = FeaturedPhotoType | "analog" | "digital" | "paragraph";
+
 export interface FsDocument {
   id: string;
   createdAt: Date;
@@ -7,7 +11,7 @@ export interface FeaturedDocument extends FsDocument {
   name: string;
   url: string;
   fileId: string;
-  type: "vertical" | "horizontal" | "about-me";
+  type: FeaturedPhotoType;
 }
 
 export interface ParagraphDocument extends FsDocument {

@@ -8,8 +8,8 @@ import { FeaturedDocument } from "@/app/interfaces/documents";
 
 export default function ImageFrame({ doc }: {doc: FeaturedDocument}) {
   const {
-    isVerticalSelected,
     isSelected,
+    typeSelected,
     selectedImages,
     addToSelected,
     removeFromSelected,
@@ -32,24 +32,24 @@ export default function ImageFrame({ doc }: {doc: FeaturedDocument}) {
   }
 
   useEffect(() => {
-    if (!isSelected) setChecked(false);
+    if (!isSelected || typeSelected !== doc.type) setChecked(false);
     if (selectedImages.length === 0) setChecked(false);
   }, [isSelected, selectedImages]);
 
   return (
     <div
       onClick={handleClick}
-      className={` flex flex-column border-2 border-brown rounded-lg ${isVerticalSelected ? "h-80" : "h-44"} ${isSelected ? "cursor-pointer" : null} overflow-hidden items-center content-center justify-center text-center`}
+      className={` flex flex-column border-2 border-brown rounded-lg h-80 ${isSelected && typeSelected === doc.type ? "cursor-pointer" : null} overflow-hidden items-center content-center justify-center text-center`}
     >
       <div className="h-full w-full flex flex-column justify-center items-center image-radius-inner border-4 border-white overflow-hidden">
         <div className="relative h-full w-full">
-          {isSelected && (
+          {isSelected && typeSelected === doc.type && (
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
               <Checkbox checked={checked} onCheckedChange={setChecked} />
             </div>
           )}
           <img
-            className={`object-cover min-h-full -z-50 ${isSelected ? "opacity-80 blur-xs" : null}`}
+            className={`object-cover min-h-full -z-50 ${isSelected && typeSelected === doc.type ? "opacity-80 blur-xs" : null}`}
             src={doc.url}
           />
         </div>

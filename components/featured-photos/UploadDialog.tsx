@@ -14,20 +14,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
-import { useAuth } from "@/app/context/AuthContext";
 import useFeaturedPhotos from "@/app/hooks/useFeaturedPhotos";
+import { FeaturedPhotoType } from "@/app/interfaces/documents";
 
-export default function UploadDialog() {
+interface UploadDialogProps {
+  type: FeaturedPhotoType;
+  basePath: string;
+}
+
+export default function UploadDialog({ type, basePath }: UploadDialogProps) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [files, setFiles] = useState<File[]>([]);
 
   const { loading, error, setError, createFeaturedPhotos } = useFeaturedPhotos()
 
-  const auth = useAuth();
-  const user = auth.currentUser;
-
-  const { isSelected, isVerticalSelected } = useSelectImagesStore();
+  const { isSelected } = useSelectImagesStore();
 
   function handleMouseEnter() {
     setIsHovered(true);
@@ -50,8 +52,6 @@ export default function UploadDialog() {
   }
 
   async function uploadImage() {
-    const type = isVerticalSelected ? "vertical" : "horizontal";
-    const basePath = `${user?.uid}/featured/${type}`;
     await createFeaturedPhotos({
       files,
       basePath,
@@ -64,7 +64,7 @@ export default function UploadDialog() {
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger>
         <div
-          className={`border-2 border-lightbrown rounded-lg ${isVerticalSelected ? "h-80" : "h-44"} cursor-pointer flex flex-column items-center content-center justify-center text-center`}
+          className="border-2 border-lightbrown rounded-lg h-80 cursor-pointer flex flex-column items-center content-center justify-center text-center"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onClick={handleOpen}
@@ -86,7 +86,7 @@ export default function UploadDialog() {
             </div>
           </DialogTitle>
           <DialogDescription>
-            {`Select the photos to be featured on the homepage of your website on ${isVerticalSelected ? "small-screen" : "large-screen"} devices.`}
+            {"Select the photos to be featured on your website"}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col pt-2 pb-2">

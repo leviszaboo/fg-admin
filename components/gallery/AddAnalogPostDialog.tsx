@@ -28,8 +28,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import ComboBox from "../ComboBox";
-import imageCompression from "browser-image-compression";
-import { imageUploadOptions as options } from "@/app/config/imageUploadOptions";
 
 export const descriptionOptions = [
   {
