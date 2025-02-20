@@ -166,7 +166,7 @@ export function AddDigitalPostDialog() {
             value={postDescription.title}
             onChange={(e) => onChange("title", e.target.value)}
           />
-          <Label className="mt-4">Add Subtitle</Label>
+          <Label className="mt-4">Add Subtitle/Date</Label>
           <Input
             className="mt-2"
             type="text"

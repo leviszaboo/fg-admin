@@ -248,7 +248,7 @@ export function AddAnalogPostDialog() {
             onChange={(e) => onChange("title", e.target.value)}
           />
           <Label htmlFor="pictures" className={`text-left py-4`}>
-            Add Subtitle
+            Add Subtitle/Date
           </Label>
           <Input
             type="text"

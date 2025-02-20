@@ -32,8 +32,6 @@ export async function POST(req: Request) {
 
     const response = await imagekit.upload(payload);
 
-    console.log(response);
-
     if (!response) {
       return NextResponse.json(
         { message: "ImageKit upload failed" },

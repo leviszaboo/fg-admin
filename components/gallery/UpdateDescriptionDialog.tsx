@@ -88,7 +88,7 @@ export default function UpdateDescriptionDialog({
       }
       const document = postDocuments.find((doc) => doc.id === id);
       if (document) {
-        const path = `${user?.email}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`;
+        const path = `${user?.uid}/gallery/${isAnalogSelected ? "analog" : "digital"}/${document.id}`;
         const ref = doc(db, path);
         await updateDoc(ref, {
           title: postDescription.title,
