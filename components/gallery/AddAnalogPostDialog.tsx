@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import ComboBox from "../ComboBox";
+import { resizeImageIfNeeded } from "@/app/utils/resizeImage";
 
 export const descriptionOptions = [
   {
@@ -100,11 +101,18 @@ export function AddAnalogPostDialog() {
     }));
   }
 
-  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
-      setFiles(Array.from(event.target.files));
+      const filesArray = Array.from(event.target.files);
+  
+      const resizedImages = await Promise.all(
+        filesArray.map((file) => resizeImageIfNeeded(file)) 
+      );
+  
+      setFiles(resizedImages);
     }
   }
+  
 
   function onSelectDescription(value: string) {
     setdescriptionLayoutValue(value);

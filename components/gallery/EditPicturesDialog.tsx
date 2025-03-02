@@ -20,6 +20,7 @@ import { Input } from "../ui/input";
 import { GalleryHorizontalEnd } from "lucide-react";
 import { EditPicturesDialogProps } from "@/app/interfaces/dialogProps";
 import { uploadFile } from "@/app/utils/imageKit";
+import { resizeImageIfNeeded } from "@/app/utils/resizeImage";
 
 export default function EditPicturesDialog({
   id,
@@ -40,11 +41,18 @@ export default function EditPicturesDialog({
   const [error, setError] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
 
-  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
-      setFiles(Array.from(event.target.files));
+      const filesArray = Array.from(event.target.files);
+  
+      const resizedImages = await Promise.all(
+        filesArray.map((file) => resizeImageIfNeeded(file)) 
+      );
+  
+      setFiles(resizedImages);
     }
   }
+  
 
   useEffect(() => {
     const document = postDocuments.find((doc) => doc.id === id);

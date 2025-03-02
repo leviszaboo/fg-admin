@@ -23,6 +23,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { resizeImageIfNeeded } from "@/app/utils/resizeImage";
 
 export function AddDigitalPostDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -62,11 +63,18 @@ export function AddDigitalPostDialog() {
     }));
   }
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
-      setFiles(Array.from(event.target.files));
+      const filesArray = Array.from(event.target.files);
+  
+      const resizedImages = await Promise.all(
+        filesArray.map((file) => resizeImageIfNeeded(file)) 
+      );
+  
+      setFiles(resizedImages);
     }
-  };
+  }
+  
 
   const handleCoverFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {

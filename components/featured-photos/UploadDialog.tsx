@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
 import useFeaturedPhotos from "@/app/hooks/useFeaturedPhotos";
 import { FeaturedPhotoType } from "@/app/interfaces/documents";
+import { resizeImageIfNeeded } from "@/app/utils/resizeImage";
 
 interface UploadDialogProps {
   type: FeaturedPhotoType;
@@ -45,11 +46,18 @@ export default function UploadDialog({ type, basePath }: UploadDialogProps) {
     setFiles([]);
   }
 
-  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
-      setFiles(Array.from(event.target.files));
+      const filesArray = Array.from(event.target.files);
+  
+      const resizedImages = await Promise.all(
+        filesArray.map((file) => resizeImageIfNeeded(file)) 
+      );
+  
+      setFiles(resizedImages);
     }
   }
+  
 
   async function uploadImage() {
     await createFeaturedPhotos({
