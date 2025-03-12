@@ -32,16 +32,27 @@ export const uploadFile = async (file: File, fileName: string, folder: string) =
 };
 
 export const deleteFile = async (fileId: string) => {
-  const payload = { fileId };
-
-  const response = await fetch("/api/imagekit", {
+  const response = await fetch(`/api/imagekit/files/${fileId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
     throw new Error("File deletion failed");
   }
 }
+
+export const deleteFolder = async (folder: string) => {
+  const encodedFolder = encodeURIComponent(folder);
+  
+  const response = await fetch(`/api/imagekit/folders/${encodedFolder}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    throw new Error("Folder deletion failed");
+  }
+}
+
   

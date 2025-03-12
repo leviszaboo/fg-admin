@@ -15,14 +15,17 @@ export default function DeletePostDialog({ id, dialogOpen, setDialogOpen }: Dial
 
   const handleDeleteClick = () => {
     const document = postDocuments.find((doc) => doc.id === id);
+    const fsPath = `${user?.uid}/gallery/${isAnalogSelected ? "analog" : "digital"}`;
 
     if (document) {
       handleDelete({
         fileIds: document.fileIds,
         documentIds: [document.id],
-        fsPath: `${user?.uid}/gallery/${isAnalogSelected ? "analog" : "digital"}`,
+        fsPath,
         remover: removePostDocument,
         removeFromSelected: () => {}, 
+        deleteWholeFolder: true,
+        ikFolderPath: `${fsPath}/${document.id}`,
       });
     }
 

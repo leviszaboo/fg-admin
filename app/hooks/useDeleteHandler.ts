@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { doc, deleteDoc } from "firebase/firestore";
 import { db } from "@/app/firebase/config";
-import { deleteFile } from "../utils/imageKit";
+import { deleteFile, deleteFolder } from "../utils/imageKit";
 import { FsDocument } from "../interfaces/documents";
 
 export default function useDeleteHandler() {
@@ -14,26 +14,34 @@ export default function useDeleteHandler() {
     fsPath,
     remover,
     removeFromSelected,
+    deleteWholeFolder = false,
+    ikFolderPath = "",
   }: {
     fileIds: string[],
     documentIds: string[],
     fsPath: string,
     remover: (id: string) => void,
     removeFromSelected: (doc: T) => void,
+    deleteWholeFolder?: boolean,
+    ikFolderPath?: string,
   }) {
     try {
       setLoading(true);
       setError("");
 
-      const ikDeletePromises = fileIds.map(async (item) => {
-        try {
-          await deleteFile(item);
-        } catch (err) {
-          console.warn("Failed to delete object:", item); 
-        }
-      });
+      if (deleteWholeFolder) {
+        await deleteFolder(ikFolderPath);
+      } else {
+        const ikDeletePromises = fileIds.map(async (item) => {
+          try {
+            await deleteFile(item);
+          } catch (err) {
+            console.warn("Failed to delete object:", item); 
+          }
+        });
 
-      await Promise.all(ikDeletePromises);
+        await Promise.all(ikDeletePromises);
+      }
 
       const fsDeletePromises = documentIds.map(async (id) => {
         await deleteDoc(doc(db, `${fsPath}/${id}`));
