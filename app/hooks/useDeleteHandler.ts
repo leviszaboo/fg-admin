@@ -28,6 +28,7 @@ export default function useDeleteHandler() {
     try {
       setLoading(true);
       setError("");
+      console.log(fileIds)
 
       if (deleteWholeFolder) {
         await deleteFolder(ikFolderPath);

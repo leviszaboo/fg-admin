@@ -6,7 +6,7 @@ export default function FeaturedGallery() {
         <FeaturedPhotos title={"Home Page (horizontal)"} type={"horizontal"} />
         <FeaturedPhotos title={"Home Page (vertical) - phone screens"} type={"vertical"} />
         <FeaturedPhotos title={"About Page"} type={"about-me"} />
-        <FeaturedPhotos title={"Intro Page (scroll-down)"} type={"intro"} />
+        <FeaturedPhotos title={"Intro Page (scroll-down) - 5 horizontal images for good layout"} type={"intro"} />
     </div>
     );
   }

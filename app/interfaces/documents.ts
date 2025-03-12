@@ -12,6 +12,7 @@ export interface FeaturedDocument extends FsDocument {
   url: string;
   fileId: string;
   type: FeaturedPhotoType;
+  aspectRatio: number;
 }
 
 export interface ParagraphDocument extends FsDocument {
@@ -27,4 +28,5 @@ export interface PostDocument extends FsDocument {
   description: string;
   destinationGallery: string;
   coverPhoto?: string;
+  imageAspectRatios?: number[];
 }

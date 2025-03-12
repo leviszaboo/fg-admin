@@ -8,24 +8,27 @@ export async function resizeImageIfNeeded(file: File): Promise<File> {
         throw new Error("Provided file is not an image.");
     }
 
-    const fileSizeMB = file.size / (1024 * 1024); 
+    const fileSizeMB = file.size / (1024 * 1024);
     const image = await loadImage(file);
-    const megapixels = (image.width * image.height) / 1_000_000; 
-
-    // console.log(`Original Image - Size: ${fileSizeMB.toFixed(2)} MB, Resolution: ${image.width}x${image.height} (${megapixels.toFixed(2)} MP)`);
+    const megapixels = (image.width * image.height) / 1_000_000;
 
     if (megapixels <= MAX_MEGAPIXELS && fileSizeMB <= MAX_FILE_SIZE_MB) {
         return file; 
     }
 
     const options = {
-        maxSizeMB: MAX_FILE_SIZE_MB, 
-        maxWidthOrHeight: Math.sqrt(MAX_MEGAPIXELS * 1_000_000), 
-        useWebWorker: true, 
+        maxSizeMB: MAX_FILE_SIZE_MB,
+        maxWidthOrHeight: Math.sqrt(MAX_MEGAPIXELS * 1_000_000),
+        useWebWorker: true,
     };
 
     const compressedBlob = await imageCompression(file, options);
     return new File([compressedBlob], file.name, { type: file.type });
+}
+
+export async function getAspectRatio(file: File): Promise<number> {
+    const image = await loadImage(file);
+    return image.width / image.height;
 }
 
 function loadImage(file: File): Promise<HTMLImageElement> {

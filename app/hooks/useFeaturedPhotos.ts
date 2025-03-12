@@ -12,11 +12,12 @@ export default function useFeaturedPhotos() {
   const [error, setError] = useState<string>("");
   const { addFeaturedDocument } = useFireStoreDocumentsStore();
 
-  async function createFeaturedPhotos({ files, basePath, type, setDialogOpen }: {
+  async function createFeaturedPhotos({ files, basePath, type, setDialogOpen, aspectRatios }: {
     files: File[];
     basePath: string;
     type: FeaturedPhotoType;
     setDialogOpen: (open: boolean) => void;
+    aspectRatios: number[];
   }
   ) {
     setLoading(true);
@@ -43,6 +44,7 @@ export default function useFeaturedPhotos() {
             fileId: item.fileId,
             url: item.url,
             type,
+            aspectRatio: aspectRatios[res.indexOf(item)],
             createdAt: new Date(),
         };
         await setDoc(

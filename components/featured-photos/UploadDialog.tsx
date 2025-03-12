@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import useSelectImagesStore from "@/app/hooks/UseSelectImages";
 import useFeaturedPhotos from "@/app/hooks/useFeaturedPhotos";
 import { FeaturedPhotoType } from "@/app/interfaces/documents";
-import { resizeImageIfNeeded } from "@/app/utils/resizeImage";
+import { resizeImageIfNeeded, getAspectRatio } from "@/app/utils/resizeImage";
 
 interface UploadDialogProps {
   type: FeaturedPhotoType;
@@ -27,6 +27,7 @@ export default function UploadDialog({ type, basePath }: UploadDialogProps) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [files, setFiles] = useState<File[]>([]);
+  const [aspectRatios, setAspectRatios] = useState<number[]>([]);
 
   const { loading, error, setError, createFeaturedPhotos } = useFeaturedPhotos()
 
@@ -53,8 +54,13 @@ export default function UploadDialog({ type, basePath }: UploadDialogProps) {
       const resizedImages = await Promise.all(
         filesArray.map((file) => resizeImageIfNeeded(file)) 
       );
+
+      const aspectRatios = await Promise.all(
+        resizedImages.map((file) => getAspectRatio(file))
+      );
   
       setFiles(resizedImages);
+      setAspectRatios(aspectRatios);
     }
   }
   
@@ -65,6 +71,7 @@ export default function UploadDialog({ type, basePath }: UploadDialogProps) {
       basePath,
       type,
       setDialogOpen,
+      aspectRatios,
     });
   }
 

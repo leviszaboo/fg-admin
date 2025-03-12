@@ -23,13 +23,14 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { resizeImageIfNeeded } from "@/app/utils/resizeImage";
+import { resizeImageIfNeeded, getAspectRatio } from "@/app/utils/resizeImage";
 
 export function AddDigitalPostDialog() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
+  const [imageAspectRatios, setImageAspectRatios] = useState<number[]>([]);
   const [coverFile, setCoverFile] = useState<File | null>(null);
 
   const [postDescription, setPostDescription] = useState<PostDescription>({
@@ -66,15 +67,17 @@ export function AddDigitalPostDialog() {
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files) {
       const filesArray = Array.from(event.target.files);
-  
+
       const resizedImages = await Promise.all(
-        filesArray.map((file) => resizeImageIfNeeded(file)) 
+        filesArray.map((file) => resizeImageIfNeeded(file))
       );
-  
+
+      const aspectRatios = await Promise.all(resizedImages.map((image) => getAspectRatio(image)));
+
       setFiles(resizedImages);
+      setImageAspectRatios(aspectRatios);
     }
-  }
-  
+  } 
 
   const handleCoverFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -119,6 +122,7 @@ export function AddDigitalPostDialog() {
         subTitle,
         description,
         destinationGallery: "digital",
+        imageAspectRatios,
         createdAt: new Date(),
       };
 
