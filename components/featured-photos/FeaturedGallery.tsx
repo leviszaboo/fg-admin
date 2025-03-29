@@ -1,4 +1,5 @@
 import FeaturedPhotos from "./FeaturedPhotos";
+import GalleryCover from "./GalleryCover";
 
 export default function FeaturedGallery() {
     return (
@@ -7,6 +8,7 @@ export default function FeaturedGallery() {
         <FeaturedPhotos title={"Home Page (vertical) - phone screens"} type={"vertical"} />
         <FeaturedPhotos title={"About Page"} type={"about-me"} />
         <FeaturedPhotos title={"Intro Page (scroll-down) - 5 horizontal images for good layout"} type={"intro"} />
+        <GalleryCover title={"Gallery Page"} type={"about-me"} />
     </div>
     );
   }

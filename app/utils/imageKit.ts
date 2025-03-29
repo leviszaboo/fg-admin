@@ -9,9 +9,9 @@ function fileToBase64(file: File): Promise<string> {
     });
   }
   
-export const uploadFile = async (file: File, fileName: string, folder: string) => {
+export const uploadFile = async (file: File, fileName: string, folder: string, useUniqueFileName = true) => {
   const fileBase64 = await fileToBase64(file);
-  const payload = { file: fileBase64, fileName, folder };
+  const payload = { file: fileBase64, fileName, folder, useUniqueFileName };
 
   const response = await fetch("/api/imagekit", {
     method: "POST",

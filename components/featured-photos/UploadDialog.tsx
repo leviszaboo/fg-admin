@@ -17,19 +17,23 @@ import useSelectImagesStore from "@/app/hooks/UseSelectImages";
 import useFeaturedPhotos from "@/app/hooks/useFeaturedPhotos";
 import { FeaturedPhotoType } from "@/app/interfaces/documents";
 import { resizeImageIfNeeded, getAspectRatio } from "@/app/utils/resizeImage";
+import { set } from "zod";
 
 interface UploadDialogProps {
   type: FeaturedPhotoType;
   basePath: string;
+  multiple?: boolean;
+  customUploader?: (file: File, name: string, basePath: string) => Promise<void>;
+  customFileName?: string;
 }
 
-export default function UploadDialog({ type, basePath }: UploadDialogProps) {
+export default function UploadDialog({ type, basePath, multiple = true, customUploader, customFileName = ""}: UploadDialogProps) {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [files, setFiles] = useState<File[]>([]);
   const [aspectRatios, setAspectRatios] = useState<number[]>([]);
 
-  const { loading, error, setError, createFeaturedPhotos } = useFeaturedPhotos()
+  const { loading, error, setError, setLoading, createFeaturedPhotos } = useFeaturedPhotos()
 
   const { isSelected } = useSelectImagesStore();
 
@@ -64,8 +68,26 @@ export default function UploadDialog({ type, basePath }: UploadDialogProps) {
     }
   }
   
-
   async function uploadImage() {
+    if (customUploader) {
+      setError("");
+      if (files.length === 0) {
+        setError("Please select the files to upload.");
+        return;
+      }
+
+      try {
+        setLoading(true);
+        await customUploader(files[0], customFileName, basePath);
+        setDialogOpen(false);
+      } catch (error) {
+        setError("An error occurred while uploading the image.");
+        setLoading(false);
+      }
+
+      return;
+    }
+
     await createFeaturedPhotos({
       files,
       basePath,
@@ -112,7 +134,7 @@ export default function UploadDialog({ type, basePath }: UploadDialogProps) {
               id="picture"
               type="file"
               accept="image/*"
-              multiple
+              multiple={multiple}
               onChange={handleFileChange}
             />
           </div>

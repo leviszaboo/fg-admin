@@ -31,7 +31,7 @@ export default function FeaturedPhotosHeader({ type, title }: FeaturedPhotosHead
       <div className="p-1 pl-4 text-amber-900 text-3xl font-semibold">
         {title}
       </div>
-      <div className="self-end grid grid-flow-col gap-4 items-center pr-4 h-full">
+      <div className="grid grid-flow-col gap-4 items-center pr-4 h-full">
         {!(isSelected && typeSelected === type) && (
           <Button size={"xs"} onClick={toggleSelected}>
             Select

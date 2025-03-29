@@ -72,6 +72,7 @@ export default function useFeaturedPhotos() {
     loading,
     error,
     setError,
+    setLoading,
     createFeaturedPhotos
   };
 }

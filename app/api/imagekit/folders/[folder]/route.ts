@@ -5,7 +5,8 @@ const IMAGEKIT_PRIVATE_KEY = process.env.IMAGEKIT_PRIVATE_KEY!;
 const IMAGEKIT_URL_ENDPOINT = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!;
 const IMAGEKIT_PUBLIC_KEY = process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!;
 
-export async function DELETE( req: Request, { params }: { params: { folder: string } }) {
+export async function DELETE(req: Request, props: { params: Promise<{ folder: string }> }) {
+  const params = await props.params;
   try {
     const folder = decodeURIComponent(params.folder); 
 

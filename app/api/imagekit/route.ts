@@ -8,7 +8,7 @@ const IMAGEKIT_PUBLIC_KEY = process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!;
 export async function POST(req: Request) {
   try {
     const body = await req.json(); 
-    const { file, fileName, folder } = body;
+    const { file, fileName, folder, useUniqueFileName } = body;
 
     if (!file || !fileName || !folder) {
       return NextResponse.json(
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
       file, 
       fileName,
       folder,
-      useUniqueFileName: true,
+      useUniqueFileName,
     };
 
     const imagekit = new ImageKit({
