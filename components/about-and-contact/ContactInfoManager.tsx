@@ -57,6 +57,7 @@ export default function ContactInfoManager() {
       });
       setIsEditing(false);
     } catch (err) {
+      console.log(err);
       setError("Something went wrong.");
     } finally {
       setLoading(false);

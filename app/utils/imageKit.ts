@@ -1,4 +1,7 @@
 import { ImageKitResponse } from "../interfaces/imageKit";
+import { upload } from "@imagekit/javascript";
+
+const IMAGEKIT_PUBLIC_KEY = process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!;
 
 function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -11,24 +14,36 @@ function fileToBase64(file: File): Promise<string> {
   
 export const uploadFile = async (file: File, fileName: string, folder: string, useUniqueFileName = true) => {
   const fileBase64 = await fileToBase64(file);
-  const payload = { file: fileBase64, fileName, folder, useUniqueFileName };
 
-  const response = await fetch("/api/imagekit", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+  try {
+    const authResponse = await fetch("/api/imagekit");
+    const { token, expire, signature } = await authResponse.json();
 
-  if (!response.ok) {
+    const payload = {
+      file: fileBase64, 
+      fileName, 
+      folder, 
+      useUniqueFileName,
+      signature,
+      token,
+      expire,
+      publicKey: IMAGEKIT_PUBLIC_KEY,
+    };
+    const response = await upload(payload);
+    
+    if (!response) {
+      throw new Error("File upload failed");
+    }
+    
+    return {
+      url: response.url,
+      fileId: response.fileId,
+    } as ImageKitResponse;
+  } catch (error) {
+    console.error("ImageKit Upload Error:", error);
+
     throw new Error("File upload failed");
   }
-
-  const data = await response.json();
-  
-  return {
-    url: data.url,
-    fileId: data.fileId,
-  } as ImageKitResponse;
 };
 
 export const deleteFile = async (fileId: string) => {

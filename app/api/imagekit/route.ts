@@ -5,43 +5,22 @@ const IMAGEKIT_PRIVATE_KEY = process.env.IMAGEKIT_PRIVATE_KEY!;
 const IMAGEKIT_URL_ENDPOINT = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!;
 const IMAGEKIT_PUBLIC_KEY = process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!;
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
-    const body = await req.json(); 
-    const { file, fileName, folder, useUniqueFileName } = body;
-
-    if (!file || !fileName || !folder) {
-      return NextResponse.json(
-        { message: "Missing required fields" },
-        { status: 400 }
-      );
-    }
-
-    const payload = {
-      file, 
-      fileName,
-      folder,
-      useUniqueFileName,
-    };
-
     const imagekit = new ImageKit({
       publicKey: IMAGEKIT_PUBLIC_KEY,
       privateKey: IMAGEKIT_PRIVATE_KEY,
       urlEndpoint: IMAGEKIT_URL_ENDPOINT,
     });
 
-    const response = await imagekit.upload(payload);
+    const { token, expire, signature } = imagekit.getAuthenticationParameters();
 
-    if (!response) {
-      return NextResponse.json(
-        { message: "ImageKit upload failed" },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json(response, { status: 200 });
+    return NextResponse.json(
+      { token, expire, signature },
+      { status: 200 }
+    );
   } catch (error: any) {
-    console.error("ImageKit Upload Error:", error);
+    console.error("ImageKit Authentication Error:", error);
     return NextResponse.json(
       { message: error.message || "Internal Server Error" },
       { status: 500 }
