@@ -79,9 +79,12 @@ export function AddDigitalPostDialog() {
     }
   } 
 
-  const handleCoverFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setCoverFile(event.target.files[0]);
+      const resizedCover = await resizeImageIfNeeded(event.target.files[0]);
+
+
+      setCoverFile(resizedCover);
     }
   };
 
