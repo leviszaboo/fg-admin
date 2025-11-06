@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { doc, setDoc } from "firebase/firestore";
 import { useAuth } from "@/app/context/AuthContext";
 import { Plus, GalleryHorizontalEnd } from "lucide-react";
-import { uploadFile } from "@/app/utils/imageKit";
+import { uploadFile, uploadBatch, UploadProgress } from "@/app/utils/imageKit";
 import { PostDescription } from "@/app/interfaces/gallery";
 import { PostDocument } from "@/app/interfaces/documents";
 
@@ -32,6 +32,8 @@ export function AddDigitalPostDialog() {
   const [files, setFiles] = useState<File[]>([]);
   const [imageAspectRatios, setImageAspectRatios] = useState<number[]>([]);
   const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
+  const [uploadStage, setUploadStage] = useState<string>("");
 
   const [postDescription, setPostDescription] = useState<PostDescription>({
     title: "",
@@ -50,6 +52,8 @@ export function AddDigitalPostDialog() {
     setError("");
     setFiles([]);
     setCoverFile(null);
+    setUploadProgress(null);
+    setUploadStage("");
     setPostDescription({
       title: "",
       subTitle: "",
@@ -91,6 +95,7 @@ export function AddDigitalPostDialog() {
   async function handleSubmit() {
     setError("");
     setLoading(true);
+    setUploadProgress(null);
 
     try {
       if (files.length === 0 || !coverFile) {
@@ -99,13 +104,25 @@ export function AddDigitalPostDialog() {
         return;
       }
 
-      const imageUploadPromises = files.map((file, i) => 
-        uploadFile(file, `${postId}_${i}`, basePath)
+      // Upload gallery images with progress tracking
+      setUploadStage("Uploading gallery images...");
+      const fileNames = files.map((_, i) => `${postId}_${i}`);
+
+      const result = await uploadBatch(
+        files,
+        fileNames,
+        basePath,
+        (progress) => {
+          setUploadProgress(progress);
+        }
       );
 
-      const result = await Promise.all(imageUploadPromises);
       const imageUrls = result.map((file) => file.url);
       const fileIds = result.map((file) => file.fileId);
+
+      // Upload cover photo
+      setUploadStage("Uploading cover photo...");
+      setUploadProgress(null);
 
       const coverPhoto = await uploadFile(
         coverFile,
@@ -113,6 +130,8 @@ export function AddDigitalPostDialog() {
         basePath
       );
 
+      // Save to database
+      setUploadStage("Saving to database...");
       const { title, subTitle, description } = postDescription;
 
       const document: PostDocument = {
@@ -131,12 +150,16 @@ export function AddDigitalPostDialog() {
 
       await setDoc(doc(db, basePath), document);
       addPostDocument(document);
+
+      setUploadStage("Complete!");
       setDialogOpen(false);
     } catch (err) {
       console.error("Error creating post:", err);
       setError("Something went wrong. Try again.");
     } finally {
       setLoading(false);
+      setUploadProgress(null);
+      setUploadStage("");
     }
   }
 
@@ -159,6 +182,33 @@ export function AddDigitalPostDialog() {
         </DialogHeader>
         <div className="flex flex-col pt-2 pb-2">
           {error && <div className="text-sm text-red-500 pb-3">{error}</div>}
+
+          {loading && uploadProgress && (
+            <div className="mb-4 p-3 bg-secondary rounded-md">
+              <div className="flex justify-between text-sm mb-2">
+                <span className="font-medium">{uploadStage}</span>
+                <span className="text-muted-foreground">
+                  {uploadProgress.currentFile} / {uploadProgress.totalFiles}
+                </span>
+              </div>
+              <div className="w-full bg-secondary-foreground/20 rounded-full h-2 mb-2">
+                <div
+                  className="bg-primary h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${uploadProgress.percentage}%` }}
+                />
+              </div>
+              <div className="text-xs text-muted-foreground truncate">
+                {uploadProgress.fileName}
+              </div>
+            </div>
+          )}
+
+          {loading && !uploadProgress && uploadStage && (
+            <div className="mb-4 p-3 bg-secondary rounded-md">
+              <div className="text-sm font-medium">{uploadStage}</div>
+            </div>
+          )}
+
           <Label>Upload Images</Label>
           <Input
             type="file"

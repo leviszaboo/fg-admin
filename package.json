@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@types/browser-image-compression": "^1.0.13",
+    "@types/prop-types": "^15.7.15",
     "@types/uuid": "^9.0.8"
   },
   "overrides": {

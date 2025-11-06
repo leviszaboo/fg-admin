@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { db } from "@/app/firebase/config";
 import { useAuth } from "@/app/context/AuthContext";
 import useGalleryStore from "@/app/hooks/UseGallery";
-import { uploadFile } from "@/app/utils/imageKit"
+import { uploadBatch, UploadProgress } from "@/app/utils/imageKit"
 import {
   useFireStoreDocumentsStore,
 } from "@/app/hooks/UseFireStoreDocuments";
@@ -49,6 +49,8 @@ export function AddAnalogPostDialog() {
   const [descriptionLayoutValue, setdescriptionLayoutValue] =
     useState<string>("");
   const [imageCount, setImageCount] = useState<number>(0);
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
+  const [uploadStage, setUploadStage] = useState<string>("");
 
   const [postDescription, setPostDescription] = useState<PostDescription>({
     title: "",
@@ -87,6 +89,8 @@ export function AddAnalogPostDialog() {
     setFiles([]);
     setdescriptionLayoutValue("");
     setImageCount(0);
+    setUploadProgress(null);
+    setUploadStage("");
     setPostDescription({
       title: "",
       subTitle: "",
@@ -125,6 +129,8 @@ export function AddAnalogPostDialog() {
   async function handleSubmit() {
     setError("");
     setLoading(true);
+    setUploadProgress(null);
+
     try {
       if (
         !files ||
@@ -144,13 +150,24 @@ export function AddAnalogPostDialog() {
 
       const { title, subTitle, description } = postDescription;
 
-      const imageUploadPromises = files.map((file) =>
-        uploadFile(file, file.name, basePath)
+      // Upload images with progress tracking
+      setUploadStage("Uploading images...");
+      const fileNames = files.map((file) => file.name);
+
+      const results = await uploadBatch(
+        files,
+        fileNames,
+        basePath,
+        (progress) => {
+          setUploadProgress(progress);
+        }
       );
-      const results = await Promise.all(imageUploadPromises);
+
       const urls = results.map((result) => result.url);
       const fileIds = results.map((result) => result.fileId);
 
+      // Save to database
+      setUploadStage("Saving to database...");
       const document: PostDocument = {
         id: postId,
         imageUrls: urls,
@@ -171,12 +188,17 @@ export function AddAnalogPostDialog() {
         document,
       );
       addPostDocument(document);
+
+      setUploadStage("Complete!");
       setDialogOpen(false);
     } catch (err) {
       console.log(err);
       setError("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
+      setUploadProgress(null);
+      setUploadStage("");
     }
-    setLoading(false);
   }
 
   return (
@@ -205,6 +227,33 @@ export function AddAnalogPostDialog() {
               {error}
             </div>
           )}
+
+          {loading && uploadProgress && (
+            <div className="mb-4 p-3 bg-secondary rounded-md">
+              <div className="flex justify-between text-sm mb-2">
+                <span className="font-medium">{uploadStage}</span>
+                <span className="text-muted-foreground">
+                  {uploadProgress.currentFile} / {uploadProgress.totalFiles}
+                </span>
+              </div>
+              <div className="w-full bg-secondary-foreground/20 rounded-full h-2 mb-2">
+                <div
+                  className="bg-primary h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${uploadProgress.percentage}%` }}
+                />
+              </div>
+              <div className="text-xs text-muted-foreground truncate">
+                {uploadProgress.fileName}
+              </div>
+            </div>
+          )}
+
+          {loading && !uploadProgress && uploadStage && (
+            <div className="mb-4 p-3 bg-secondary rounded-md">
+              <div className="text-sm font-medium">{uploadStage}</div>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 w-full items-center gap-4">
             <Label
               htmlFor="pictures"
