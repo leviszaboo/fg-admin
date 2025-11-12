@@ -81,6 +81,7 @@ export default function UploadDialog({ type, basePath, multiple = true, customUp
         setLoading(true);
         await customUploader(files[0], customFileName, basePath);
         setDialogOpen(false);
+        setLoading(false);
       } catch (error) {
         setError("An error occurred while uploading the image.");
         setLoading(false);
