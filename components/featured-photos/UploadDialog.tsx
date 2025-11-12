@@ -25,6 +25,7 @@ interface UploadDialogProps {
   multiple?: boolean;
   customUploader?: (file: File, name: string, basePath: string) => Promise<void>;
   customFileName?: string;
+  onUploadComplete?: () => void;
 }
 
 export default function UploadDialog({ type, basePath, multiple = true, customUploader, customFileName = ""}: UploadDialogProps) {
